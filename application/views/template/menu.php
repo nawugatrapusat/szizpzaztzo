@@ -2,11 +2,10 @@
     <table id="menu">
         <tr>
             <td><a href="<?php echo site_url('beranda');?>">Beranda</a></td>
-            <td><a href="<?php echo site_url('faktur');?>">Faktur</a></td>
+            <td><a href="<?php echo site_url('penjualan');?>">Penjualan</a></td>
             <td><a href="<?php echo site_url('setting');?>">Setting</a></td>
             
             <td><a href="<?php echo site_url('pemasukan');?>">Pemasukan</a></td>
-            <td><a href="<?php echo site_url('penjualan');?>">Penjualan</a></td>
             <td><a href="<?php echo site_url('perhitungan');?>">Perhitungan</a></td>
             <td><a href="<?php echo site_url('order');?>">Order</a></td>
             <td><a href="<?php echo site_url('log');?>">Log</a></td>

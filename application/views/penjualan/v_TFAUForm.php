@@ -72,19 +72,19 @@
                                 <select id="status" name="status">
                                     <option value="">Pilih Status</option>
                                     <?php
-                                    $a = $addEdit->status == 'ambil uang' ? "selected='selected'" : '';
-                                    $b = $addEdit->status == 'manual close' ? "selected='selected'" : '';
-                                    $c = $addEdit->status == 'manual close' ? "" : 'display:none';
+                                    $a = $penjualanById->status == 'ambil uang' ? "selected='selected'" : '';
+                                    $b = $penjualanById->status == 'manual close' ? "selected='selected'" : '';
+                                    $c = $penjualanById->status == 'manual close' ? "" : 'display:none';
                                     ?>
                                     <option <?php echo $a; ?> value="ambil uang">Ambil Uang</option>
                                     <option <?php echo $b; ?> value="manual close">Manual Close</option>
-                                </select>&nbsp;<span id="nominal" style="<?php echo $c; ?>">,&nbsp;Nominal : Rp.<input type="text" id="nominalInput" name="nominal" value="<?php echo $addEdit->nominal == '' ? '' : $addEdit->nominal ?>"/></span>
+                                </select>&nbsp;<span id="nominal" style="<?php echo $c; ?>">,&nbsp;Nominal : Rp.<input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/></span>
                             </td>
                         </tr>
                         <tr>
                             <td>Biaya Lain</td>
                             <td>:</td>
-                            <td>Rp.<input type="text" name="biayaLain" value="<?php echo $addEdit == '' ? '' : $addEdit->biayaLain ?>"/></td>
+                            <td>Rp.<input type="text" name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/></td>
                         </tr>
                         <?php
                         }

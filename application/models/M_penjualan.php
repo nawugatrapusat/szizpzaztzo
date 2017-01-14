@@ -184,6 +184,7 @@ class M_penjualan extends CI_Model {
         function TFAUAddSave($data) {  
             $subs_date= explode('-', date("d-m-Y"));   
             $penjualan=new stdClass();
+            $dataPenjualan=new stdClass();
             
             $this->db->trans_start();
             $penjualan->idPenjualan=$data['idPenjualan'];
@@ -197,11 +198,18 @@ class M_penjualan extends CI_Model {
             $penjualan->keterangan=$data['keterangan'];
             
             if($data['typeForm'] == 'tukarfaktur'){
+                $dataPenjualan->status='tukar faktur';
+                
+                $this->db->where('id',$data['idPenjualan']);
+                $this->db->update('penjualan',$data);
                 $this->db->insert('tukarfaktur',$penjualan);
             }else{
-                $penjualan->status=$data['status'];
-                $penjualan->nominal=$data['nominal'];
-                $penjualan->biayaLain=$data['biayaLain'];
+                $dataPenjualan->status=$data['status'];
+                $dataPenjualan->nominal=$data['nominal'];
+                $dataPenjualan->biayaLain=$data['biayaLain'];
+                
+                $this->db->where('id',$data['idPenjualan']);
+                $this->db->update('penjualan',$dataPenjualan);
                 $this->db->insert('ambiluang',$penjualan);
             }
             $this->db->trans_complete();
@@ -214,6 +222,7 @@ class M_penjualan extends CI_Model {
         
         function TFAUEditSave($data) {            
             $penjualan=new stdClass();
+            $dataPenjualan=new stdClass();
             
             $this->db->trans_start();
             $penjualan->idEmployeePic=$data['idEmployeePic'];
@@ -222,9 +231,12 @@ class M_penjualan extends CI_Model {
                 $this->db->where('id',$data['idTFAU']);
                 $this->db->update('tukarfaktur',$penjualan);
             }else{
-                $penjualan->status=$data['status'];
-                $penjualan->nominal=$data['nominal'];
-                $penjualan->biayaLain=$data['biayaLain'];
+                $dataPenjualan->status=$data['status'];
+                $dataPenjualan->nominal=$data['nominal'];
+                $dataPenjualan->biayaLain=$data['biayaLain'];
+                
+                $this->db->where('id',$data['idPenjualan']);
+                $this->db->update('penjualan',$dataPenjualan);
                 $this->db->where('id',$data['idTFAU']);
                 $this->db->update('ambiluang',$penjualan);
             }

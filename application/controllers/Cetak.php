@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Faktur extends CI_Controller {
+class Cetak extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -25,11 +25,11 @@ class Faktur extends CI_Controller {
                 $this->load->model('m_log', '', TRUE);
 	}
     
-	public function index()
+	public function faktur()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-               
-            $this->load->view('v_faktur.php'); 
+            
+            $this->load->view('cetak/v_faktur.php'); 
 	}	
         
         

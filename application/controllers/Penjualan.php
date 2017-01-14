@@ -94,8 +94,20 @@ class Penjualan extends CI_Controller {
 
             $results = $this->m_penjualan->get_query($sql);
 
+            
             if($results != false){
                 foreach($results as $row){
+//                    $a=$this->m_penjualan->penjualanGetById($row->id);
+//                    $b=$this->m_penjualan->AUGetByIdPenjualan($row->id);
+//                    $c=$this->m_penjualan->TFGetByIdPenjualan($row->id);
+//                    echo $row->id.print_r($c);
+//                    if($c != false){
+//                        $status=$c->status;
+//                    }else if($b != false && $c == false){
+//                        $status=$b->status;
+//                    }else{
+//                        $status=$a->status;
+//                    }
                     $data['rows'][] = array(
                     'id' => $row->id,
                     'cell' => array($row->noFaktur,$row->noPo,  ucwords($row->nama),unix_to_human($row->date),ucwords($row->status))
@@ -387,13 +399,15 @@ class Penjualan extends CI_Controller {
 
             if($results != false){
                 foreach($results as $row){
-                    $data['rows'][] = array(
-                    'id' => $row->id,
-                    'cell' => array($row->noFaktur,$row->noPo,  ucwords($row->nama),unix_to_human($row->date),ucwords($row->status))
-                    );
+                    if($row->status != 'ambil uang' && $row->status != 'manual close' ){
+                        $data['rows'][] = array(
+                        'id' => $row->id,
+                        'cell' => array($row->noFaktur,$row->noPo,  ucwords($row->nama),unix_to_human($row->date),ucwords($row->status))
+                        );
+                    }
                 }        
             }
 
             echo json_encode($data);  
-        }   
+        }
 }
