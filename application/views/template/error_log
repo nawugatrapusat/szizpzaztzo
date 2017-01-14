@@ -1,0 +1,2 @@
+[31-Mar-2015 12:25:39 America/New_York] PHP Fatal error:  Call to undefined function site_url() in /home/k0807091/public_html/sialan/application/views/admin/template/menu.php on line 4
+[31-Mar-2015 12:25:39 America/New_York] PHP Fatal error:  Using $this when not in object context in /home/k0807091/public_html/sialan/application/views/admin/template/header.php on line 7
