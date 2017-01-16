@@ -21,6 +21,21 @@
                             <td>:</td>
                             <td><input type="text" name="noTelp" value="<?php echo $client == '' ? '' : $client->noTelp ?>"/></td>
                         </tr>
+                        <tr>
+                            <td>No Hp</td>
+                            <td>:</td>
+                            <td><input type="text" name="noHp" value="<?php echo $client == '' ? '' : $client->noHp ?>"/></td>
+                        </tr>
+                        <tr>
+                            <td>PIC Pembelian</td>
+                            <td>:</td>
+                            <td><input type="text" name="picPembelian" value="<?php echo $client == '' ? '' : ucwords($client->picPembelian) ?>"/></td>
+                        </tr>
+                        <tr>
+                            <td>PIC Tagihan</td>
+                            <td>:</td>
+                            <td><input type="text" name="picTagihan" value="<?php echo $client == '' ? '' : ucwords($client->picTagihan) ?>"/></td>
+                        </tr>
                     </table>
                 </td>
             <tr/>

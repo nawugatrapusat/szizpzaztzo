@@ -89,7 +89,7 @@
                             <td align="center">Jumlah</td>
                         </tr>
                         <?php
-                        for ($f = 1; $f <= 15; $f++) {
+                        for ($f = 1; $f <= 35; $f++) {
                             $paramId[$f] = '';
                             $paramIdProduct[$f] = '';
                             $paramHargaBeli[$f] = '';
@@ -108,7 +108,7 @@
                                 $c1++;
                             }
                         }
-                        for ($f = 1; $f <= 15; $f++) {
+                        for ($f = 1; $f <= 35; $f++) {
                             echo '
                                 <tr>
                                     <td align="center">' . $f . '</td>

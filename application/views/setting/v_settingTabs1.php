@@ -8,6 +8,9 @@
                     <td>Nama Client</td>
                     <td>Alamat Client</td>
                     <td>No Telp</td>
+                    <td>No HP</td>
+                    <td>PIC Pembelian</td>
+                    <td>PIC Tagihan</td>
                     <td>Aksi</td>
                 </tr>
                 <?php
@@ -20,6 +23,9 @@
                                         <td>' . ucwords($hasil->nama) . '</td>
                                         <td>' . ucwords($hasil->alamat) . '</td>
                                         <td>' . $hasil->noTelp . '</td>
+                                        <td>' . $hasil->noHp . '</td>
+                                        <td>' . ucwords($hasil->picPembelian) . '</td>
+                                        <td>' . ucwords($hasil->picTagihan) . '</td>
                                         <td>
                                             <a href="' . site_url("setting/clientForm/1/$hasil->id") . '" ><img src="public/images/admin/edit.png"/></a>&nbsp;
                                             <a href="#" class="clientDeleteButton" aid="' . $hasil->id . '"><img src="public/images/admin/close.png"/></a>

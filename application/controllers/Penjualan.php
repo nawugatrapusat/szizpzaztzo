@@ -27,6 +27,7 @@ class Penjualan extends CI_Controller {
                 $this->load->model('m_client', '', TRUE);
                 $this->load->model('m_product', '', TRUE);
                 $this->load->model('m_employee', '', TRUE);
+                $this->load->model('m_bank', '', TRUE);
 	}
     
 	function index()
@@ -223,6 +224,7 @@ class Penjualan extends CI_Controller {
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $employee=$this->m_employee->empGetAll();
+            $bank=$this->m_bank->bankGetAll();
             if($typeForm == 0){
                 $addEdit=$this->m_penjualan->tukarFakturGetByIdPenjualan($penjualanById->id);
             }else{
@@ -247,7 +249,9 @@ class Penjualan extends CI_Controller {
                 'penjualanDetail'=>$penjualanDetail,
                 'addEdit'=>$addEdit,
 //                'dataForm'=>$dataForm,
-                'employee'=>$employee
+                'employee'=>$employee,
+                'bank'=>$bank,
+                
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));

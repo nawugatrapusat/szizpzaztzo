@@ -65,6 +65,36 @@
                         if($typeForm != 0){
                         ?>
                         <tr>
+                            <td valign="top">Tipe Pembayaran</td>
+                            <td>:</td>
+                            <td>
+
+                                <select id="tipePembayaran" name="tipePembayaran">
+                                    <option value="">Pilih Tipe Pembayaran</option>
+                                    <?php
+                                    $a = $penjualanById->tipePembayaran == 'tunai' ? "selected='selected'" : '';
+                                    $b = $penjualanById->tipePembayaran == 'giro' ? "selected='selected'" : '';
+                                    $c = $penjualanById->tipePembayaran == 'giro' ? "" : 'display:none';
+                                    ?>
+                                    <option <?php echo $a; ?> value="tunai">Tunai</option>
+                                    <option <?php echo $b; ?> value="giro">Giro</option>
+                                </select>
+                                <span id="giro" style="<?php echo $c; ?>">
+                                    <select id="idBank" name="idBank">
+                                    <option value="">Pilih Bank</option>
+                                    <?php
+                                    if ($bank != '') {
+                                        foreach ($bank as $hasil1) {
+                                            $a = $penjualanById->idBank == $hasil1->id && !empty($addEdit) ? "selected='selected'" : '';
+                                            echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->namaBank) . ' </option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                ,&nbsp;No Giro : Rp.<input type="text" id="giroInput" name="noGiro" value="<?php echo $penjualanById->noGiro == '' ? '' : $penjualanById->noGiro ?>"/></span>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>Status</td>
                             <td>:</td>
                             <td>
@@ -72,19 +102,27 @@
                                 <select id="status" name="status">
                                     <option value="">Pilih Status</option>
                                     <?php
-                                    $a = $penjualanById->status == 'ambil uang' ? "selected='selected'" : '';
-                                    $b = $penjualanById->status == 'manual close' ? "selected='selected'" : '';
-                                    $c = $penjualanById->status == 'manual close' ? "" : 'display:none';
+                                    $d = $penjualanById->status == 'ambil uang' ? "selected='selected'" : '';
+                                    $e = $penjualanById->status == 'manual close' ? "selected='selected'" : '';
+                                    $f = $penjualanById->status == 'manual close' ? "" : 'display:none';
                                     ?>
-                                    <option <?php echo $a; ?> value="ambil uang">Ambil Uang</option>
-                                    <option <?php echo $b; ?> value="manual close">Manual Close</option>
-                                </select>&nbsp;<span id="nominal" style="<?php echo $c; ?>">,&nbsp;Nominal : Rp.<input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/></span>
+                                    <option <?php echo $d; ?> value="ambil uang">Ambil Uang</option>
+                                    <option <?php echo $e; ?> value="manual close">Manual Close</option>
+                                </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp.<input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/></span>
                             </td>
                         </tr>
                         <tr>
                             <td>Biaya Lain</td>
                             <td>:</td>
                             <td>Rp.<input type="text" name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/></td>
+                        </tr>
+                        <?php
+                        }else{
+                        ?>
+                        <tr>
+                            <td>Tanggal Kembali</td>
+                            <td>:</td>
+                            <td><input type="text" name="tanggalKembali" id="date" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->tanggalKembali ?>"/></td>
                         </tr>
                         <?php
                         }
@@ -176,31 +214,7 @@
     </form>
     <script>
         $(document).ready(function () {
-            $(".idProduct").change(function () {
-                var product = $(this), client;
-                if ($("#idClient").val() != '') {
-                    if (product.val() != '') {
-                        $.ajax({
-                            type: "POST",
-                            dataType: "json",
-                            url: "<?php echo site_url('penjualan/cekHarga'); ?>",
-                            data: 'idProduct=' + product.val() + '&idClient=' + $("#idClient").val()
-                        }).done(function (data) {
-                            product.parent().parent().find('.cetakHargaJual').val(data.cetakHargaJual);
-                            product.parent().parent().find('.hargaJual').val(data.hargaJual);
-                            product.parent().parent().find('.hargaBeli').val(data.hargaBeli);
-                        });
-                    } else {
-                        product.parent().parent().find('.cetakHargaJual').val('');
-                        product.parent().parent().find('.hargaJual').val('');
-                        product.parent().parent().find('.hargaBeli').val('');
-                    }
-                } else {
-                    alert('Client harap di pilih dahulu');
-                    product[0].selectedIndex = 0;
-                }
-
-            });
+            $("#date").datepicker({ dateFormat: 'dd-mm-yy' });
             $("#status").change(function () {
                 var status = $(this);
                 if(status.val() == 'manual close'){
@@ -208,6 +222,16 @@
                 }else{
                     $('#nominal').hide();
                     $('#nominalInput').val('');
+                }
+            });
+            $("#tipePembayaran").change(function () {
+                var tipePembayaran = $(this);
+                if(tipePembayaran.val() == 'giro'){
+                    $('#giro').show();
+                }else{
+                    $('#giro').hide();
+                    $('#giroInput').val('');
+                    $('#idBank')[0].selectedIndex=0;
                 }
             });
         });

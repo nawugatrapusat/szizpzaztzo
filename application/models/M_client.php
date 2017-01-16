@@ -36,6 +36,9 @@ class M_client extends CI_Model {
             $client->nama=$data['nama'];
             $client->alamat=$data['alamat'];
             $client->noTelp=$data['noTelp'];
+            $client->noHp=$data['noHp'];
+            $client->picPembelian=$data['picPembelian'];
+            $client->picTagihan=$data['picTagihan'];
             
                 $this->db->insert('client',$client);
                 $insertId=$this->db->insert_id();
@@ -62,6 +65,9 @@ class M_client extends CI_Model {
             $client->nama=$data['nama'];
             $client->alamat=$data['alamat'];
             $client->noTelp=$data['noTelp'];
+            $client->noHp=$data['noHp'];
+            $client->picPembelian=$data['picPembelian'];
+            $client->picTagihan=$data['picTagihan'];
             $client->id=$data['id'];
             
                 $this->db->where('id',$client->id);

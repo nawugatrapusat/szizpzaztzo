@@ -90,7 +90,7 @@ class M_penjualan extends CI_Model {
                 $this->db->insert('penjualan',$penjualan);
                 $insertId=$this->db->insert_id();
             
-            for($a=1;$a<=15;$a++){
+            for($a=1;$a<=35;$a++){
                 if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
                     $penjualandetail=new stdClass();
                     $penjualandetail->idPenjualan=$insertId;
@@ -123,7 +123,7 @@ class M_penjualan extends CI_Model {
                 $this->db->where('id',$penjualan->id);
                 $this->db->update('penjualan',$penjualan);
             
-            for($a=1;$a<=15;$a++){
+            for($a=1;$a<=35;$a++){
                 if($data['id'.$a] == ''){
                     if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
                         $penjualandetail=new stdClass();
@@ -199,14 +199,18 @@ class M_penjualan extends CI_Model {
             
             if($data['typeForm'] == 'tukarfaktur'){
                 $dataPenjualan->status='tukar faktur';
+                $penjualan->tanggalKembali=$data['tanggalKembali'];
                 
                 $this->db->where('id',$data['idPenjualan']);
-                $this->db->update('penjualan',$data);
+                $this->db->update('penjualan',$dataPenjualan);
                 $this->db->insert('tukarfaktur',$penjualan);
             }else{
                 $dataPenjualan->status=$data['status'];
                 $dataPenjualan->nominal=$data['nominal'];
                 $dataPenjualan->biayaLain=$data['biayaLain'];
+                $dataPenjualan->tipePembayaran=$data['tipePembayaran'];
+                $dataPenjualan->idBank=$data['idBank'];
+                $dataPenjualan->noGiro=$data['noGiro'];
                 
                 $this->db->where('id',$data['idPenjualan']);
                 $this->db->update('penjualan',$dataPenjualan);
@@ -228,12 +232,16 @@ class M_penjualan extends CI_Model {
             $penjualan->idEmployeePic=$data['idEmployeePic'];
             $penjualan->keterangan=$data['keterangan'];
             if($data['typeForm'] == 'tukarfaktur'){
+                $penjualan->tanggalKembali=$data['tanggalKembali'];
                 $this->db->where('id',$data['idTFAU']);
                 $this->db->update('tukarfaktur',$penjualan);
             }else{
                 $dataPenjualan->status=$data['status'];
                 $dataPenjualan->nominal=$data['nominal'];
                 $dataPenjualan->biayaLain=$data['biayaLain'];
+                $dataPenjualan->tipePembayaran=$data['tipePembayaran'];
+                $dataPenjualan->idBank=$data['idBank'];
+                $dataPenjualan->noGiro=$data['noGiro'];
                 
                 $this->db->where('id',$data['idPenjualan']);
                 $this->db->update('penjualan',$dataPenjualan);

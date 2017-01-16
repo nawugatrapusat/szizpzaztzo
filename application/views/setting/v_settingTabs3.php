@@ -5,7 +5,10 @@
             <table class="table1" border="1">
                 <tr>
                     <td>No</td>
+                    <td>NIK</td>
                     <td>Nama</td>
+                    <td>Alamat</td>
+                    <td>No HP</td>
                     <td>Aksi</td>
                 </tr>
                 <?php
@@ -15,7 +18,10 @@
                         echo '
                                     <tr>
                                         <td>' . $no . '</td>
+                                        <td>' . $hasil->nik . '</td>
                                         <td>' . ucwords($hasil->nama) . '</td>
+                                        <td>' . ucwords($hasil->alamat) . '</td>
+                                        <td>' . $hasil->noHp . '</td>
                                         <td>
                                             <a href="' . site_url("setting/empForm/1/$hasil->id") . '" ><img src="public/images/admin/edit.png"/></a>&nbsp;
                                             <a href="#" class="empDeleteButton" aid="' . $hasil->id . '"><img src="public/images/admin/close.png"/></a>

@@ -29,6 +29,7 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
             <li><a href="#tabs1">Daftar Client</a></li>
             <li><a href="#tabs2">Daftar Produk</a></li>
             <li><a href="#tabs3">Daftar Karyawan</a></li>
+            <li><a href="#tabs4">Daftar Bank</a></li>
         </ul>
         <div id="tabs1">
             <?php $this->load->view('setting/v_settingTabs1') ?>
@@ -38,6 +39,9 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
         </div>
         <div id="tabs3">
             <?php $this->load->view('setting/v_settingTabs3') ?>
+        </div>
+        <div id="tabs4">
+            <?php $this->load->view('setting/v_settingTabs4') ?>
         </div>
     </div>
 
@@ -61,7 +65,12 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
                     $(this).hide();
                 }
             });
-
+            $('.bankDeleteButton').click(function () {
+                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                    location.href = '<?php echo site_url("setting/bankDelete/3/") ?>' + $(this).attr('aid');
+                    $(this).hide();
+                }
+            });
 
         });
     </script>

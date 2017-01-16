@@ -26,6 +26,7 @@ class Setting extends CI_Controller {
                 $this->load->model('m_client', '', TRUE);
                 $this->load->model('m_product', '', TRUE);
                 $this->load->model('m_employee', '', TRUE);
+                $this->load->model('m_bank', '', TRUE);
 	}
     
 	function index()
@@ -36,10 +37,12 @@ class Setting extends CI_Controller {
             $client=$this->m_client->clientGetAll();
             $product=$this->m_product->productGetAll();
             $emp=$this->m_employee->empGetAll();
+            $bank=$this->m_bank->bankGetAll();
             $data=array(
                 'client'=>$client,
                 'product'=>$product,
-                'emp'=>$emp
+                'emp'=>$emp,
+                'bank'=>$bank
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
@@ -135,14 +138,18 @@ class Setting extends CI_Controller {
         function productFormSave(){
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
-                if($this->input->post('id') == '' && $this->m_product->productAddSave(array_map('strtolower', $this->input->post())) != false){
-                    $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
-                }else if($this->input->post('id') == '' && $this->m_product->productAddSave(array_map('strtolower', $this->input->post())) == false){
-                    $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
-                }else if($this->input->post('id') != '' && $this->m_product->productEditSave(array_map('strtolower', $this->input->post())) != false){
-                    $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
-                }else if($this->input->post('id') != '' && $this->m_product->productEditSave(array_map('strtolower', $this->input->post())) == false){
-                    $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                if($this->input->post('id') == ''){
+                    if($this->m_product->productAddSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                    }
+                }else{
+                    if($this->m_product->productEditSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                    }
                 }
                 $this->input->set_cookie('tab',$tab,time()+6000);
                 redirect(site_url('setting'));
@@ -189,14 +196,19 @@ class Setting extends CI_Controller {
         function empFormSave(){
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
-                if($this->input->post('id') == '' && $this->m_employee->empAddSave(array_map('strtolower', $this->input->post())) != false){
-                    $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
-                }else if($this->input->post('id') == '' && $this->m_employee->empAddSave(array_map('strtolower', $this->input->post())) == false){
-                    $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
-                }else if($this->input->post('id') != '' && $this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) != false){
-                    $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
-                }else if($this->input->post('id') != '' && $this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) == false){
-                    $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                
+                if($this->input->post('id') == ''){
+                    if($this->m_employee->empAddSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                    }
+                }else{
+                    if($$this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                    }
                 }
                 $this->input->set_cookie('tab',$tab,time()+6000);
                 redirect(site_url('setting'));
@@ -212,6 +224,64 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_employee->empDelete($data) != false){
+                $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
+            }else{
+                $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
+            }
+            $this->input->set_cookie('tab',$tab,time()+6000);
+            redirect(site_url('setting'));
+        }
+        
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        
+        function bankForm(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $typeForm=$this->uri->segment(3);
+            $id=$this->uri->segment(4);
+            $bank=$this->m_bank->bankGetById($id);
+            $data=array(
+                'bank'=>$bank,
+                'typeForm'=>$typeForm
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('setting/v_settingBank.php',$data);
+            $this->load->view('template/footer.php');  
+        }
+        
+        function bankFormSave(){
+            if($this->input->post()){
+                $tab=$this->uri->segment(3);
+                if($this->input->post('id') == ''){
+                    if($this->m_bank->bankAddSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                    }
+                }else{
+                    if($this->m_bank->bankEditSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                    }else{
+                        $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                    }
+                }
+                $this->input->set_cookie('tab',$tab,time()+6000);
+                redirect(site_url('setting'));
+            }else{
+                redirect('login');
+            }
+        }
+        
+        function bankDelete(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $tab=$this->uri->segment(3);
+            $data=$this->uri->segment(4);
+            
+            if($this->m_bank->bankDelete($data) != false){
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
