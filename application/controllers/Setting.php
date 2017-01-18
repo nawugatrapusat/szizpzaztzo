@@ -204,7 +204,7 @@ class Setting extends CI_Controller {
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
-                    if($$this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) != false){
+                    if($this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) != false){
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);

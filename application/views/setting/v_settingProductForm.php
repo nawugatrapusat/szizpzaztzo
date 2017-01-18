@@ -47,10 +47,11 @@
                         <?php 
                         $a=$product->scheme == "cashback" ? "selected='selected'" : '';
                         $b=$product->scheme == "kinerja" ? "selected='selected'" : '';
+                        $c=$product->scheme == 'cashback' ? "" : 'display:none';
                         ?>
                         <option <?php echo $a; ?> value="cashback">Cashback</option>;
                         <option <?php echo $b; ?> value="kinerja">Kinerja</option>;
-                    </select>
+                    </select>&nbsp;<span id="hargaEmployee" style="<?php echo $c; ?>">,&nbsp;Harga Karyawan : Rp.<input type="text" id="hargaEmployeeInput" name="hargaEmployee" value="<?php echo $product == '' ? '' : $product->hargaEmployee ?>"/></span>
                 </td>
             </tr>
             <tr>
@@ -64,6 +65,14 @@
     </form>
     <script>
         $(document).ready(function () {
-
+            $("#scheme").change(function () {
+                var scheme = $(this);
+                if(scheme.val() == 'cashback'){
+                    $('#hargaEmployee').show();
+                }else{
+                    $('#hargaEmployee').hide();
+                    $('#hargaEmployeeInput').val('');
+                }
+            });
         });
     </script>

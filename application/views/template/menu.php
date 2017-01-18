@@ -3,6 +3,7 @@
         <tr>
             <td><a href="<?php echo site_url('beranda');?>">Beranda</a></td>
             <td><a href="<?php echo site_url('penjualan');?>">Penjualan</a></td>
+            <td><a href="<?php echo site_url('kinerja');?>">Kinerja</a></td>
             <td><a href="<?php echo site_url('setting');?>">Setting</a></td>
             
             <td><a href="<?php echo site_url('pemasukan');?>">Pemasukan</a></td>

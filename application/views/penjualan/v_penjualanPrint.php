@@ -27,10 +27,13 @@ $(document).ready(function(){
     url: '<?php echo site_url('penjualan/penjualanPrintTable/'.$idClient);?>',
     dataType: 'json',
     colModel : [
+            {display: 'No', name : '', width : 20, sortable : true, align: 'left'},
             {display: 'No Faktur', name : 'noFaktur', width : 90, sortable : true, align: 'left'},
             {display: 'No PO', name : 'noPo', width : 90, sortable : true, align: 'left'},
             {display: 'Nama Client', name : 'nama', width : 300, sortable : true, align: 'left'},
+            {display: 'Pembawa', name : 'idEmployeePic', width : 140, sortable : true, align: 'left'},
             {display: 'Tanggal', name : 'date', width : 120, sortable : true, align: 'left'},
+            {display: 'Nominal', name : 'nominal', width : 120, sortable : true, align: 'left'},
             {display: 'Status', name : 'status', width : 120, sortable : true, align: 'left'},
             ],
     buttons : [
@@ -62,7 +65,7 @@ $(document).ready(function(){
     useRp: true,
     rp: 50,
     showTableToggleBtn: true,
-    width: 800,
+    width: 1280,
     height: 200
 });      
 function print(com,grid){

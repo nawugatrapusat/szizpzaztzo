@@ -39,7 +39,7 @@ class M_penjualan extends CI_Model {
         }  
         
         function penjualanNo($m,$y) {            
-            $this->db->where('m',$m);       
+//            $this->db->where('m',$m);       
             $this->db->where('y',$y);
             $this->db->order_by('no','DESC');
             $query=$this->db->get('penjualan');
@@ -90,6 +90,7 @@ class M_penjualan extends CI_Model {
                 $this->db->insert('penjualan',$penjualan);
                 $insertId=$this->db->insert_id();
             
+            $totalBayar=0;
             for($a=1;$a<=35;$a++){
                 if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
                     $penjualandetail=new stdClass();
@@ -99,8 +100,13 @@ class M_penjualan extends CI_Model {
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
                     $this->db->insert('penjualandetail',$penjualandetail);
+                    $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
                 }
             }
+            $updatePenjualan=new stdClass();
+            $updatePenjualan->totalBayar=$totalBayar;
+            $this->db->where('id',$insertId);
+            $this->db->update('penjualan',$updatePenjualan);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;
@@ -145,7 +151,12 @@ class M_penjualan extends CI_Model {
                     $this->db->where('id',$penjualandetail->id);
                     $this->db->update('penjualandetail',$penjualandetail);
                 }
+                $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
             }
+            $updatePenjualan=new stdClass();
+            $updatePenjualan->totalBayar=$totalBayar;
+            $this->db->where('id',$penjualan->id);
+            $this->db->update('penjualan',$updatePenjualan);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;
@@ -207,11 +218,15 @@ class M_penjualan extends CI_Model {
             }else{
                 $dataPenjualan->status=$data['status'];
                 $dataPenjualan->nominal=$data['nominal'];
-                $dataPenjualan->biayaLain=$data['biayaLain'];
+                $dataPenjualan->biayaLain=$data['biayaLain'] == '' ? '0' : $data['biayaLain'];
                 $dataPenjualan->tipePembayaran=$data['tipePembayaran'];
                 $dataPenjualan->idBank=$data['idBank'];
                 $dataPenjualan->noGiro=$data['noGiro'];
-                
+                if($dataPenjualan->status == 'ambil uang'){
+                    $dataPenjualan->totalBayar=$data['totalBayar']-$dataPenjualan->biayaLain;
+                }if($dataPenjualan->status == 'manual close' ){
+                    $dataPenjualan->totalBayar=$data['nominal']-$dataPenjualan->biayaLain;
+                }
                 $this->db->where('id',$data['idPenjualan']);
                 $this->db->update('penjualan',$dataPenjualan);
                 $this->db->insert('ambiluang',$penjualan);

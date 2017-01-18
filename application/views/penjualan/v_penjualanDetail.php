@@ -67,19 +67,19 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo date("d-m-Y H:i:s",$TF->date) ?></td>
+                            <td><?php echo empty($TF) ? '' : date("d-m-Y H:i:s",$TF->date) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
                                     <?php 
-                                    echo $TF->idEmployeePic == '0' && !empty($TF) ? "Bawa Sendiri" : '';
+                                    if(!empty($TF)) echo $TF->idEmployeePic == '0' ? "Bawa Sendiri" : '';
                                     ?>
                                     <?php
                                     if ($employee != '') {
                                         foreach ($employee as $hasil1) {
-                                            echo $TF->idEmployeePic == $hasil1->id && !empty($TF) ? ucwords($hasil1->nama) : '';
+                                            if(!empty($TF)) echo $TF->idEmployeePic == $hasil1->id ? ucwords($hasil1->nama) : '';
                                         }
                                     }
                                     ?>
@@ -88,7 +88,7 @@
                         <tr>
                             <td>Keterangan</td>
                             <td>:</td>
-                            <td><?php echo ucfirst($TF->keterangan) ?></td>
+                            <td><?php if(!empty($TF))echo ucfirst($TF->keterangan) ?></td>
                         </tr>
                         <tr><td><br/></td></tr>
                         <tr style="padding-top: 15px;padding-bottom: 15px;">
@@ -97,19 +97,19 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo date("d-m-Y H:i:s",$TF->date) ?></td>
+                            <td><?php if(!empty($TF))echo date("d-m-Y H:i:s",$TF->date) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
                                     <?php 
-                                    echo $TF->idEmployeePic == '0' && !empty($TF) ? "Bawa Sendiri" : '';
+                                    if(!empty($TF)) echo $TF->idEmployeePic == '0' && !empty($TF) ? "Bawa Sendiri" : '';
                                     ?>
                                     <?php
                                     if ($employee != '') {
                                         foreach ($employee as $hasil1) {
-                                            echo $TF->idEmployeePic == $hasil1->id && !empty($TF) ? ucwords($hasil1->nama) : '';
+                                            if(!empty($TF)) echo $TF->idEmployeePic == $hasil1->id ? ucwords($hasil1->nama) : '';
                                         }
                                     }
                                     ?>
@@ -118,7 +118,7 @@
                         <tr>
                             <td>Keterangan</td>
                             <td>:</td>
-                            <td><?php echo ucfirst($TF->keterangan) ?></td>
+                            <td><?php if(!empty($TF)) echo ucfirst($TF->keterangan) ?></td>
                         </tr>
                     </table>
                 </td>
@@ -126,12 +126,13 @@
             <tr>
                 <td> <!style="padding-top: 15px;border-top: 1px dotted grey"--!>
                     <!--<p style="font-size: 14px;">*) Di isi apabila harga produk yang di jual ke client ini berbeda dengan harga produk yang sudah di set di halaman "Daftar Produk"</p>-->
-                    <table>
+                    <table class="table1" border="1">
                 <tr>
                     <td align="center">No</td>
                     <td align="center">Produk</td>
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
+                    <td align="center">Total</td>
                 </tr>
                 <?php
                 $totalHarga=0;
@@ -165,7 +166,7 @@
                         <?php
                         if ($product != '') {
                             foreach ($product as $hasil1) {
-                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama) : '';
+                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) : '';
                             }
                         }
                         ?>
@@ -176,20 +177,24 @@
                         <td>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
+                        <td>Rp. 
+                            <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
                         </tr>
                     <?php 
-                        $totalHarga=$totalHarga+$paramHargaJual[$f];
+                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
                         $totalJumlah=$totalJumlah+$paramjumlah[$f];
                 
                             }
                 }
                 ?>
                         <tr>
-                    <td></td>
-                    <td >Total</td>
-                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                            <td colspan="3" align="right">Total Bayar&nbsp;</td>
                     <td ><?php echo $totalJumlah?></td>
+                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
+            </table>
+                <table>
                 <tr>
                     <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">
                         <button type="button" onclick="location.href = '<?php echo site_url('penjualan') ?>';">Cancel</button>

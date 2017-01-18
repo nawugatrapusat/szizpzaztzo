@@ -9,7 +9,7 @@
             }
             #tabel
             {
-                font-size:15px;
+                font-size:12px;
                 border-collapse:collapse;
             }
             #tabel  td
@@ -19,7 +19,7 @@
             }
         </style>
     </head>
-    <body style='font-family:tahoma; font-size:8pt;'>
+    <body style='font-family:tahoma; font-size:8pt;padding-top:20px;'>
     <center>
         <table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
             <tr>
@@ -35,83 +35,82 @@
                     HP &nbsp; : 0813-8777-5505</br>
                 </td>
                 <td style='vertical-align:top' width='40%' align='left'>
-                    <b><span style='font-size:12pt'>FAKTUR PENJUALAN</span></b></br>
-                    No Faktur : 422113, No PO : 888273</br>
-                    6 Januari 2016<br/>
-                    Kepada YTH Apotik Maju Makmur</br>
-                    Jalan Maju Mundur gang 3 no 33as asd asd asdsadsadasd asdasdasdsad</br>
-                    Lembar 1 Untuk toko
+                    <b><span style='font-size:12pt'>Faktur Penjualan</span></b></br>
+                    No Faktur : <?php echo $penjualanById->noFaktur ?>, No PO : <?php echo $penjualanById->noPo ?></br>
+                    Tanggal : <?php echo date("d-m-Y", $penjualanById->date) ?><br/>
+                    Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
+                    <?php echo ucwords($detailClient->alamat) ?>
                 </td>
             </tr>
-        </table><br/>
+        </table>
         <table cellspacing='0' style='width:550px; font-size:8pt; font-family:calibri;  border-collapse: collapse;' border='1'>
-            <tr align='center'>
-                <td width='2%'>No</td>
-                <td width='20%'>Nama Barang</td>
-                <td width='3%'>Jml</td>
-                <td width='13%'>Harga</td>
-                <td width='13%'>Total Harga</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td align="center">1</td>
-                <td>Asus Zenfone 5</td>
-                <td align="center">100</td>
-                <td>Rp2.400.000,00</td>
-                <td style='text-align:right'>Rp2.400.000,00</td>
-            </tr>
-            <tr>
-                <td colspan = '4'><div style='text-align:right'>Total Bayar : </div></td>
-                <td style='text-align:right'>Rp2.460.000,00</td>
-            </tr>
+                <tr>
+                    <td align="center">No</td>
+                    <td align="center">Produk</td>
+                    <td align="center">Harga Jual</td>
+                    <td align="center">Jumlah</td>
+                    <td align="center">Total</td>
+                </tr>
+                <?php
+                $totalHarga=0;
+                $totalJumlah=0;
+                for ($f = 1; $f <= 15; $f++) {
+                    $paramId[$f] = '';
+                    $paramIdProduct[$f] = '';
+                    $paramHargaBeli[$f] = '';
+                    $paramHargaJual[$f] = '';
+                    $paramjumlah[$f] = '';
+                }
+                if ($penjualanDetail != '') {
+                    $c1 = 1;
+                    foreach ($penjualanDetail as $hasil2) {
+                        $paramId[$c1] = $hasil2->id;
+                        $paramIdProduct[$c1] = $hasil2->idProduct;
+                        $paramHargaBeli[$c1] = $hasil2->hargaBeli;
+                        $paramHargaJual[$c1] = $hasil2->hargaJual;
+                        $paramHargaBeli[$c1] = $hasil2->hargaBeli;
+                        $paramjumlah[$c1] = $hasil2->jumlah;
+                        $c1++;
+                    }
+                }
+                for ($f = 1; $f <= 15; $f++) {
+                    if ($paramHargaJual[$f] != '' && $paramjumlah[$f] != '') {
+                        echo '
+                                        <tr>
+                                            <td align="center">' . $f . '</td>
+                                            <td>'
+                        ?>
+                        <?php
+                        if ($product != '') {
+                            foreach ($product as $hasil1) {
+                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) : '';
+                            }
+                        }
+                        ?>
+                        </td>
+                        <td>
+                            <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
+                        <td>
+                            <?php echo $paramjumlah[$f] ?>
+                        </td>
+                        <td>Rp. 
+                            <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
+                        </tr>
+                    <?php 
+                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
+                        $totalJumlah=$totalJumlah+$paramjumlah[$f];
+                
+                            }
+                }
+                ?>
+                        <tr>
+                            <td colspan="3" align="right">Total Bayar&nbsp;&nbsp;&nbsp;</td>
+                    <td ><?php echo $totalJumlah?></td>
+                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    </tr>
+                <tr>
         </table><br/>
         <table style='width:650; font-size:7pt;' cellspacing='2'>
             <tr>

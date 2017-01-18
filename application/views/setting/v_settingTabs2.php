@@ -12,6 +12,7 @@
                     <td>Stock</td>
                     <td>Harga Beli</td>
                     <td>Harga Jual</td>
+                    <td>Harga Karyawan</td>
                     <td>Skema</td>
                     <td>Aksi</td>
                 </tr>
@@ -19,6 +20,7 @@
                 if ($product != '') {
                     $no = 1;
                     foreach ($product as $hasil) {
+                        $a=$hasil->hargaEmployee != '' ? 'Rp. '.number_format($hasil->hargaEmployee,0,',','.') : '-'; 
                         echo '
                                     <tr>
                                         <td>' . $no . '</td>
@@ -29,6 +31,7 @@
                                         <td>' . $hasil->stock . '</td>
                                         <td>Rp. ' . number_format($hasil->hargaBeli,0,',','.') . '</td>
                                         <td>Rp. ' . number_format($hasil->hargaJual,0,',','.') . '</td>
+                                        <td align="center">' . $a . '</td>
                                         <td>' . ucwords($hasil->scheme) . '</td>
                                         <td>
                                             <a href="' . site_url("setting/productForm/1/$hasil->id") . '" ><img src="public/images/admin/edit.png"/></a>&nbsp;

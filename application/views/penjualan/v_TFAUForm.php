@@ -91,7 +91,7 @@
                                     }
                                     ?>
                                 </select>
-                                ,&nbsp;No Giro : Rp.<input type="text" id="giroInput" name="noGiro" value="<?php echo $penjualanById->noGiro == '' ? '' : $penjualanById->noGiro ?>"/></span>
+                                ,&nbsp;No Giro : <input type="text" id="giroInput" name="noGiro" value="<?php echo $penjualanById->noGiro == '' ? '' : $penjualanById->noGiro ?>"/></span>
                             </td>
                         </tr>
                         <tr>
@@ -133,12 +133,13 @@
             <tr>
                 <td> <!style="padding-top: 15px;border-top: 1px dotted grey"--!>
                     <!--<p style="font-size: 14px;">*) Di isi apabila harga produk yang di jual ke client ini berbeda dengan harga produk yang sudah di set di halaman "Daftar Produk"</p>-->
-            <table>
+            <table class="table1" border="1">
                 <tr>
                     <td align="center">No</td>
                     <td align="center">Produk</td>
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
+                    <td align="center">Total</td>
                 </tr>
                 <?php
                 $totalHarga=0;
@@ -172,7 +173,7 @@
                         <?php
                         if ($product != '') {
                             foreach ($product as $hasil1) {
-                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama) : '';
+                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) : '';
                             }
                         }
                         ?>
@@ -183,26 +184,31 @@
                         <td>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
+                        <td>Rp. 
+                            <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
                         </tr>
                     <?php 
-                        $totalHarga=$totalHarga+$paramHargaJual[$f];
+                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
                         $totalJumlah=$totalJumlah+$paramjumlah[$f];
                 
                             }
                 }
                 ?>
                         <tr>
-                    <td></td>
-                    <td >Total</td>
-                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                            <td colspan="3" align="right">Total Bayar&nbsp;</td>
                     <td ><?php echo $totalJumlah?></td>
+                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
+            </table>
+                <table>
                 <tr>
                     <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">
                         <input type="hidden" name="typeForm" value="<?php echo $typeForm == 0 ? 'tukarFaktur' : 'ambilUang'; ?>"/>
                         <input type="hidden" name="addEdit" value="<?php echo $addEdit == false ? 'add' : 'edit'; ?>"/>
                         <input type="hidden" name="idPenjualan" value="<?php echo $penjualanById == '' ? '' : $penjualanById->id ?>"/>
                         <input type="hidden" name="idTFAU" value="<?php echo $addEdit == '' ? '' : $addEdit->id ?>"/>
+                        <input type="hidden" name="totalBayar" value="<?php echo $totalHarga ?>"/>
                         <input type="submit" value="Submit"/>&nbsp;
                         <button type="button" onclick="location.href = '<?php echo site_url('penjualan') ?>';">Cancel</button>
                     </td>

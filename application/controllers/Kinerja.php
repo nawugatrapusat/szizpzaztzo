@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Penjualan extends CI_Controller {
+class Kinerja extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -33,150 +33,52 @@ class Penjualan extends CI_Controller {
 	function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-                        
-//            $penjualan=$this->m_penjualan->penjualanGetAll();
-//            $data=array(
-//                'penjualan'=>$penjualan
-//            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));
-            
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_penjualan.php');
-            $this->load->view('template/footer.php');  
-	}
-        
-        function penjualanTable()
-	{
-            $page = 1; // The current page
-            $sortname = 'noFaktur'; // Sort column
-            $sortorder = 'desc'; // Sort order
-            $qtype = ''; // Search column
-            $query = ''; // Search string
-            $rp = 15;
-            // Get posted data
-            if (isset($_POST['page'])) {
-                    $page = $this->input->post('page',true);
-            }
-            if (isset($_POST['sortname'])) {
-                    $sortname = $this->input->post('sortname',true);
-            }
-            if (isset($_POST['sortorder'])) {
-                    $sortorder = $this->input->post('sortorder',true);
-            }
-            if (isset($_POST['qtype'])) {
-                    $qtype = $this->input->post('qtype',true);
-            }
-            if (isset($_POST['query'])) {
-                    $query = $this->input->post('query',true);
-            }
-            if (isset($_POST['rp'])) {
-                    $rp = $this->input->post('rp',true);
-            }
-            // Setup sort and search SQL using posted data
-            $sortSql = "order by $sortname $sortorder";
-            if($qtype == 'penjualan.idEmployeePic'){
-                if(strtolower($query) == 'bawa sendiri' || strtolower($query) == 'sendiri'){
-                    $query='0';
-                }
-            }
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
-
-            // Setup paging SQL
-            $pageStart = ($page-1)*$rp;
-            $limitSql = "limit $pageStart, $rp";
-
-            // Create JSON data
-            $data = array();
-            $data['page'] = $page;
-            $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic";
-            $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
-            $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
-//            echo $sql;
-            // Get total count of records
-            $total = $this->m_penjualan->get_count_query($sqlcount);
-            $data['total'] = $total;
-
-            $results = $this->m_penjualan->get_query($sql);
-
-            $no=1;
-            if($results != false){
-                foreach($results as $row){
-                    if($row->idEmployeePic == '0'){
-                        $employeePic='Bawa Sendiri';
-                    }else{
-                        $a=$this->m_employee->empGetById($row->idEmployeePic);
-                        $employeePic=$a->nama;
-                    }
-                    $data['rows'][] = array(
-                    'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->totalBayar, 0, ',', '.'),ucwords($row->status))
-                    );
-                    $no++;
-                }        
-            }
-
-            echo json_encode($data);  
-        }   
-        
-        function cekHarga(){
-            if($_POST){
-                $data=new stdClass();
-                
-                $idProduct=  $this->input->post('idProduct');
-                $idClient=  $this->input->post('idClient');
-                $cetak='';
-                $c=0;
-
-                $client=$this->m_client->clientGetById($idClient);
-                $clientPrice=$this->m_client->clientPriceGetByIdClient($client->id);
-                $product=$this->m_product->productGetById($idProduct);
-
-                if ($clientPrice != '') {
-                    foreach ($clientPrice as $hasil) {
-                        if(($hasil->idProduct != '' && $hasil->hargaJual != '') && ($hasil->idProduct == $idProduct)){
-                            $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJual,0,',','.');
-                            $data->hargaJual=$hasil->hargaJual;
-                            $c++;
-                        }
-                    }    
-                }
-                if($c == 0){
-                    $data->cetakHargaJual='Rp. '.number_format($product->hargaJual,0,',','.');
-                    $data->hargaJual=$product->hargaJual;
-                }
-                $data->hargaBeli=$product->hargaBeli;
-                        
-                echo json_encode($data);
-            }
-        }
-        
-//-------------------------------------------------------------------------------------------------------------------------------------------------------        
-        
-        function penjualanForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
+            $employee=$this->m_employee->empGetAll();
+            $data=array(
+                'employee'=>$employee
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js',),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('kinerja/v_kinerja.php',$data);
+            $this->load->view('template/footer.php');  
+	}
+        
+//-------------------------------------------------------------------------------------------------------------------------------------------------------        
+        
+        function employee(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $bulan=$this->input->post('bulan');
+            $tahun=$this->input->post('tahun');
+            $id=$this->input->post('employee');
+            
             $client=$this->m_client->clientGetAll();
             $product=$this->m_product->productGetAll();
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $employee=$this->m_employee->empGetAll();
+            $employeeDetail=$this->m_employee->empGetById($id);
+            
             $data=array(
                 'client'=>$client,
-                'typeForm'=>$typeForm,
                 'product'=>$product,
                 'penjualanById'=>$penjualanById,
                 'penjualanDetail'=>$penjualanDetail,
-                'employee'=>$employee
+                'employee'=>$employee,
+                'employeeDetail'=>$employeeDetail,
+                'tahun'=>$tahun,
+                'bulan'=>$bulan,
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
             
             $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_penjualanForm.php',$data);
+            $this->load->view('kinerja/v_kinerja.php',$data);
             $this->load->view('template/footer.php');  
         }
         
@@ -382,7 +284,7 @@ class Penjualan extends CI_Controller {
             }
             // Setup sort and search SQL using posted data
             $sortSql = "order by $sortname $sortorder";
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'";
+            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan. AND penjualan.deleted='0' AND client.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0' AND client.deleted='0'";
 
             // Setup paging SQL
             $pageStart = ($page-1)*$rp;
@@ -392,7 +294,7 @@ class Penjualan extends CI_Controller {
             $data = array();
             $data['page'] = $page;
             $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic";
+            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id";
             $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
             $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
 //            echo $sql;
@@ -402,21 +304,13 @@ class Penjualan extends CI_Controller {
 
             $results = $this->m_penjualan->get_query($sql);
 
-            $no=1;
             if($results != false){
                 foreach($results as $row){
                     if($row->status != 'ambil uang' && $row->status != 'manual close' ){
-                        if($row->idEmployeePic == '0'){
-                            $employeePic='Bawa Sendiri';
-                        }else{
-                            $a=$this->m_employee->empGetById($row->idEmployeePic);
-                            $employeePic=$a->nama;
-                        }
                         $data['rows'][] = array(
                         'id' => $row->id,
-                        'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->totalBayar, 0, ',', '.'),ucwords($row->status))
+                        'cell' => array($row->noFaktur,$row->noPo,  ucwords($row->nama),unix_to_human($row->date),ucwords($row->status))
                         );
-                        $no++;
                     }
                 }        
             }

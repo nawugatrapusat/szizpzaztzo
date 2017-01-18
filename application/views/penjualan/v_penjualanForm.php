@@ -81,7 +81,7 @@
             <tr>
                 <td> <!style="padding-top: 15px;border-top: 1px dotted grey"--!>
                     <!--<p style="font-size: 14px;">*) Di isi apabila harga produk yang di jual ke client ini berbeda dengan harga produk yang sudah di set di halaman "Daftar Produk"</p>-->
-                    <table>
+                    <table class="table1" border="1">
                         <tr>
                             <td align="center">No</td>
                             <td align="center">Produk</td>
@@ -120,7 +120,7 @@
                                 if ($product != '') {
                                     foreach ($product as $hasil1) {
                                         $a = $paramIdProduct[$f] == $hasil1->id ? "selected='selected'" : '';
-                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
+                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) . ' </option>';
                                     }
                                 }
                                 ?>
@@ -137,6 +137,8 @@
                     </td>
                 </tr>
             <?php } ?>
+        </table>
+        <table>
             <tr>
                 <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">
                     <input type="hidden" name="id" value="<?php echo $penjualanById == '' ? '' : $penjualanById->id ?>"/>
@@ -144,7 +146,6 @@
                     <button type="button" onclick="location.href = '<?php echo site_url('penjualan') ?>';">Cancel</button>
                 </td>
             </tr> 
-        </table>
     </td>
 </tr>
 </table>

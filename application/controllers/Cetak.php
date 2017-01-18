@@ -23,13 +23,29 @@ class Cetak extends CI_Controller {
 		parent::__construct();
                 date_default_timezone_set('Asia/Jakarta');
                 $this->load->model('m_log', '', TRUE);
+                $this->load->model('m_penjualan', '', TRUE);
+                $this->load->model('m_client', '', TRUE);
+                $this->load->model('m_product', '', TRUE);
 	}
     
 	public function faktur()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             
-            $this->load->view('cetak/v_faktur.php'); 
+            $id=$this->uri->segment(3);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product
+            );
+            
+            $this->load->view('cetak/v_faktur.php',$data); 
 	}	
         
         
