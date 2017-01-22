@@ -30,6 +30,7 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
             <li><a href="#tabs2">Daftar Produk</a></li>
             <li><a href="#tabs3">Daftar Karyawan</a></li>
             <li><a href="#tabs4">Daftar Bank</a></li>
+            <li><a href="#tabs5">Daftar Pengeluaran</a></li>
         </ul>
         <div id="tabs1">
             <?php $this->load->view('setting/v_settingTabs1') ?>
@@ -43,31 +44,55 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
         <div id="tabs4">
             <?php $this->load->view('setting/v_settingTabs4') ?>
         </div>
+        <div id="tabs5">
+            <?php $this->load->view('setting/v_settingTabs5') ?>
+        </div>
     </div>
 
     <script>
         $(document).ready(function () {
-            $('.clientDeleteButton').click(function () {
-                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
-                    location.href = '<?php echo site_url("setting/clientDelete/0/") ?>' + $(this).attr('aid');
-                    $(this).hide();
-                }
-            });
-            $('.productDeleteButton').click(function () {
-                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
-                    location.href = '<?php echo site_url("setting/productDelete/1/") ?>' + $(this).attr('aid');
-                    $(this).hide();
-                }
-            });
+//            $('.clientDeleteButton').click(function () {
+//                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+//                    location.href = '<?php echo site_url("setting/clientDelete/0/") ?>' + $(this).attr('aid');
+//                    $(this).hide();
+//                }
+//            });
+//            $('.productDeleteButton').click(function () {
+//                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+//                    location.href = '<?php echo site_url("setting/productDelete/1/") ?>' + $(this).attr('aid');
+//                    $(this).hide();
+//                }
+//            });
             $('.empDeleteButton').click(function () {
                 if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                    window.scrollTo(0, 0);
+                    $('#loadingAnim').show();
+                    document.body.scroll = "no";
+                    document.body.style.overflow = 'hidden';
+                    document.height = window.innerHeight;
                     location.href = '<?php echo site_url("setting/empDelete/2/") ?>' + $(this).attr('aid');
                     $(this).hide();
                 }
             });
             $('.bankDeleteButton').click(function () {
                 if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                    window.scrollTo(0, 0);
+                    $('#loadingAnim').show();
+                    document.body.scroll = "no";
+                    document.body.style.overflow = 'hidden';
+                    document.height = window.innerHeight;
                     location.href = '<?php echo site_url("setting/bankDelete/3/") ?>' + $(this).attr('aid');
+                    $(this).hide();
+                }
+            });
+            $('.pengeluaranDeleteButton').click(function () {
+                if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                    window.scrollTo(0, 0);
+                    $('#loadingAnim').show();
+                    document.body.scroll = "no";
+                    document.body.style.overflow = 'hidden';
+                    document.height = window.innerHeight;
+                    location.href = '<?php echo site_url("setting/pengeluaranDelete/4/") ?>' + $(this).attr('aid');
                     $(this).hide();
                 }
             });

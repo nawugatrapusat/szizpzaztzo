@@ -1,47 +1,63 @@
-<button type="button" onclick="location.href = '<?php echo site_url('setting/clientForm/0') ?>';">Tambah Client</button>
-<table style="padding-top:15px;">
-    <tr>
-        <td valign="top">
-            <table class="table1" border="1">
-                <tr>
-                    <td>No</td>
-                    <td>Nama Client</td>
-                    <td>Alamat Client</td>
-                    <td>No Telp</td>
-                    <td>No HP</td>
-                    <td>PIC Pembelian</td>
-                    <td>PIC Tagihan</td>
-                    <td>Aksi</td>
-                </tr>
-                <?php
-                if ($client != '') {
-                    $no = 1;
-                    foreach ($client as $hasil) {
-                        echo '
-                                    <tr>
-                                        <td>' . $no . '</td>
-                                        <td>' . ucwords($hasil->nama) . '</td>
-                                        <td>' . ucwords($hasil->alamat) . '</td>
-                                        <td>' . $hasil->noTelp . '</td>
-                                        <td>' . $hasil->noHp . '</td>
-                                        <td>' . ucwords($hasil->picPembelian) . '</td>
-                                        <td>' . ucwords($hasil->picTagihan) . '</td>
-                                        <td>
-                                            <a href="' . site_url("setting/clientForm/1/$hasil->id") . '" ><img src="public/images/admin/edit.png"/></a>&nbsp;
-                                            <a href="#" class="clientDeleteButton" aid="' . $hasil->id . '"><img src="public/images/admin/close.png"/></a>
-                                        </td>
-                                    </tr>
-                                    ';
-                        $no++;
-                    }
-                }
-                ?>
-            </table>
-        </td>
-        <td valign="top" style="border-left: 1px solid grey;padding-left: 10px;">
-            <table>
-                <div id="div_order"></div>
-            </table>
-        </td>
-    </tr>
-</table>
+<div class="flexme"></div>
+<script>
+$(document).ready(function(){     
+    $(".flexme").flexigrid({
+    url: '<?php echo site_url('setting/clientTable');?>',
+    dataType: 'json',
+    colModel : [
+            {display: 'No', name : '', width : 20, sortable : true, align: 'left'},
+            {display: 'Nama Client', name : 'nama', width : 320, sortable : true, align: 'left'},
+            {display: 'Alamat Client', name : 'alamat', width : 370, sortable : true, align: 'left'},
+            {display: 'No Telp', name : 'noTelp', width : 120, sortable : true, align: 'left'},
+            {display: 'No Hp', name : 'noHp', width : 120, sortable : true, align: 'left'},
+            {display: 'PIC Pembelian', name : 'picPembelian', width : 120, sortable : true, align: 'left'},
+            {display: 'PIC Tagihan', name : 'picTagihan', width : 120, sortable : true, align: 'left'},
+            ],
+    buttons : [
+            {name: 'Tambah', bclass: 'add' ,align:'right', onpress:tambah},
+            {separator: true},
+            {name: 'Edit', bclass: 'edit' ,align:'right', onpress:edit},
+            {separator: true},
+            {name: 'Hapus', bclass: 'delete' ,align:'right', onpress:hapus},
+            ],
+    searchitems : [
+            {display: 'Nama Client', name : 'nama', isdefault: true}
+            ],
+    singleSelect:true,
+    sortname: "nama",
+    sortorder: "asc",
+    usepager: true,
+    //title: 'Kartu Praktikum Hilang',
+    useRp: true,
+    rp: 50,
+    showTableToggleBtn: true,
+    width: 1280,
+    height: 380
+});      
+function tambah(com,grid){
+    location.href = '<?php echo site_url('setting/clientForm/0') ?>';
+}
+function edit(com,grid){
+        $('.trSelected',grid).each(function(){
+            var id=$(this).attr('id'); 
+            id = id.substring(id.lastIndexOf('row')+3);
+            location.href = '<?php echo site_url("setting/clientForm/1/") ?>'+id;
+        });
+}
+function hapus(com,grid){
+        $('.trSelected',grid).each(function(){
+            var id=$(this).attr('id'); 
+            id = id.substring(id.lastIndexOf('row')+3);
+            if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                window.scrollTo(0, 0);
+                $('#loadingAnim').show();
+                document.body.scroll = "no";
+                document.body.style.overflow = 'hidden';
+                document.height = window.innerHeight;
+                $('.delete').hide();
+                location.href = '<?php echo site_url("setting/clientDelete/0/") ?>' + id;
+            }
+        });
+}
+});
+</script>

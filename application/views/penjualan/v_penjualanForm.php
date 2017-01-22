@@ -2,7 +2,7 @@
 </head>
 <body>
     <h2><?php echo $typeForm == 0 ? 'Tambah Penjualan' : 'Edit Penjualan '; ?></h2>
-    <form style="padding-left:13px; padding-top: 10px;" name="penjualanForm" action="<?php echo site_url('penjualan/penjualanFormSave') ?>" method="POST">
+    <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="penjualanForm" action="<?php echo site_url('penjualan/penjualanFormSave') ?>" method="POST">
         <table style="border: 1px solid black;">
             <tr>
                 <td style="padding-bottom: 15px;">
@@ -35,7 +35,7 @@
                         <tr>
                             <td>Client</td>
                             <td>:</td>
-                            <td>
+                            <td> <span style="color:red;">*</span> 
                                 <select id="idClient" name="idClient">
                                     <option value="">Pilih Client</option>
                                     <?php
@@ -52,7 +52,7 @@
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
-                            <td>
+                            <td> <span style="color:red;">*</span> 
                                 <select id="idEmployeePic" name="idEmployeePic">
                                     <option value="">Pilih Pembawa</option>
                                     <?php 
@@ -114,7 +114,7 @@
                                     <td align="center">' . $f . '</td>
                                     <td>'
                             ?>
-                            <select class="idProduct" name="idProduct<?php echo $f; ?>">
+                             </span> <select class="idProduct cekVal1<?php echo $f?>" name="idProduct<?php echo $f; ?>">
                                 <option value="">Pilih Produk</option>
                                 <?php
                                 if ($product != '') {
@@ -130,7 +130,7 @@
                         <input class="cetakHargaJual" type="text" value="<?php echo $paramHargaJual[$f] == '' ? '' : 'Rp. '.number_format($paramHargaJual[$f],0,',','.') ?>" disabled/>
                     </td>
                     <td>
-                        <input type="text" name="jumlah<?php echo $f; ?>" value="<?php echo $paramjumlah[$f] == '' ? '' : $paramjumlah[$f] ?>" size="5"/>
+                         <input class='cekVal2<?php echo $f?>' type="text" name="jumlah<?php echo $f; ?>" value="<?php echo $paramjumlah[$f] == '' ? '' : $paramjumlah[$f] ?>" size="5"/>
                         <input type="hidden" class="hargaBeli" name="hargaBeli<?php echo $f; ?>" value="<?php echo $paramHargaBeli[$f] == '' ? '' : $paramHargaBeli[$f] ?>"/>
                         <input type="hidden" class="hargaJual" name="hargaJual<?php echo $f; ?>" value="<?php echo $paramHargaJual[$f] == '' ? '' : $paramHargaJual[$f] ?>"/>
                         <input type="hidden" name="id<?php echo $f; ?>" value="<?php echo $paramId[$f] == '' ? '' : $paramId[$f] ?>"/>
@@ -151,6 +151,22 @@
 </table>
 </form>
 <script>
+        function validateForm() {
+            var a;
+            if ($('#idClient').val() == "") { alert("Client Masih Kosong !!!"); return false; }
+            if ($('#idEmployeePic').val() == "") { alert("Pembawa Masih Kosong !!!"); return false; }
+            for(a=1;a<=35;a++){
+                if(($('.cekVal1'+a).val() == '' && $('.cekVal2'+a).val() != '') || ($('.cekVal1'+a).val() != '' && $('.cekVal2'+a).val() == '')){
+                    alert("Produk / Jumlah Ada Yang Masih Kosong !!!");
+                    return false;
+                }
+            }
+            window.scrollTo(0, 0);
+            $('#loadingAnim').show();
+            document.body.scroll = "no";
+            document.body.style.overflow = 'hidden';
+            document.height = window.innerHeight;
+        }
     $(document).ready(function () {
         $(".idProduct").change(function(){
             var product = $(this),client;

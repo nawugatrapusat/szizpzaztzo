@@ -2,7 +2,6 @@
 </head>
 <body>
     <h2>Detail Penjualan</h2>
-    <form style="padding-left:13px; padding-top: 10px;" name="penjualanForm" action="<?php echo site_url('penjualan/penjualanFormSave') ?>" method="POST">
         <table style="border: 1px solid black;">
             <tr>
                 <td style="padding-bottom: 15px;">
@@ -97,19 +96,19 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php if(!empty($TF))echo date("d-m-Y H:i:s",$TF->date) ?></td>
+                            <td><?php if(!empty($AU))echo date("d-m-Y H:i:s",$AU->date) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
                                     <?php 
-                                    if(!empty($TF)) echo $TF->idEmployeePic == '0' && !empty($TF) ? "Bawa Sendiri" : '';
+                                    if(!empty($AU)) echo $AU->idEmployeePic == '0' && !empty($AU) ? "Bawa Sendiri" : '';
                                     ?>
                                     <?php
                                     if ($employee != '') {
                                         foreach ($employee as $hasil1) {
-                                            if(!empty($TF)) echo $TF->idEmployeePic == $hasil1->id ? ucwords($hasil1->nama) : '';
+                                            if(!empty($AU)) echo $AU->idEmployeePic == $hasil1->id ? ucwords($hasil1->nama) : '';
                                         }
                                     }
                                     ?>
@@ -118,7 +117,7 @@
                         <tr>
                             <td>Keterangan</td>
                             <td>:</td>
-                            <td><?php if(!empty($TF)) echo ucfirst($TF->keterangan) ?></td>
+                            <td><?php if(!empty($AU)) echo ucfirst($AU->keterangan) ?></td>
                         </tr>
                     </table>
                 </td>
@@ -171,13 +170,13 @@
                         }
                         ?>
                         </td>
-                        <td>
+                        <td align='right'>
                             <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
                         <td>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
-                        <td>Rp. 
+                        <td align='right'>Rp. 
                             <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
                         </tr>
@@ -191,7 +190,7 @@
                         <tr>
                             <td colspan="3" align="right">Total Bayar&nbsp;</td>
                     <td ><?php echo $totalJumlah?></td>
-                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    <td  align='right'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>
@@ -204,7 +203,6 @@
     </td>
 </tr>
 </table>
-</form>
 <script>
     $(document).ready(function () {
         $(".idProduct").change(function(){

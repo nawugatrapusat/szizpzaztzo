@@ -1,7 +1,7 @@
 </head>
 <body>
     <h2><?php echo $typeForm == 0 ? 'Tambah Karyawan' : 'Edit Karyawan '; ?></h2>
-    <form style="padding-left:13px; padding-top: 10px;" name="empForm" action="<?php echo site_url('setting/empFormSave/2') ?>" method="POST">
+    <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()"  name="empForm" action="<?php echo site_url('setting/empFormSave/2') ?>" method="POST">
         <table style="border: 1px solid black;">
             <tr>
                 <td>NIK</td>
@@ -11,7 +11,7 @@
             <tr>
                 <td>Nama</td>
                 <td>:</td>
-                <td><input type="text" name="nama" value="<?php echo $emp == '' ? '' : ucwords($emp->nama)?>" size="100"/></td>
+                <td> <span style="color:red;">*</span> <input id='nama' type="text" name="nama" value="<?php echo $emp == '' ? '' : ucwords($emp->nama)?>" size="100"/></td>
             </tr>
             <tr>
                 <td>Alamat</td>
@@ -33,7 +33,14 @@
         </table>
     </form>
     <script>
+        function validateForm() {
+            if ($('#nama').val() == "") { alert("Nama Masih Kosong !!!"); return false; }
+            window.scrollTo(0, 0);
+            $('#loadingAnim').show();
+            document.body.scroll = "no";
+            document.body.style.overflow = 'hidden';
+            document.height = window.innerHeight;
+        }
         $(document).ready(function () {
-
         });
     </script>

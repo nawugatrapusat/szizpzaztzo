@@ -15,12 +15,16 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
     <div class="notification-area" style="<?php echo $successNotifShow; ?>"><?php echo $successNotif; ?></div>
     <div class="warning-area" style="<?php echo $failedNotifShow; ?>"><?php echo $failedNotif; ?></div>
     
-    <h3>Cetak Faktur</h3>
-    <button type="button" onclick="window.open('<?php echo site_url('cetak/faktur/'.$id) ?>')">Cetak</button>
-    <br/><br/><h3>Cetak Surat Jalan</h3>
-    <button type="button" onclick="window.open('<?php echo site_url('cetak/suratJalan/'.$id) ?>')">Cetak</button>
-    <br/><br/><h3>Cetak Tukar Faktur</h3>
+    <h3>Cetak </h3>
+    <!--<h3>Cetak Faktur</h3>-->
+    <button type="button" onclick="window.open('<?php echo site_url('cetak/faktur/'.$id) ?>')">Cetak Faktur</button><br/><br/>
+    <!--<h3>Cetak Surat Jalan</h3>-->
+    <button type="button" onclick="window.open('<?php echo site_url('cetak/suratJalan/'.$id) ?>')">Cetak Surat Jalan</button><br/><br/>
+    <!--<h3>Cetak Kwitansi</h3>-->
+    <!--<button type="button" onclick="window.open('<?php echo site_url('cetak/kwitansi/'.$id) ?>')">Cetak Kwitansi</button><br/>-->
+    <!--<h3>Cetak Tukar Faktur</h3>-->
     <div class="flexme"></div>
+    
 <script>
 $(document).ready(function(){     
     $(".flexme").flexigrid({
@@ -69,10 +73,16 @@ $(document).ready(function(){
     height: 200
 });      
 function print(com,grid){
+        var a='';
         $('.trSelected',grid).each(function(){
             var id=$(this).attr('id'); 
             id = id.substring(id.lastIndexOf('row')+3);
-            window.open('<?php echo site_url('cetak/tukarFaktur/') ?>'+id);
+            a=a+id+'/';
+        });
+        $('.trSelected',grid).each(function(){
+            var id=$(this).attr('id'); 
+            id = id.substring(id.lastIndexOf('row')+3);
+            window.open('<?php echo site_url('cetak/tukarFaktur/') ?>'+a);
         });
 }
 });

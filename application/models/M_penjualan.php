@@ -65,7 +65,7 @@ class M_penjualan extends CI_Model {
         function penjualanAddSave($data) {
             $subs_date= explode('-', date("d-m-Y"));
             $subs_dateFaktur= explode('-', date("d-m-y"));
-            $no=$this->penjualanNo($subs_dateFaktur[1],$subs_dateFaktur[2]);
+            $no=$this->penjualanNo($subs_dateFaktur[1],$subs_date[2]);
             $no1 = $no == false ? 1 : $no+1;
             $no2=str_pad($no1, 4, '0', STR_PAD_LEFT);
             
@@ -99,6 +99,7 @@ class M_penjualan extends CI_Model {
                     $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
+                    $penjualandetail->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('penjualandetail',$penjualandetail);
                     $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
                 }
@@ -129,6 +130,7 @@ class M_penjualan extends CI_Model {
                 $this->db->where('id',$penjualan->id);
                 $this->db->update('penjualan',$penjualan);
             
+            $totalBayar=0;
             for($a=1;$a<=35;$a++){
                 if($data['id'.$a] == ''){
                     if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
@@ -138,6 +140,10 @@ class M_penjualan extends CI_Model {
                         $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                         $penjualandetail->hargaJual=$data['hargaJual'.$a];
                         $penjualandetail->jumlah=$data['jumlah'.$a];
+                        $penjualandetail->id_admin=$this->session->userdata('id_admin');
+                        
+                        $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
+                
                         $this->db->insert('penjualandetail',$penjualandetail);
                     }
                 }else{
@@ -147,11 +153,13 @@ class M_penjualan extends CI_Model {
                     $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
+                    $penjualandetail->id_admin=$this->session->userdata('id_admin');
 
+                    $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
+                    
                     $this->db->where('id',$penjualandetail->id);
                     $this->db->update('penjualandetail',$penjualandetail);
                 }
-                $totalBayar=$totalBayar+($penjualandetail->hargaJual*$penjualandetail->jumlah);
             }
             $updatePenjualan=new stdClass();
             $updatePenjualan->totalBayar=$totalBayar;

@@ -6,6 +6,16 @@ class M_product extends CI_Model {
 	{
 		parent::__construct();
 	}
+        
+        function get_count_query($q) {
+            $query=$this->db->query($q);
+            return $query->num_rows();
+        }
+
+        function get_query($q) {
+            $query=$this->db->query($q);
+            if($query->num_rows() > 0) return $query->result(); else return false;
+        }
 	        
          function productGetById($id) {            
             $this->db->where('deleted','0');
@@ -23,7 +33,8 @@ class M_product extends CI_Model {
         
         function productAddSave($data) {            
             $this->db->trans_start();
-                $this->db->insert('product',$data);
+                $array = array_merge($data, ["id_admin" => $this->session->userdata('id_admin')]);
+                $this->db->insert('product',$array);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;

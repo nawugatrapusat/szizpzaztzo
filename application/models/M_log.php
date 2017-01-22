@@ -14,9 +14,10 @@ class M_log extends CI_Model {
             $this->db->set('m',date('m'));
             $this->db->set('y',date('Y'));
             $this->db->set('date',time());
-            $this->db->set('time',unix_to_human(time()));
+            $this->db->set('time',date("d-m-Y H:i:s"));
             $this->db->set('category',$ca);
             $this->db->set('activity',$ac);
+            $this->db->set('id_admin',$this->session->userdata('id_admin'));
             $this->db->insert('log');
             
             $this->db->trans_complete();
@@ -26,6 +27,12 @@ class M_log extends CI_Model {
                 return true;
             }
         }
+	        
+         function logGetById($id) {            
+            $this->db->where('id',$id);
+            $query=$this->db->get('log');
+            if($query->num_rows() != 0) return $query->row(); else return false;
+        }        
 	        
         public function get_count_query($q) {
             $query=$this->db->query($q);

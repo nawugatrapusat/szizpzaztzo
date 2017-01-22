@@ -47,6 +47,64 @@ class Cetak extends CI_Controller {
             
             $this->load->view('cetak/v_faktur.php',$data); 
 	}	
+    
+	public function suratJalan()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product
+            );
+            
+            $this->load->view('cetak/v_suratJalan.php',$data); 
+	}	
+    
+	public function tukarFaktur()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $b=0;
+            $datas['inject']=0;
+            $datas['failedNotif']='';
+            for($a=3;$a<=13;$a++){
+                    $id=$this->uri->segment($a);
+                if($id != ''){
+                    $penjualanById=$this->m_penjualan->penjualanGetById($id);
+                    if($penjualanById != false){
+                        $datas[$a]['tanggal']=date("d-m-Y",$penjualanById->date);
+                        $datas[$a]['noFaktur']=$penjualanById->noFaktur;
+                        $datas[$a]['totalBayar']=$penjualanById->totalBayar;
+                        $b++;
+                        if($penjualanById->status == 'manual close' || $penjualanById->status == 'ambil uang'){
+                            $datas['inject']=1;
+                            $datas['failedNotif']='Data Ilegal, Silahkan Hubungi Administrator Website';
+                        }
+                    }
+                }
+            }
+            $datas['jumlah']=$b;
+            
+            $penjualanById=$this->m_penjualan->penjualanGetById($this->uri->segment(3));
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            $data=array(
+                'detailClient'=>$detailClient,
+                'datas'=>$datas,
+                'product'=>$product
+            );
+            
+            $this->load->view('cetak/v_tukarFaktur.php',$data); 
+	}	
         
         
 }

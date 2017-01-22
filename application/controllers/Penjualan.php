@@ -46,6 +46,264 @@ class Penjualan extends CI_Controller {
             $this->load->view('template/footer.php');  
 	}
         
+        function cekHarga(){
+            if($_POST){
+                $data=new stdClass();
+                
+                $idProduct=  $this->input->post('idProduct');
+                $idClient=  $this->input->post('idClient');
+                $cetak='';
+                $c=0;
+
+                $client=$this->m_client->clientGetById($idClient);
+                $clientPrice=$this->m_client->clientPriceGetByIdClient($client->id);
+                $product=$this->m_product->productGetById($idProduct);
+
+                if ($clientPrice != '') {
+                    foreach ($clientPrice as $hasil) {
+                        if(($hasil->idProduct != '' && $hasil->hargaJual != '') && ($hasil->idProduct == $idProduct)){
+                            $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJual,0,',','.');
+                            $data->hargaJual=$hasil->hargaJual;
+                            $c++;
+                        }
+                    }    
+                }
+                if($c == 0){
+                    $data->cetakHargaJual='Rp. '.number_format($product->hargaJual,0,',','.');
+                    $data->hargaJual=$product->hargaJual;
+                }
+                if($product->scheme == 'cashback'){
+                    $data->hargaBeli=$product->hargaEmployee;
+                }else{
+                    $data->hargaBeli=$product->hargaBeli;
+                }
+                        
+                echo json_encode($data);
+            }
+        }
+        
+        function numberFormat(){
+            $data=new stdClass();
+            $data->val='Rp. ' . number_format($this->input->post('val'), 0, ',', '.');
+            echo json_encode($data);
+        }
+        
+//-------------------------------------------------------------------------------------------------------------------------------------------------------        
+        
+        function penjualanForm(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $typeForm=$this->uri->segment(3);
+            $id=$this->uri->segment(4);
+            $client=$this->m_client->clientGetAll();
+            $product=$this->m_product->productGetAll();
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $employee=$this->m_employee->empGetAll();
+            $data=array(
+                'client'=>$client,
+                'typeForm'=>$typeForm,
+                'product'=>$product,
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'employee'=>$employee
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('penjualan/v_penjualanForm.php',$data);
+            $this->load->view('template/footer.php');  
+        }
+        
+        function penjualanFormSave(){
+            if($this->input->post()){
+//                echo str_replace(',','<br/>',json_encode((json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                if($this->input->post('id') == ''){
+                    if($this->m_penjualan->penjualanAddSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                    }else{
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                    }
+                }else{
+                    if($this->m_penjualan->penjualanEditSave(array_map('strtolower', $this->input->post())) != false){
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                    }else{
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                    }
+                }
+                redirect('penjualan');
+            }else{
+                redirect('login');
+            }
+        }
+        
+        function penjualanDelete(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $data=$this->uri->segment(3);
+            
+            if($this->m_penjualan->penjualanDelete($data) != false){
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
+            }else{
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
+            }
+            redirect(site_url('penjualan'));
+        }
+        
+        function TFAUForm(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $typeForm=$this->uri->segment(3);
+            $id=$this->uri->segment(4);
+            $client=$this->m_client->clientGetAll();
+            $product=$this->m_product->productGetAll();
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $employee=$this->m_employee->empGetAll();
+            $bank=$this->m_bank->bankGetAll();
+            if($typeForm == 0){
+                $addEdit=$this->m_penjualan->tukarFakturGetByIdPenjualan($penjualanById->id);
+            }else{
+                $addEdit=$this->m_penjualan->ambilUangGetByIdPenjualan($penjualanById->id);
+            }
+//            if($addEdit == 'add'){
+//                $dataForm=new stdClass();
+//                $dataForm->idEmployeePic='';
+//                $dataForm->keterangan='';
+//                $dataForm->id='';
+//            }else{
+//                $dataForm=new stdClass();
+//                $dataForm->idEmployeePic=$addEdit->idEmployeePic;
+//                $dataForm->keterangan=$addEdit->keterangan;
+//                $dataForm->id=$addEdit->id;
+//            }
+            $data=array(
+                'client'=>$client,
+                'typeForm'=>$typeForm,
+                'product'=>$product,
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'addEdit'=>$addEdit,
+//                'dataForm'=>$dataForm,
+                'employee'=>$employee,
+                'bank'=>$bank,
+                
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('penjualan/v_TFAUForm.php',$data);
+            $this->load->view('template/footer.php');  
+        }
+        
+        function TFAUFormSave(){
+            if($this->input->post()){
+                if($this->input->post('typeForm') == 'tukarFaktur'){
+                    if($this->input->post('addEdit') == 'add'){
+                        if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
+                            $this->m_log->insert_log('simpan TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                        }else{
+                            $this->m_log->insert_log('simpan TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                        }
+                    }else{
+                        if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
+                            $this->m_log->insert_log('edit TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                        }else{
+                            $this->m_log->insert_log('edit TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                        }
+                    }
+                }else{
+                    if($this->input->post('addEdit') == 'add'){
+                        if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
+                            $this->m_log->insert_log('simpan AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                        }else{
+                            $this->m_log->insert_log('simpan AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                        }
+                    }else{
+                        if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
+                            $this->m_log->insert_log('edit AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
+                        }else{
+                            $this->m_log->insert_log('edit AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
+                        }
+                    }
+                }
+                redirect('penjualan');
+            }else{
+                redirect('login');
+            }
+        }
+        
+//-------------------------------------------------------------------------------------------------------------------------------------------------------        
+        
+        function penjualanDetail(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $client=$this->m_client->clientGetAll();
+            $product=$this->m_product->productGetAll();
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $employee=$this->m_employee->empGetAll();
+            $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
+            $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
+            $data=array(
+                'client'=>$client,
+                'product'=>$product,
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'employee'=>$employee,
+                'TF'=>$TF,
+                'AU'=>$AU
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('penjualan/v_penjualanDetail.php',$data);
+            $this->load->view('template/footer.php');  
+        }
+        
+	function penjualanPrint()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+                        
+//            $penjualan=$this->m_penjualan->penjualanGetAll();
+//            $data=array(
+//                'penjualan'=>$penjualan
+//            );
+            $id=$this->uri->segment(3);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            
+            $data=array(
+                'id'=>$id,
+                'idClient'=>$penjualanById->idClient
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('penjualan/v_penjualanPrint.php',$data);
+            $this->load->view('template/footer.php');  
+	}
+        
+//-------------------------------------------------------------------------------------------------------------------------------------------------------        
+        
         function penjualanTable()
 	{
             $page = 1; // The current page
@@ -119,238 +377,6 @@ class Penjualan extends CI_Controller {
 
             echo json_encode($data);  
         }   
-        
-        function cekHarga(){
-            if($_POST){
-                $data=new stdClass();
-                
-                $idProduct=  $this->input->post('idProduct');
-                $idClient=  $this->input->post('idClient');
-                $cetak='';
-                $c=0;
-
-                $client=$this->m_client->clientGetById($idClient);
-                $clientPrice=$this->m_client->clientPriceGetByIdClient($client->id);
-                $product=$this->m_product->productGetById($idProduct);
-
-                if ($clientPrice != '') {
-                    foreach ($clientPrice as $hasil) {
-                        if(($hasil->idProduct != '' && $hasil->hargaJual != '') && ($hasil->idProduct == $idProduct)){
-                            $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJual,0,',','.');
-                            $data->hargaJual=$hasil->hargaJual;
-                            $c++;
-                        }
-                    }    
-                }
-                if($c == 0){
-                    $data->cetakHargaJual='Rp. '.number_format($product->hargaJual,0,',','.');
-                    $data->hargaJual=$product->hargaJual;
-                }
-                $data->hargaBeli=$product->hargaBeli;
-                        
-                echo json_encode($data);
-            }
-        }
-        
-//-------------------------------------------------------------------------------------------------------------------------------------------------------        
-        
-        function penjualanForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            
-            $typeForm=$this->uri->segment(3);
-            $id=$this->uri->segment(4);
-            $client=$this->m_client->clientGetAll();
-            $product=$this->m_product->productGetAll();
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $employee=$this->m_employee->empGetAll();
-            $data=array(
-                'client'=>$client,
-                'typeForm'=>$typeForm,
-                'product'=>$product,
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'employee'=>$employee
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
-            
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_penjualanForm.php',$data);
-            $this->load->view('template/footer.php');  
-        }
-        
-        function penjualanFormSave(){
-            if($this->input->post()){
-                if($this->input->post('id') == ''){
-                    if($this->m_penjualan->penjualanAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
-//                        echo 1;
-                    }else{
-                        $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
-                    }
-                }else{
-                    if($this->m_penjualan->penjualanEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
-                    }else{
-                        $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
-                    }
-                }
-                redirect('penjualan');
-            }else{
-                redirect('login');
-            }
-        }
-        
-        function penjualanDelete(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            
-            $data=$this->uri->segment(3);
-            
-            if($this->m_penjualan->penjualanDelete($data) != false){
-                $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
-            }else{
-                $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
-            }
-            redirect(site_url('penjualan'));
-        }
-        
-        function TFAUForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            
-            $typeForm=$this->uri->segment(3);
-            $id=$this->uri->segment(4);
-            $client=$this->m_client->clientGetAll();
-            $product=$this->m_product->productGetAll();
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $employee=$this->m_employee->empGetAll();
-            $bank=$this->m_bank->bankGetAll();
-            if($typeForm == 0){
-                $addEdit=$this->m_penjualan->tukarFakturGetByIdPenjualan($penjualanById->id);
-            }else{
-                $addEdit=$this->m_penjualan->ambilUangGetByIdPenjualan($penjualanById->id);
-            }
-//            if($addEdit == 'add'){
-//                $dataForm=new stdClass();
-//                $dataForm->idEmployeePic='';
-//                $dataForm->keterangan='';
-//                $dataForm->id='';
-//            }else{
-//                $dataForm=new stdClass();
-//                $dataForm->idEmployeePic=$addEdit->idEmployeePic;
-//                $dataForm->keterangan=$addEdit->keterangan;
-//                $dataForm->id=$addEdit->id;
-//            }
-            $data=array(
-                'client'=>$client,
-                'typeForm'=>$typeForm,
-                'product'=>$product,
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'addEdit'=>$addEdit,
-//                'dataForm'=>$dataForm,
-                'employee'=>$employee,
-                'bank'=>$bank,
-                
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
-            
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_TFAUForm.php',$data);
-            $this->load->view('template/footer.php');  
-        }
-        
-        function TFAUFormSave(){
-            if($this->input->post()){
-                if($this->input->post('typeForm') == 'tukarFaktur'){
-                    if($this->input->post('addEdit') == 'add'){
-                        if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
-                        }else{
-                            $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
-                        }
-                    }else{
-                        if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
-                        }else{
-                            $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
-                        }
-                    }
-                }else{
-                    if($this->input->post('addEdit') == 'add'){
-                        if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
-                        }else{
-                            $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
-                        }
-                    }else{
-                        if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
-                        }else{
-                            $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
-                        }
-                    }
-                }
-                redirect('penjualan');
-            }else{
-                redirect('login');
-            }
-        }
-        
-//-------------------------------------------------------------------------------------------------------------------------------------------------------        
-        
-        function penjualanDetail(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $client=$this->m_client->clientGetAll();
-            $product=$this->m_product->productGetAll();
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $employee=$this->m_employee->empGetAll();
-            $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
-            $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
-            $data=array(
-                'client'=>$client,
-                'product'=>$product,
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'employee'=>$employee,
-                'TF'=>$TF,
-                'AU'=>$AU
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
-            
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_penjualanDetail.php',$data);
-            $this->load->view('template/footer.php');  
-        }
-        
-	function penjualanPrint()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-                        
-//            $penjualan=$this->m_penjualan->penjualanGetAll();
-//            $data=array(
-//                'penjualan'=>$penjualan
-//            );
-            $id=$this->uri->segment(3);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            
-            $data=array(
-                'id'=>$id,
-                'idClient'=>$penjualanById->idClient
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));
-            
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('penjualan/v_penjualanPrint.php',$data);
-            $this->load->view('template/footer.php');  
-	}
         
         function penjualanPrintTable()
 	{

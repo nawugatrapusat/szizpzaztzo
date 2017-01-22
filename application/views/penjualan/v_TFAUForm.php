@@ -2,7 +2,7 @@
 </head>
 <body>
     <h2><?php echo $typeForm == 0 ? 'Tukar Faktur' : 'Ambil Uang'; ?></h2>
-    <form style="padding-left:13px; padding-top: 10px;" name="penjualanForm" action="<?php echo site_url('penjualan/TFAUFormSave') ?>" method="POST">
+    <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="penjualanForm" action="<?php echo site_url('penjualan/TFAUFormSave') ?>" method="POST">
         <table style="border: 1px solid black;">
             <tr>
                 <td style="padding-bottom: 15px;">
@@ -39,7 +39,7 @@
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
-                                <select id="idEmployeePic" name="idEmployeePic">
+                                <span style="color:red;">*</span><select id="idEmployeePic" name="idEmployeePic">
                                     <option value="">Pilih Pembawa</option>
                                     <?php
                                     $a = $addEdit->idEmployeePic == '0' ? "selected='selected'" : '';
@@ -56,11 +56,6 @@
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Keterangan</td>
-                            <td>:</td>
-                            <td><input type="text" name="keterangan" value="<?php echo $addEdit == '' ? '' : ucfirst($addEdit->keterangan) ?>" size="80"/></td>
-                        </tr>
                         <?php
                         if($typeForm != 0){
                         ?>
@@ -69,7 +64,7 @@
                             <td>:</td>
                             <td>
 
-                                <select id="tipePembayaran" name="tipePembayaran">
+                                <span style="color:red;">*</span><select id="tipePembayaran" name="tipePembayaran">
                                     <option value="">Pilih Tipe Pembayaran</option>
                                     <?php
                                     $a = $penjualanById->tipePembayaran == 'tunai' ? "selected='selected'" : '';
@@ -99,7 +94,7 @@
                             <td>:</td>
                             <td>
 
-                                <select id="status" name="status">
+                                <span style="color:red;">*</span><select id="status" name="status">
                                     <option value="">Pilih Status</option>
                                     <?php
                                     $d = $penjualanById->status == 'ambil uang' ? "selected='selected'" : '';
@@ -108,13 +103,13 @@
                                     ?>
                                     <option <?php echo $d; ?> value="ambil uang">Ambil Uang</option>
                                     <option <?php echo $e; ?> value="manual close">Manual Close</option>
-                                </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp.<input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/></span>
+                                </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp. <span style="color:red;">*</span><input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/> <span class="cetakHargaNominal"> </span>
                             </td>
                         </tr>
                         <tr>
                             <td>Biaya Lain</td>
                             <td>:</td>
-                            <td>Rp.<input type="text" name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/></td>
+                            <td>Rp. <input type="text" id='biayaLain' name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/> <span class="cetakHargaBiayaLain"> </td>
                         </tr>
                         <?php
                         }else{
@@ -127,6 +122,11 @@
                         <?php
                         }
                         ?>
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>:</td>
+                            <td><input type="text" name="keterangan" value="<?php echo $addEdit == '' ? '' : ucfirst($addEdit->keterangan) ?>" size="80"/></td>
+                        </tr>
                     </table>
                 </td>
             <tr/>
@@ -178,13 +178,13 @@
                         }
                         ?>
                         </td>
-                        <td>
+                        <td align='right'>
                             <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
                         <td>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
-                        <td>Rp. 
+                        <td align='right'>Rp. 
                             <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
                         </tr>
@@ -198,13 +198,13 @@
                         <tr>
                             <td colspan="3" align="right">Total Bayar&nbsp;</td>
                     <td ><?php echo $totalJumlah?></td>
-                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    <td align='right'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>
                 <tr>
                     <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">
-                        <input type="hidden" name="typeForm" value="<?php echo $typeForm == 0 ? 'tukarFaktur' : 'ambilUang'; ?>"/>
+                        <input id='typeForm' type="hidden" name="typeForm" value="<?php echo $typeForm == 0 ? 'tukarFaktur' : 'ambilUang'; ?>"/>
                         <input type="hidden" name="addEdit" value="<?php echo $addEdit == false ? 'add' : 'edit'; ?>"/>
                         <input type="hidden" name="idPenjualan" value="<?php echo $penjualanById == '' ? '' : $penjualanById->id ?>"/>
                         <input type="hidden" name="idTFAU" value="<?php echo $addEdit == '' ? '' : $addEdit->id ?>"/>
@@ -219,6 +219,28 @@
         </table>
     </form>
     <script>
+        function validateForm() {
+            if ($('#idEmployeePic').val() == "") { alert("Pembawa Masih Kosong !!!"); return false; }
+            if($('#idEmployeePic').val() != 'tukarFaktur'){
+                if ($('#tipePembayaran').val() == "") { 
+                    alert("Tipe Pembayaran Masih Kosong !!!"); return false; 
+                }else if($('#tipePembayaran').val() == "giro"){
+                    if ($('#idBank').val() == "") { alert("Bank Masih Kosong !!!"); return false; }
+                    if ($('#giroInput').val() == "") { alert("No Giro Masih Kosong !!!"); return false; }
+                }
+                if ($('#status').val() == "") {
+                    alert("Status Masih Kosong !!!"); 
+                    return false; 
+                }else if($('#status').val() == "manual close"){
+                    if ($('#nominalInput').val() == "") { alert("Nominal Masih Kosong !!!"); return false; }
+                }
+            }
+            window.scrollTo(0, 0);
+            $('#loadingAnim').show();
+            document.body.scroll = "no";
+            document.body.style.overflow = 'hidden';
+            document.height = window.innerHeight;
+        }
         $(document).ready(function () {
             $("#date").datepicker({ dateFormat: 'dd-mm-yy' });
             $("#status").change(function () {
@@ -240,5 +262,36 @@
                     $('#idBank')[0].selectedIndex=0;
                 }
             });
+            $('#nominalInput').bind('change', function(){
+                var tis=$(this);
+                if(tis.val() == ''){
+                    tis.parent().find('.cetakHargaNominal').html('');
+                }else{
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                    data: 'val='+tis.val()
+                  }).done(function( data ) {
+                        tis.parent().find('.cetakHargaNominal').html(data.val);
+                  });
+                }
+            });
+            $('#biayaLain').bind('change', function(){
+                var tis=$(this);
+                if(tis.val() == ''){
+                    tis.parent().find('.cetakHargaBiayaLain').html('');
+                }else{
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                    data: 'val='+tis.val()
+                  }).done(function( data ) {
+                        tis.parent().find('.cetakHargaBiayaLain').html(data.val);
+                  });
+                }
+            });
         });
     </script>
+

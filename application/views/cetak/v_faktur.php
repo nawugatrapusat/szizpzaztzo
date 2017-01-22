@@ -1,7 +1,7 @@
 
 <html>
     <head>
-        <title>Faktur Pembayaran</title>
+        <title>Faktur Penjualan</title>
         <style>
             @page {
                 size: auto;   /* auto is the initial value */
@@ -30,9 +30,10 @@
                     <span style='font-size:12pt'><b>Sari Puspita Herba</b></span></br>
                     Pamulang Permai I Blok N 2 C </br>
                     Tangerang 15417</br>
-                    Tlp &nbsp; : 0851-0048-5662</br>
-                    Fax &nbsp; : 021-74710908</br>
-                    HP &nbsp; : 0813-8777-5505</br>
+                    Tlp &nbsp;&nbsp;&nbsp; : 0851-0048-5662</br>
+                    Fax &nbsp;&nbsp;&nbsp; : 021-74710908</br>
+                    HP &nbsp;&nbsp;&nbsp;&nbsp; : 0813-8777-5505</br>
+                    Email : sbpsbpsbp@gmail.com
                 </td>
                 <td style='vertical-align:top' width='40%' align='left'>
                     <b><span style='font-size:12pt'>Faktur Penjualan</span></b></br>
@@ -42,14 +43,14 @@
                     <?php echo ucwords($detailClient->alamat) ?>
                 </td>
             </tr>
-        </table>
+        </table><br/>
         <table cellspacing='0' style='width:550px; font-size:8pt; font-family:calibri;  border-collapse: collapse;' border='1'>
                 <tr>
-                    <td align="center">No</td>
+                    <td align="center" width='20px;'>No</td>
                     <td align="center">Produk</td>
-                    <td align="center">Harga Jual</td>
-                    <td align="center">Jumlah</td>
-                    <td align="center">Total</td>
+                    <td align="center" width='90px;'>Harga Jual</td>
+                    <td align="center" width='40'>Jumlah</td>
+                    <td align="center" width='90px;'>Total</td>
                 </tr>
                 <?php
                 $totalHarga=0;
@@ -78,7 +79,7 @@
                         echo '
                                         <tr>
                                             <td align="center">' . $f . '</td>
-                                            <td>'
+                                            <td  style="padding-left: 5px;">'
                         ?>
                         <?php
                         if ($product != '') {
@@ -88,13 +89,13 @@
                         }
                         ?>
                         </td>
-                        <td>
+                        <td style='padding-left: 5px;'>
                             <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
-                        <td>
+                        <td align="center">
                             <?php echo $paramjumlah[$f] ?>
                         </td>
-                        <td>Rp. 
+                        <td style='padding-left: 5px;'>Rp. 
                             <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
                         </tr>
@@ -107,8 +108,8 @@
                 ?>
                         <tr>
                             <td colspan="3" align="right">Total Bayar&nbsp;&nbsp;&nbsp;</td>
-                    <td ><?php echo $totalJumlah?></td>
-                    <td ><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    <td align='center'><?php echo $totalJumlah?></td>
+                    <td  style='padding-left: 5px;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
                 <tr>
         </table><br/>

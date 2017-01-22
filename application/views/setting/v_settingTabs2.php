@@ -1,54 +1,67 @@
-<button type="button" onclick="location.href = '<?php echo site_url('setting/productForm/0') ?>';">Tambah Produk</button>
-<table style="padding-top:15px;">
-    <tr>
-        <td valign="top">
-            <table class="table1" border="1">
-                <tr>
-                    <td>No</td>
-                    <td>Produsen</td>
-                    <td>Merek</td>
-                    <td>Nama</td>
-                    <td>Berat</td>
-                    <td>Stock</td>
-                    <td>Harga Beli</td>
-                    <td>Harga Jual</td>
-                    <td>Harga Karyawan</td>
-                    <td>Skema</td>
-                    <td>Aksi</td>
-                </tr>
-                <?php
-                if ($product != '') {
-                    $no = 1;
-                    foreach ($product as $hasil) {
-                        $a=$hasil->hargaEmployee != '' ? 'Rp. '.number_format($hasil->hargaEmployee,0,',','.') : '-'; 
-                        echo '
-                                    <tr>
-                                        <td>' . $no . '</td>
-                                        <td>' . ucwords($hasil->produsen) . '</td>
-                                        <td>' . ucwords($hasil->merek) . '</td>
-                                        <td>' . ucwords($hasil->nama) . '</td>
-                                        <td>' . $hasil->berat . '</td>
-                                        <td>' . $hasil->stock . '</td>
-                                        <td>Rp. ' . number_format($hasil->hargaBeli,0,',','.') . '</td>
-                                        <td>Rp. ' . number_format($hasil->hargaJual,0,',','.') . '</td>
-                                        <td align="center">' . $a . '</td>
-                                        <td>' . ucwords($hasil->scheme) . '</td>
-                                        <td>
-                                            <a href="' . site_url("setting/productForm/1/$hasil->id") . '" ><img src="public/images/admin/edit.png"/></a>&nbsp;
-                                            <a href="#" class="productDeleteButton" aid="' . $hasil->id . '"><img src="public/images/admin/close.png"/></a>
-                                        </td>
-                                    </tr>
-                                    ';
-                        $no++;
-                    }
-                }
-                ?>
-            </table>
-        </td>
-        <td valign="top" style="border-left: 1px solid grey;padding-left: 10px;">
-            <table>
-                <div id="div_order"></div>
-            </table>
-        </td>
-    </tr>
-</table>
+<div class="flexme1"></div>
+<script>
+$(document).ready(function(){     
+    $(".flexme1").flexigrid({
+    url: '<?php echo site_url('setting/productTable');?>',
+    dataType: 'json',
+    colModel : [
+            {display: 'No', name : '', width : 20, sortable : true, align: 'left'},
+            {display: 'Produsen', name : 'produsen', width : 220, sortable : true, align: 'left'},
+            {display: 'Merek', name : 'merek', width : 220, sortable : true, align: 'left'},
+            {display: 'Nama', name : 'nama', width : 220, sortable : true, align: 'left'},
+            {display: 'Berat', name : 'berat', width : 50, sortable : true, align: 'left'},
+            {display: 'Harga Beli', name : 'hargaBeli', width : 100, sortable : true, align: 'left'},
+            {display: 'Harga Karyawan', name : 'hargaEmployee', width : 120, sortable : true, align: 'left'},
+            {display: 'Harga Jual', name : 'hargaJual', width : 100, sortable : true, align: 'left'},
+            {display: 'Skema', name : 'scheme', width : 60, sortable : true, align: 'left'},
+            ],
+    buttons : [
+            {name: 'Tambah', bclass: 'add' ,align:'right', onpress:tambah},
+            {separator: true},
+            {name: 'Edit', bclass: 'edit' ,align:'right', onpress:edit},
+            {separator: true},
+            {name: 'Hapus', bclass: 'delete' ,align:'right', onpress:hapus},
+            ],
+    searchitems : [
+            {display: 'Produsen', name : 'produsen', isdefault: true},
+            {display: 'Nama', name : 'nama', isdefault: true},
+            {display: 'Skema', name : 'scheme', isdefault: true}
+            ],
+    singleSelect:true,
+    sortname: "nama",
+    sortorder: "asc",
+    usepager: true,
+    //title: 'Kartu Praktikum Hilang',
+    useRp: true,
+    rp: 50,
+    showTableToggleBtn: true,
+    width: 1280,
+    height: 380
+});      
+function tambah(com,grid){
+    location.href = '<?php echo site_url('setting/productForm/0') ?>';
+}
+function edit(com,grid){
+        $('.trSelected',grid).each(function(){
+            var id=$(this).attr('id'); 
+            id = id.substring(id.lastIndexOf('row')+3);
+            location.href = '<?php echo site_url("setting/productForm/1/") ?>'+id;
+        });
+}
+function hapus(com,grid){
+        $('.trSelected',grid).each(function(){
+            var id=$(this).attr('id'); 
+            id = id.substring(id.lastIndexOf('row')+3);
+            if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                window.scrollTo(0, 0);
+                $('#loadingAnim').show();
+                document.body.scroll = "no";
+                document.body.style.overflow = 'hidden';
+                document.height = window.innerHeight;
+                $('.delete').hide();
+                location.href = '<?php echo site_url("setting/productDelete/1/") ?>' + id;
+            }
+        });
+}
+});
+</script>

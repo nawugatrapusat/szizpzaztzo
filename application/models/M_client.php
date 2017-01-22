@@ -6,6 +6,16 @@ class M_client extends CI_Model {
 	{
 		parent::__construct();
 	}
+        
+        function get_count_query($q) {
+            $query=$this->db->query($q);
+            return $query->num_rows();
+        }
+
+        function get_query($q) {
+            $query=$this->db->query($q);
+            if($query->num_rows() > 0) return $query->result(); else return false;
+        }
 	        
          function clientGetById($id) {            
             $this->db->where('deleted','0');
@@ -39,6 +49,7 @@ class M_client extends CI_Model {
             $client->noHp=$data['noHp'];
             $client->picPembelian=$data['picPembelian'];
             $client->picTagihan=$data['picTagihan'];
+            $client->id_admin=$this->session->userdata('id_admin');
             
                 $this->db->insert('client',$client);
                 $insertId=$this->db->insert_id();
@@ -48,6 +59,7 @@ class M_client extends CI_Model {
                 $clientPrice->idClient=$insertId;
                 $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                 $clientPrice->hargaJual=$data['hargaJual'.$a];
+                $clientPrice->id_admin=$this->session->userdata('id_admin');
                 $this->db->insert('clientprice',$clientPrice);
             }
             $this->db->trans_complete();

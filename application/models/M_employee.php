@@ -23,7 +23,8 @@ class M_employee extends CI_Model {
         
         function empAddSave($data) {            
             $this->db->trans_start();
-                $this->db->insert('employee',$data);
+                $array = array_merge($data, ["id_admin" => $this->session->userdata('id_admin')]);
+                $this->db->insert('employee',$array);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;

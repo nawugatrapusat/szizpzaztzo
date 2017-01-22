@@ -94,6 +94,11 @@ function hapus(com,grid){
                     if(( tis.text() != 'Manual Close' && tis.text() != 'Ambil Uang')){
                         id = id.substring(id.lastIndexOf('row')+3);
                         if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
+                            window.scrollTo(0, 0);
+                            $('#loadingAnim').show();
+                            document.body.scroll = "no";
+                            document.body.style.overflow = 'hidden';
+                            document.height = window.innerHeight;
                             $('.delete').hide();
                             location.href = '<?php echo site_url('penjualan/penjualanDelete/') ?>'+id;
                         }
@@ -127,8 +132,12 @@ function ambilUang(com,grid){
                 var tis=$(this);
                 if(tis.attr('abbr') == 'status'){
                     if(( tis.text() != 'Manual Close' && tis.text() != 'Ambil Uang')){
-                        id = id.substring(id.lastIndexOf('row')+3);
-                location.href = '<?php echo site_url('penjualan/TFAUForm/1/') ?>'+id;
+                        if(tis.text() != 'Kirim Barang'){
+                            id = id.substring(id.lastIndexOf('row')+3);
+                            location.href = '<?php echo site_url('penjualan/TFAUForm/1/') ?>'+id;
+                        }else{
+                            alert('Harap Lakukan Tukar Faktur Terlebih Dahulu !!!');
+                        }
                     }else{
                         alert('Transaksi sudah selesai, tidak dapat melakukan aksi tersebut !!!');
                     }

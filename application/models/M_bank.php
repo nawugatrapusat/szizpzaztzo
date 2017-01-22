@@ -23,7 +23,8 @@ class M_bank extends CI_Model {
         
         function bankAddSave($data) {            
             $this->db->trans_start();
-                $this->db->insert('bank',$data);
+                $array = array_merge($data, ["id_admin" => $this->session->userdata('id_admin')]);
+                $this->db->insert('bank',$array);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;
