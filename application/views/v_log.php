@@ -37,7 +37,7 @@ $(document).ready(function(){
     rp: 50,
     showTableToggleBtn: true,
     width: 1280,
-    height: 700
+    height: 380
 });      
 function detail(com,grid){
         $('.trSelected',grid).each(function(){

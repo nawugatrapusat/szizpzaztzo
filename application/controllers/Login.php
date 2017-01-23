@@ -46,10 +46,10 @@ class Login extends CI_Controller {
                 $det=$this->m_login->validasi($name,$pass);
                 if($det != false){
                     $this->session->set_userdata('id_admin',$det->id);
-                    $this->m_log->insert_log('Login','Sukses Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$this->input->post());
+                    $this->m_log->insert_log('Login','Sukses Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$name);
                     redirect('beranda');
                 }else{
-                    $this->m_log->insert_log('Login','Gagal Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$this->input->post());
+                    $this->m_log->insert_log('Login','Gagal Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$name);
                     $this->input->set_cookie('notif','0',time()+6000);
                     redirect('login');
                 }
