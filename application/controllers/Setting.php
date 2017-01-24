@@ -434,9 +434,17 @@ class Setting extends CI_Controller {
             $no=1;
             if($results != false){
                 foreach($results as $row){
+                    $clientPrice=$this->m_client->clientPriceGetByIdClient($row->id);
+                    $print='';
+                    foreach($clientPrice as $hasil){
+                        if($hasil->idProduct != '0'){
+                            $product=$this->m_product->productGetById($hasil->idProduct);
+                            $print.=ucwords($product->nama).' - '.ucwords($product->merek).' => Rp. ' . number_format($product->hargaJual, 0, ',', '.').'<br/>';
+                        }
+                    }
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,  ucwords($row->nama),  ucfirst($row->alamat),$row->noTelp,$row->noHp,ucwords($row->picPembelian),ucwords($row->picTagihan))
+                    'cell' => array($no,  ucwords($row->nama),  ucfirst($row->alamat),$row->noTelp,$row->noHp,ucwords($row->picPembelian),ucwords($row->picTagihan),$print)
                     );
                     $no++;
                 }        

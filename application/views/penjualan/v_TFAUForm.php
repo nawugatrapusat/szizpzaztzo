@@ -18,11 +18,6 @@
                             <td><?php echo ucwords($penjualanById->noPo); ?></td>
                         </tr>
                         <tr>
-                            <td>Tanggal</td>
-                            <td>:</td>
-                            <td><?php echo date("d-m-Y H:i:s", $penjualanById->date) ?></td>
-                        </tr>
-                        <tr>
                             <td>Client</td>
                             <td>:</td>
                             <td>
@@ -34,31 +29,78 @@
                                 }
                                 ?>
                             </td>
+                        </tr><tr><td><br/></td></tr>
+                        <tr style="padding-top: 15px;padding-bottom: 15px;">
+                            <td style="border-top: 1px dotted grey;" colspan="3"><b>Kirim Barang</b></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td><?php echo date("d-m-Y H:i:s", $penjualanById->date) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
-                                <span style="color:red;">*</span><select id="idEmployeePic" name="idEmployeePic">
-                                    <option value="">Pilih Pembawa</option>
-                                    <?php
-                                    $a = $addEdit->idEmployeePic == '0' ? "selected='selected'" : '';
+                                    <?php 
+                                    echo $penjualanById->idEmployeePic == '0' && !empty($penjualanById) ? "Bawa Sendiri" : '';
                                     ?>
-                                    <option <?php echo $a; ?> value="0">Bawa Sendiri</option>;
                                     <?php
                                     if ($employee != '') {
                                         foreach ($employee as $hasil1) {
-                                            $a = $addEdit->idEmployeePic == $hasil1->id && !empty($addEdit) ? "selected='selected'" : '';
-                                            echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
+                                            echo $penjualanById->idEmployeePic == $hasil1->id && !empty($penjualanById) ? ucwords($hasil1->nama) : '';
                                         }
                                     }
                                     ?>
-                                </select>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>:</td>
+                            <td><?php echo $penjualanById == '' ? '' : ucfirst($penjualanById->keterangan) ?></td>
+                        </tr>
+                        <tr><td><br/></td></tr>
+                        <tr style="padding-top: 15px;padding-bottom: 15px;">
+                            <td style="border-top: 1px dotted grey;" colspan="3"><b>Tukar Faktur</b></td>
                         </tr>
                         <?php
                         if($typeForm != 0){
                         ?>
+                        <tr>
+                            <td>Tanggal</td>
+                            <td>:</td>
+                            <td><?php echo empty($TF) ? '' : date("d-m-Y H:i:s",$TF->date) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Pembawa</td>
+                            <td>:</td>
+                            <td>
+                                    <?php 
+                                    if(!empty($TF)) echo $TF->idEmployeePic == '0' ? "Bawa Sendiri" : '';
+                                    ?>
+                                    <?php
+                                    if ($employee != '') {
+                                        foreach ($employee as $hasil1) {
+                                            if(!empty($TF)) echo $TF->idEmployeePic == $hasil1->id ? ucwords($hasil1->nama) : '';
+                                        }
+                                    }
+                                    ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal Kembali</td>
+                            <td>:</td>
+                            <td><?php echo empty($TF) ? '' : $TF->tanggalKembali ?></td>
+                        </tr>
+                        <tr>
+                            <td>Keterangan</td>
+                            <td>:</td>
+                            <td><?php if(!empty($TF))echo ucfirst($TF->keterangan) ?></td>
+                        </tr>
+                        <tr><td><br/></td></tr>
+                        <tr style="padding-top: 15px;padding-bottom: 15px;">
+                            <td style="border-top: 1px dotted grey;" colspan="3"><b>Ambil Uang</b></td>
+                        </tr>
                         <tr>
                             <td valign="top">Tipe Pembayaran</td>
                             <td>:</td>
@@ -122,6 +164,27 @@
                         <?php
                         }
                         ?>
+                        <tr>
+                            <td>Pembawa</td>
+                            <td>:</td>
+                            <td>
+                                <span style="color:red;">*</span><select id="idEmployeePic" name="idEmployeePic">
+                                    <option value="">Pilih Pembawa</option>
+                                    <?php
+                                    $a = $addEdit->idEmployeePic == '0' ? "selected='selected'" : '';
+                                    ?>
+                                    <option <?php echo $a; ?> value="0">Bawa Sendiri</option>;
+                                    <?php
+                                    if ($employee != '') {
+                                        foreach ($employee as $hasil1) {
+                                            $a = $addEdit->idEmployeePic == $hasil1->id && !empty($addEdit) ? "selected='selected'" : '';
+                                            echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
                         <tr>
                             <td>Keterangan</td>
                             <td>:</td>

@@ -29,7 +29,8 @@ $(document).ready(function(){
             {display: 'Nama Client', name : 'nama', width : 300, sortable : true, align: 'left'},
             {display: 'Pembawa', name : 'idEmployeePic', width : 140, sortable : true, align: 'left'},
             {display: 'Tanggal', name : 'date', width : 120, sortable : true, align: 'left'},
-            {display: 'Nominal', name : 'nominal', width : 120, sortable : true, align: 'left'},
+            {display: 'Nominal Faktur', name : 'nominalFaktur', width : 120, sortable : true, align: 'left'},
+            {display: 'Hasil', name : 'totalBayar', width : 120, sortable : true, align: 'left'},
             {display: 'Status', name : 'status', width : 120, sortable : true, align: 'left'},
             ],
     buttons : [

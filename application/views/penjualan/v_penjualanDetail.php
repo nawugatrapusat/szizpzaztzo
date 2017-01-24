@@ -85,6 +85,11 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Tanggal Kembali</td>
+                            <td>:</td>
+                            <td><?php echo empty($TF) ? '' : $TF->tanggalKembali ?></td>
+                        </tr>
+                        <tr>
                             <td>Keterangan</td>
                             <td>:</td>
                             <td><?php if(!empty($TF))echo ucfirst($TF->keterangan) ?></td>
@@ -113,6 +118,45 @@
                                     }
                                     ?>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Tipe Pembayaran</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById)) echo ucwords($penjualanById->tipePembayaran) ?></td>
+                        </tr>
+                        <?php
+                        if(!empty($penjualanById) && $penjualanById->tipePembayaran == 'giro'){
+                            foreach($bank as $hasil1){
+                                if($hasil1->id == $penjualanById->idBank) $namaBank=$hasil1->namaBank;
+                            }
+                        ?>
+                        <tr>
+                            <td>Bank</td>
+                            <td>:</td>
+                            <td><?php echo ucwords($namaBank).', Giro : '.$penjualanById->noGiro ?></td>
+                        </tr>
+                        <?php
+                        }
+                        ?>
+                        <tr>
+                            <td>Status</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById)) {echo ucwords($penjualanById->status);} if($penjualanById->status == 'manual close') {echo ', Rp. ' . number_format($penjualanById->nominal, 0, ',', '.');} ?></td>
+                        </tr>
+                        <tr>
+                            <td>Biaya Lain</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById) && !empty($penjualanById->biayaLain)) echo 'Rp. ' . number_format($penjualanById->biayaLain, 0, ',', '.') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Nominal Faktur</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById) && !empty($penjualanById->nominalFaktur)) echo 'Rp. ' . number_format($penjualanById->nominalFaktur, 0, ',', '.') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Hasil</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById) && !empty($penjualanById->totalBayar)) echo 'Rp. ' . number_format($penjualanById->totalBayar, 0, ',', '.') ?></td>
                         </tr>
                         <tr>
                             <td>Keterangan</td>

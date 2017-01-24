@@ -168,6 +168,7 @@ class Penjualan extends CI_Controller {
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $employee=$this->m_employee->empGetAll();
             $bank=$this->m_bank->bankGetAll();
+            $TF=$this->m_penjualan->tukarFakturGetByIdPenjualan($penjualanById->id);
             if($typeForm == 0){
                 $addEdit=$this->m_penjualan->tukarFakturGetByIdPenjualan($penjualanById->id);
             }else{
@@ -194,6 +195,7 @@ class Penjualan extends CI_Controller {
 //                'dataForm'=>$dataForm,
                 'employee'=>$employee,
                 'bank'=>$bank,
+                'TF'=>$TF
                 
             );
             
@@ -262,6 +264,7 @@ class Penjualan extends CI_Controller {
             $employee=$this->m_employee->empGetAll();
             $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
             $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
+            $bank=$this->m_bank->bankGetAll();
             $data=array(
                 'client'=>$client,
                 'product'=>$product,
@@ -269,7 +272,8 @@ class Penjualan extends CI_Controller {
                 'penjualanDetail'=>$penjualanDetail,
                 'employee'=>$employee,
                 'TF'=>$TF,
-                'AU'=>$AU
+                'AU'=>$AU,
+                'bank'=>$bank
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
@@ -348,7 +352,7 @@ class Penjualan extends CI_Controller {
             $data = array();
             $data['page'] = $page;
             $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic";
+            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic,penjualan.nominalFaktur";
             $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
             $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
 //            echo $sql;
@@ -367,9 +371,14 @@ class Penjualan extends CI_Controller {
                         $a=$this->m_employee->empGetById($row->idEmployeePic);
                         $employeePic=$a->nama;
                     }
+                    if($row->totalBayar != ''){
+                        $totByr='Rp. ' . number_format($row->totalBayar, 0, ',', '.');
+                    }else{
+                        $totByr='';
+                    }
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->totalBayar, 0, ',', '.'),ucwords($row->status))
+                    'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
                     );
                     $no++;
                 }        
