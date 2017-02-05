@@ -507,7 +507,7 @@ class Setting extends CI_Controller {
                 foreach($results as $row){
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,  ucwords($row->produsen),  ucwords($row->merek),  ucwords($row->nama),$row->berat.' gr',
+                    'cell' => array($no, ucwords($row->merek),  ucwords($row->nama),$row->berat.' gr',
                     'Rp. '.number_format($row->hargaBeli,0,',','.'),$row->hargaEmployee == '' ? '' : 'Rp. '.number_format($row->hargaEmployee,0,',','.'),
                     'Rp. '.number_format($row->hargaJual,0,',','.'),ucwords($row->scheme))
                     );

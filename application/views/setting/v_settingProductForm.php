@@ -4,11 +4,6 @@
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="productForm" action="<?php echo site_url('setting/productFormSave/1') ?>" method="POST">
         <table style="border: 1px solid black;">
             <tr>
-                <td>Produsen</td>
-                <td>:</td>
-                <td> <span style="color:red;">*</span> <input id="produsen" type="text" name="produsen" value="<?php echo $product == '' ? '' : ucwords($product->produsen) ?>"/></td>
-            </tr>
-            <tr>
                 <td>Merek</td>
                 <td>:</td>
                 <td> <span style="color:red;">*</span> <input id="merek" type="text" name="merek" value="<?php echo $product == '' ? '' : ucwords($product->merek) ?>" size="50"/></td>
@@ -65,7 +60,6 @@
     </form>
     <script>
         function validateForm() {
-            if ($('#produsen').val() == "") { alert("Produsen Masih Kosong !!!"); return false; }
             if ($('#merek').val() == "") { alert("Merek Masih Kosong !!!"); return false; }
             if ($('#nama').val() == "") { alert("Nama Masih Kosong !!!"); return false; }
             if ($('#berat').val() == "") { alert("Berat Masih Kosong !!!"); return false; }

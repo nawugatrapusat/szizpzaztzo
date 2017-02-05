@@ -6,7 +6,6 @@ $(document).ready(function(){
     dataType: 'json',
     colModel : [
             {display: 'No', name : '', width : 20, sortable : true, align: 'left'},
-            {display: 'Produsen', name : 'produsen', width : 220, sortable : true, align: 'left'},
             {display: 'Merek', name : 'merek', width : 220, sortable : true, align: 'left'},
             {display: 'Nama', name : 'nama', width : 220, sortable : true, align: 'left'},
             {display: 'Berat', name : 'berat', width : 50, sortable : true, align: 'left'},
