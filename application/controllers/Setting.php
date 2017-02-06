@@ -82,8 +82,6 @@ class Setting extends CI_Controller {
                 $tab=$this->uri->segment(3);
 //                print_r($this->input->post());
                 if($this->input->post('id') == ''){
-//                    for($a=1;$a<=5;$a++) if($this->m_client->clientPriceAdd($add) == true) $b++;
-//                    if($b != 5) $this->input->set_cookie('failedNotif','Sukses Menambahkan Data, Namun Ada Kesalahan Dalam Penambahan Data, Hubungi Administrator Website !!!',time()+6000);
                     if($this->m_client->clientAddSave(array_map('strtolower', $this->input->post())) != false){
                         $this->m_log->insert_log('simpan setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
@@ -436,10 +434,12 @@ class Setting extends CI_Controller {
                 foreach($results as $row){
                     $clientPrice=$this->m_client->clientPriceGetByIdClient($row->id);
                     $print='';
-                    foreach($clientPrice as $hasil){
-                        if($hasil->idProduct != '0'){
-                            $product=$this->m_product->productGetById($hasil->idProduct);
-                            $print.=ucwords($product->nama).' - '.ucwords($product->merek).' => Rp. ' . number_format($product->hargaJual, 0, ',', '.').'<br/>';
+                    if($clientPrice != ''){
+                        foreach($clientPrice as $hasil){
+                            if($hasil->idProduct != '0'){
+                                $product=$this->m_product->productGetById($hasil->idProduct);
+                                $print.=ucwords($product->nama).' - '.ucwords($product->berat).' gr => Rp. ' . number_format($hasil->hargaJual, 0, ',', '.').'<br/>';
+                            }
                         }
                     }
                     $data['rows'][] = array(

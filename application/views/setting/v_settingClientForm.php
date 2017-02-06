@@ -49,7 +49,7 @@
                             <td align="center">Harga Jual</td>
                         </tr>
                         <?php
-                        for ($f = 1; $f <= 5; $f++) {
+                        for ($f = 1; $f <= 30; $f++) {
                                 $param1[$f] = '';
                                 $param2[$f] = '';
                                 $param3[$f] = '';
@@ -63,7 +63,7 @@
                                 $c1++;
                             }
                         }
-                        for ($f = 1; $f <= 5; $f++) {
+                        for ($f = 1; $f <= 30; $f++) {
                             echo '
                                 <tr>
                                     <td align="center">' . $f . '</td>
@@ -75,7 +75,7 @@
                                 if ($product != '') {
                                     foreach ($product as $hasil1) {
                                         $a = $param2[$f] == $hasil1->id ? "selected='selected'" : '';
-                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
+                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->berat) . ' gr </option>';
                                     }
                                 }
                                 ?>

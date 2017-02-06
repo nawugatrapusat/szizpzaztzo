@@ -8,6 +8,19 @@ class M_client extends CI_Model {
 	}
         
         function get_count_query($q) {
+            
+//            $b=$this->clientGetAll();
+//            
+//            foreach ($b as $hasil1) {
+//                for($a=1;$a<=30;$a++){
+//                    $clientPrice=new stdClass();
+//                    $clientPrice->idClient=$hasil1->id;
+//                    $clientPrice->idProduct='0';
+//                    $clientPrice->hargaJual='';
+//                    $clientPrice->id_admin='1';
+//                    $this->db->insert('clientprice',$clientPrice);
+//                }
+//            }
             $query=$this->db->query($q);
             return $query->num_rows();
         }
@@ -54,13 +67,15 @@ class M_client extends CI_Model {
                 $this->db->insert('client',$client);
                 $insertId=$this->db->insert_id();
             
-            for($a=1;$a<=5;$a++){
-                $clientPrice=new stdClass();
-                $clientPrice->idClient=$insertId;
-                $clientPrice->idProduct=$data['clientPriceProduct'.$a];
-                $clientPrice->hargaJual=$data['hargaJual'.$a];
-                $clientPrice->id_admin=$this->session->userdata('id_admin');
-                $this->db->insert('clientprice',$clientPrice);
+            for($a=1;$a<=30;$a++){
+                if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != ''){
+                    $clientPrice=new stdClass();
+                    $clientPrice->idClient=$insertId;
+                    $clientPrice->idProduct=$data['clientPriceProduct'.$a];
+                    $clientPrice->hargaJual=$data['hargaJual'.$a];
+                    $clientPrice->id_admin=$this->session->userdata('id_admin');
+                    $this->db->insert('clientprice',$clientPrice);
+                }
             }
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
@@ -85,13 +100,16 @@ class M_client extends CI_Model {
                 $this->db->where('id',$client->id);
                 $this->db->update('client',$client);
             
-            for($a=1;$a<=5;$a++){
+            for($a=1;$a<=30;$a++){
                 if($data['idClientPrice'.$a] == ''){
-                    $clientPrice=new stdClass();
-                    $clientPrice->idClient=$client->id;
-                    $clientPrice->idProduct=$data['clientPriceProduct'.$a];
-                    $clientPrice->hargaJual=$data['hargaJual'.$a];
-                    $this->db->insert('clientprice',$clientPrice);
+                    if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != ''){
+                        $clientPrice=new stdClass();
+                        $clientPrice->idClient=$client->id;
+                        $clientPrice->idProduct=$data['clientPriceProduct'.$a];
+                        $clientPrice->hargaJual=$data['hargaJual'.$a];
+                        $clientPrice->id_admin=$this->session->userdata('id_admin');
+                        $this->db->insert('clientprice',$clientPrice);
+                    }
                 }else{
                     $clientPrice=new stdClass();
                     $clientPrice->id=$data['idClientPrice'.$a];

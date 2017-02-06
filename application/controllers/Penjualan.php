@@ -117,6 +117,7 @@ class Penjualan extends CI_Controller {
         }
         
         function penjualanFormSave(){
+//            print_r($this->input->post());
             if($this->input->post()){
 //                echo str_replace(',','<br/>',json_encode((json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
                 if($this->input->post('id') == ''){
@@ -378,7 +379,7 @@ class Penjualan extends CI_Controller {
                     }
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
+                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
                     );
                     $no++;
                 }        

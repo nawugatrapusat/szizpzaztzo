@@ -37,7 +37,8 @@
                 </td>
                 <td style='vertical-align:top' width='40%' align='left'>
                     <b><span style='font-size:12pt'>Faktur Penjualan</span></b></br>
-                    No Faktur : <?php echo $penjualanById->noFaktur ?>, No PO : <?php echo $penjualanById->noPo ?></br>
+                    No Faktur : <?php echo $penjualanById->noFaktur ?><br/>
+                    No PO : <?php echo strtoupper($penjualanById->noPo) ?></br>
                     Tanggal : <?php echo date("d-m-Y", $penjualanById->date) ?><br/>
                     Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
                     <?php echo ucwords($detailClient->alamat) ?>
@@ -55,7 +56,7 @@
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
-                for ($f = 1; $f <= 15; $f++) {
+                for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
                     $paramHargaBeli[$f] = '';
@@ -74,7 +75,7 @@
                         $c1++;
                     }
                 }
-                for ($f = 1; $f <= 15; $f++) {
+                for ($f = 1; $f <= 50; $f++) {
                     if ($paramHargaJual[$f] != '' && $paramjumlah[$f] != '') {
                         echo '
                                         <tr>
@@ -84,7 +85,7 @@
                         <?php
                         if ($product != '') {
                             foreach ($product as $hasil1) {
-                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) : '';
+                                echo $paramIdProduct[$f] == $hasil1->id ? ucwords($hasil1->nama).' - '.ucwords($hasil1->berat).' gr' : '';
                             }
                         }
                         ?>

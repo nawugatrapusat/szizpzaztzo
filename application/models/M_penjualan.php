@@ -39,7 +39,8 @@ class M_penjualan extends CI_Model {
         }  
         
         function penjualanNo($m,$y) {            
-//            $this->db->where('m',$m);       
+//            $this->db->where('m',$m);             
+            $this->db->where('deleted','0');
             $this->db->where('y',$y);
             $this->db->order_by('no','DESC');
             $query=$this->db->get('penjualan');
@@ -91,7 +92,7 @@ class M_penjualan extends CI_Model {
                 $insertId=$this->db->insert_id();
             
             $nominalFaktur=0;
-            for($a=1;$a<=35;$a++){
+            for($a=1;$a<=50;$a++){
                 if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
                     $penjualandetail=new stdClass();
                     $penjualandetail->idPenjualan=$insertId;
@@ -131,7 +132,7 @@ class M_penjualan extends CI_Model {
                 $this->db->update('penjualan',$penjualan);
             
             $nominalFaktur=0;
-            for($a=1;$a<=35;$a++){
+            for($a=1;$a<=50;$a++){
                 if($data['id'.$a] == ''){
                     if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
                         $penjualandetail=new stdClass();

@@ -22,7 +22,6 @@ $(document).ready(function(){
             {name: 'Hapus', bclass: 'delete' ,align:'right', onpress:hapus},
             ],
     searchitems : [
-            {display: 'Produsen', name : 'produsen', isdefault: true},
             {display: 'Nama', name : 'nama', isdefault: true},
             {display: 'Skema', name : 'scheme', isdefault: true}
             ],

@@ -89,7 +89,7 @@
                             <td align="center">Jumlah</td>
                         </tr>
                         <?php
-                        for ($f = 1; $f <= 35; $f++) {
+                        for ($f = 1; $f <= 50; $f++) {
                             $paramId[$f] = '';
                             $paramIdProduct[$f] = '';
                             $paramHargaBeli[$f] = '';
@@ -108,7 +108,7 @@
                                 $c1++;
                             }
                         }
-                        for ($f = 1; $f <= 35; $f++) {
+                        for ($f = 1; $f <= 50; $f++) {
                             echo '
                                 <tr>
                                     <td align="center">' . $f . '</td>
@@ -120,7 +120,7 @@
                                 if ($product != '') {
                                     foreach ($product as $hasil1) {
                                         $a = $paramIdProduct[$f] == $hasil1->id ? "selected='selected'" : '';
-                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->merek) . ' </option>';
+                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->berat) . ' gr </option>';
                                     }
                                 }
                                 ?>
