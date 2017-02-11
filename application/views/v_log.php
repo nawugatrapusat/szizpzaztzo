@@ -15,9 +15,9 @@ $(document).ready(function(){
     colModel : [
             {display: 'No', name : '', width : 40, sortable : true, align: 'left'},
             {display: 'Id', name : 'id_admin', width : 20, sortable : true, align: 'left'},
-            {display: 'Category', name : 'category', width : 100, sortable : true, align: 'left'},
+            {display: 'Category', name : 'category', width : 110, sortable : true, align: 'left'},
             {display: 'Tanggal', name : 'date', width : 120, sortable : true, align: 'left'},
-            {display: 'Activity', name : 'activuty', width : 900, sortable : true, align: 'left'},
+            {display: 'Activity', name : 'activuty', width : 890, sortable : true, align: 'left'},
             ],
     buttons : [
             {name: 'Detail', bclass: 'detail' ,align:'right', onpress:detail},
@@ -26,7 +26,7 @@ $(document).ready(function(){
     searchitems : [
             {display: 'Category', name : 'category', isdefault: true},
             {display: 'Tanggal dd-mm-yyyy', name : 'time', isdefault: true},
-            {display: 'Activity', name : 'activuty', isdefault: true},
+            {display: 'Activity', name : 'activity', isdefault: true},
             ],
     singleSelect:true,
     sortname: "date",

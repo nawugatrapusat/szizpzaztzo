@@ -33,6 +33,7 @@ class Cetak extends CI_Controller {
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             
             $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
@@ -42,7 +43,8 @@ class Cetak extends CI_Controller {
                 'penjualanById'=>$penjualanById,
                 'penjualanDetail'=>$penjualanDetail,
                 'detailClient'=>$detailClient,
-                'product'=>$product
+                'product'=>$product,
+                'fakturNama'=>$fakturNama
             );
             
             $this->load->view('cetak/v_faktur.php',$data); 
@@ -80,9 +82,16 @@ class Cetak extends CI_Controller {
                 if($id != ''){
                     $penjualanById=$this->m_penjualan->penjualanGetById($id);
                     if($penjualanById != false){
-                        $datas[$a]['tanggal']=date("d-m-Y",$penjualanById->date);
+                        if($penjualanById->diskon == 'nominal'){
+                            $nom= $penjualanById->nominalFaktur-$penjualanById->jumlahDiskon;
+                        }else if($penjualanById->diskon == 'persen'){
+                            $nom= $penjualanById->nominalFaktur-($penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100);
+                        }else if ($penjualanById->diskon == 'tidak'){
+                            $nom= $penjualanById->nominalFaktur;
+                        }
+                        $datas[$a]['tanggal']=date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y));
                         $datas[$a]['noFaktur']=$penjualanById->noFaktur;
-                        $datas[$a]['totalBayar']=$penjualanById->totalBayar;
+                        $datas[$a]['totalBayar']=$nom;
                         $b++;
                         if($penjualanById->status == 'manual close' || $penjualanById->status == 'ambil uang'){
                             $datas['inject']=1;
@@ -105,6 +114,50 @@ class Cetak extends CI_Controller {
             
             $this->load->view('cetak/v_tukarFaktur.php',$data); 
 	}	
+    
+	public function kwitansiForm()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+//            print_r($penjualanById);
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product,
+                'id'=>$id
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('cetak/v_kwitansiForm.php',$data);
+            $this->load->view('template/footer.php');  
+	}
+    
+	public function kwitansi()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product
+            );
+            
+            $this->load->view('cetak/v_kwitansi.php',$data); 
+	}
         
         
 }

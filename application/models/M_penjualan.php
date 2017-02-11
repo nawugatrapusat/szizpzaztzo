@@ -64,6 +64,7 @@ class M_penjualan extends CI_Model {
         }
         
         function penjualanAddSave($data) {
+            $tglFaktur=explode('-',$data['tanggalFaktur']);
             $subs_date= explode('-', date("d-m-Y"));
             $subs_dateFaktur= explode('-', date("d-m-y"));
             $no=$this->penjualanNo($subs_dateFaktur[1],$subs_date[2]);
@@ -79,11 +80,13 @@ class M_penjualan extends CI_Model {
             $penjualan->idClient=$data['idClient'];
             $penjualan->idEmployeePic=$data['idEmployeePic'];
             $penjualan->hash=substr(md5($penjualan->noFaktur), 0, 8);
-            $penjualan->d=$subs_date[0];
-            $penjualan->m=$subs_date[1];
-            $penjualan->y=$subs_date[2];
+            $penjualan->d=$tglFaktur[0];
+            $penjualan->m=$tglFaktur[1];
+            $penjualan->y=$tglFaktur[2];
             $penjualan->date=time();
             $penjualan->time=  date("d-m-Y H:i:s");
+            $penjualan->diskon=$data['diskon'];
+            $penjualan->jumlahDiskon=$data['jumlahDiskon'];
             $penjualan->id_admin=$this->session->userdata('id_admin');
             $penjualan->keterangan=$data['keterangan'];
             $penjualan->status='kirim barang';
@@ -99,6 +102,8 @@ class M_penjualan extends CI_Model {
                     $penjualandetail->idProduct=$data['idProduct'.$a];
                     $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                    $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                    $penjualandetail->scheme=$data['scheme'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
                     $penjualandetail->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('penjualandetail',$penjualandetail);
@@ -120,13 +125,19 @@ class M_penjualan extends CI_Model {
         function penjualanEditSave($data) {   
             $this->db->trans_start();
             $subs_date= explode('-', date("d-m-Y"));
+            $tglFaktur=explode('-',$data['tanggalFaktur']);
             
             $penjualan=new stdClass();
+            $penjualan->d=$tglFaktur[0];
+            $penjualan->m=$tglFaktur[1];
+            $penjualan->y=$tglFaktur[2];
             $penjualan->noPo=$data['noPo'];
             $penjualan->idClient=$data['idClient'];
             $penjualan->idEmployeePic=$data['idEmployeePic'];
             $penjualan->keterangan=$data['keterangan'];
             $penjualan->id=$data['id'];
+            $penjualan->diskon=$data['diskon'];
+            $penjualan->jumlahDiskon=empty($data['jumlahDiskon']) ? '' : $data['jumlahDiskon'];
             
                 $this->db->where('id',$penjualan->id);
                 $this->db->update('penjualan',$penjualan);
@@ -140,6 +151,8 @@ class M_penjualan extends CI_Model {
                         $penjualandetail->idProduct=$data['idProduct'.$a];
                         $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                         $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                        $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                        $penjualandetail->scheme=$data['scheme'.$a];
                         $penjualandetail->jumlah=$data['jumlah'.$a];
                         $penjualandetail->id_admin=$this->session->userdata('id_admin');
                         
@@ -153,6 +166,8 @@ class M_penjualan extends CI_Model {
                     $penjualandetail->idProduct=$data['idProduct'.$a];
                     $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                    $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                    $penjualandetail->scheme=$data['scheme'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
                     $penjualandetail->id_admin=$this->session->userdata('id_admin');
 
@@ -202,6 +217,8 @@ class M_penjualan extends CI_Model {
         }  
         
         function TFAUAddSave($data) {  
+            $tglTF=explode('-',$data['tanggalTF']);
+            $tglAU=explode('-',$data['tanggalAU']);
             $subs_date= explode('-', date("d-m-Y"));   
             $penjualan=new stdClass();
             $dataPenjualan=new stdClass();
@@ -209,9 +226,6 @@ class M_penjualan extends CI_Model {
             $this->db->trans_start();
             $penjualan->idPenjualan=$data['idPenjualan'];
             $penjualan->idEmployeePic=$data['idEmployeePic'];
-            $penjualan->d=$subs_date[0];
-            $penjualan->m=$subs_date[1];
-            $penjualan->y=$subs_date[2];
             $penjualan->date=time();
             $penjualan->time=  date("d-m-Y H:i:s");
             $penjualan->id_admin=$this->session->userdata('id_admin');
@@ -220,11 +234,18 @@ class M_penjualan extends CI_Model {
             if($data['typeForm'] == 'tukarfaktur'){
                 $dataPenjualan->status='tukar faktur';
                 $penjualan->tanggalKembali=$data['tanggalKembali'];
+                $penjualan->d=$tglTF[0];
+                $penjualan->m=$tglTF[1];
+                $penjualan->y=$tglTF[2];
                 
                 $this->db->where('id',$data['idPenjualan']);
                 $this->db->update('penjualan',$dataPenjualan);
                 $this->db->insert('tukarfaktur',$penjualan);
             }else{
+                $penjualan->d=$tglAU[0];
+                $penjualan->m=$tglAU[1];
+                $penjualan->y=$tglAU[2];
+                
                 $dataPenjualan->status=$data['status'];
                 $dataPenjualan->nominal=$data['nominal'];
                 $dataPenjualan->biayaLain=$data['biayaLain'] == '' ? '0' : $data['biayaLain'];

@@ -38,7 +38,7 @@
                 <td style='vertical-align:top' width='40%' align='left'>
                     <b><span style='font-size:12pt'>Surat Jalan</span></b></br>
                     No : <?php echo $penjualanById->noFaktur ?></br>
-                    Tanggal : <?php echo date("d-m-Y", $penjualanById->date) ?><br/>
+                    Tanggal : <?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?><br/>
                     Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
                     <?php echo ucwords($detailClient->alamat) ?>
                 </td>

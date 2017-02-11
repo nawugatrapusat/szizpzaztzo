@@ -73,6 +73,7 @@ class M_client extends CI_Model {
                     $clientPrice->idClient=$insertId;
                     $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                     $clientPrice->hargaJual=$data['hargaJual'.$a];
+                    $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
                     $clientPrice->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('clientprice',$clientPrice);
                 }
@@ -107,6 +108,7 @@ class M_client extends CI_Model {
                         $clientPrice->idClient=$client->id;
                         $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                         $clientPrice->hargaJual=$data['hargaJual'.$a];
+                        $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
                         $clientPrice->id_admin=$this->session->userdata('id_admin');
                         $this->db->insert('clientprice',$clientPrice);
                     }
@@ -115,6 +117,7 @@ class M_client extends CI_Model {
                     $clientPrice->id=$data['idClientPrice'.$a];
                     $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                     $clientPrice->hargaJual=$data['hargaJual'.$a];
+                    $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
 
                     $this->db->where('id',$clientPrice->id);
                     $this->db->update('clientprice',$clientPrice);

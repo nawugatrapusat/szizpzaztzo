@@ -88,7 +88,12 @@ class Log extends CI_Controller {
             }
             // Setup sort and search SQL using posted data
             $sortSql = "order by $sortname $sortorder";
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%'" : "";
+            if($qtype == 'time' && $query != ''){
+                $ttime=explode('-', $query);
+                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2]" : "";
+            }else{
+                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%'" : "";
+            }
 
             // Setup paging SQL
             $pageStart = ($page-1)*$rp;
@@ -108,7 +113,7 @@ class Log extends CI_Controller {
 
             $results = $this->m_log->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     $data['rows'][] = array(

@@ -46,6 +46,7 @@
                         <tr>
                             <td align="center">No</td>
                             <td align="center">Produk</td>
+                            <td align="center">Harga Karyawan</td>
                             <td align="center">Harga Jual</td>
                         </tr>
                         <?php
@@ -53,6 +54,8 @@
                                 $param1[$f] = '';
                                 $param2[$f] = '';
                                 $param3[$f] = '';
+                                $param4[$f] = '';
+                                $param5[$f] = '';
                         }
                         if ($clientPrice != '') {
                             $c1 = 1;
@@ -60,6 +63,7 @@
                                 $param1[$c1] = $hasil2->id;
                                 $param2[$c1] = $hasil2->idProduct;
                                 $param3[$c1] = $hasil2->hargaJual;
+                                $param4[$c1] = $hasil2->hargaEmployee;
                                 $c1++;
                             }
                         }
@@ -69,17 +73,21 @@
                                     <td align="center">' . $f . '</td>
                                     <td>'
                             ?>
-                            <select class="cekVal1<?php echo $f?>" name="clientPriceProduct<?php echo $f; ?>">
+                            <select class="produk cekVal1<?php echo $f?>" name="clientPriceProduct<?php echo $f; ?>">
                                 <option value="">Pilih Produk</option>
                                 <?php
                                 if ($product != '') {
                                     foreach ($product as $hasil1) {
+                                        if($param2[$f] == $hasil1->id) $param5[$f]=$hasil1->scheme;
                                         $a = $param2[$f] == $hasil1->id ? "selected='selected'" : '';
-                                        echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->berat) . ' gr </option>';
+                                        echo '<option ' . $a . ' value="' . $hasil1->id . '" scheme="'.$hasil1->scheme.'">' . ucwords($hasil1->nama).' - '.ucwords($hasil1->berat) . ' gr </option>';
                                     }
                                 }
                                 ?>
                             </select>
+                    </td>
+                    <td>
+                        Rp. <input type="text" <?php echo $param5[$f] == 'cashback' ? '':'disabled="disabled"'?> class="hargaEmployee cekVal3<?php echo $f?>" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $param4[$f] == '' ? '' : $param4[$f] ?>" /> <span class="cetakHargaEmployee"> </span>
                     </td>
                     <td>
                         Rp. <input type="text" class="hargaJual cekVal2<?php echo $f?>" name="hargaJual<?php echo $f; ?>" value="<?php echo $param3[$f] == '' ? '' : $param3[$f] ?>" /> <span class="cetakHarga"> </span>
@@ -112,10 +120,13 @@
                 alert("Alamat Masih Kosong !!!");
                 return false;
             }
-            for(a=1;a<=5;a++){
+            for(a=1;a<=30;a++){
                 if(($('.cekVal1'+a).val() == '' && $('.cekVal2'+a).val() != '') || ($('.cekVal1'+a).val() != '' && $('.cekVal2'+a).val() == '')){
                     alert("Produk / Harga Jual Ada Yang Masih Kosong !!!");
                     return false;
+                }else if($('.cekVal3'+a).val() == '' && $('.cekVal3'+a).attr('disabled') != 'disabled'){
+                    alert("Harga Karyawan Ada Yang Masih Kosong !!!");
+                    return false;   
                 }
             }
             window.scrollTo(0, 0);
@@ -125,6 +136,24 @@
             document.height = window.innerHeight;
         }
     $(document).ready(function () {
+        $('.produk').bind('change', function(){
+            var tis=$(this);
+            tis.parent().parent().find('.cetakHargaEmployee').html('');
+            tis.parent().parent().find('.hargaEmployee').val('');
+            if($('option:selected',this).attr('scheme') == 'cashback'){
+                tis.parent().parent().find('.hargaEmployee').removeAttr('disabled');
+            }else{
+                tis.parent().parent().find('.hargaEmployee').attr({'disabled':'disabled'});
+            }
+                $.ajax({
+                type: "POST",
+                dataType : "json",
+                url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                data: 'val='+tis.val()
+              }).done(function( data ) {
+                    tis.parent().find('.cetakHarga').html(data.val);
+              });
+        });
         $('.hargaJual').bind('change', function(){
             var tis=$(this);
             if(tis.val() == ''){
@@ -137,6 +166,21 @@
                 data: 'val='+tis.val()
               }).done(function( data ) {
                     tis.parent().find('.cetakHarga').html(data.val);
+              });
+            }
+        });
+        $('.hargaEmployee').bind('change', function(){
+            var tis=$(this);
+            if(tis.val() == ''){
+                tis.parent().find('.cetakHargaEmployee').html('');
+            }else{
+                $.ajax({
+                type: "POST",
+                dataType : "json",
+                url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                data: 'val='+tis.val()
+              }).done(function( data ) {
+                    tis.parent().find('.cetakHargaEmployee').html(data.val);
               });
             }
         });

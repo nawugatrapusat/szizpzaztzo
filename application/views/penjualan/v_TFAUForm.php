@@ -36,7 +36,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo date("d-m-Y H:i:s", $penjualanById->date) ?></td>
+                            <td><?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
@@ -69,7 +69,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo empty($TF) ? '' : date("d-m-Y H:i:s",$TF->date) ?></td>
+                            <td><?php echo empty($TF) ? '' : date("d-M-Y",strtotime($TF->d.'-'.$TF->m.'-'.$TF->y)) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
@@ -90,7 +90,7 @@
                         <tr>
                             <td>Tanggal Kembali</td>
                             <td>:</td>
-                            <td><?php echo empty($TF) ? '' : $TF->tanggalKembali ?></td>
+                            <td><?php echo empty($TF) ? '' : date("d-M-Y",strtotime($TF->tanggalKembali)) ?></td>
                         </tr>
                         <tr>
                             <td>Keterangan</td>
@@ -100,6 +100,11 @@
                         <tr><td><br/></td></tr>
                         <tr style="padding-top: 15px;padding-bottom: 15px;">
                             <td style="border-top: 1px dotted grey;" colspan="3"><b>Ambil Uang</b></td>
+                        </tr>
+                        <tr>
+                            <td>Tanggal AU</td>
+                            <td>:</td>
+                            <td><span style="color:red;">*</span> <input type="text" name="tanggalAU" id="dateAU" size="10"/></td>
                         </tr>
                         <tr>
                             <td valign="top">Tipe Pembayaran</td>
@@ -157,6 +162,11 @@
                         }else{
                         ?>
                         <tr>
+                            <td>Tanggal TF</td>
+                            <td>:</td>
+                            <td><span style="color:red;">*</span> <input type="text" name="tanggalTF" id="dateTF" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->d.'-'.$addEdit->m.'-'.$addEdit->y ?>"/></td>
+                        </tr>
+                        <tr>
                             <td>Tanggal Kembali</td>
                             <td>:</td>
                             <td><input type="text" name="tanggalKembali" id="date" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->tanggalKembali ?>"/></td>
@@ -202,17 +212,22 @@
                     <td align="center">Produk</td>
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
-                    <td align="center">Total</td>
+                    <td align="center" style='background-color: #c4fad1;'>Total</td>
+                    <td align="center">Harga Employee</td>
+                    <td align="center" style='background-color: #c4fad1;'>Cashback</td>
                 </tr>
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
+                $totcashback=0;
                 for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
                     $paramHargaBeli[$f] = '';
                     $paramHargaJual[$f] = '';
                     $paramjumlah[$f] = '';
+                    $paramcashback[$f]='0';
+                    $paramhargaemp[$f]='0';
                 }
                 if ($penjualanDetail != '') {
                     $c1 = 1;
@@ -223,6 +238,11 @@
                         $paramHargaJual[$c1] = $hasil2->hargaJual;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramjumlah[$c1] = $hasil2->jumlah;
+                        if($hasil2->scheme == 'cashback'){
+                            $paramhargaemp[$c1]=$hasil2->hargaEmployee;
+                            $paramcashback[$c1]=((($hasil2->hargaJual-$hasil2->hargaEmployee)/2)*$hasil2->jumlah);
+                            $totcashback=$totcashback+$paramcashback[$c1];
+                        }
                         $c1++;
                     }
                 }
@@ -244,11 +264,17 @@
                         <td align='right'>
                             <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
-                        <td>
+                        <td align='center'>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
                         <td align='right'>Rp. 
                             <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramhargaemp[$f], 0, ',', '.'); ?>
+                        </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramcashback[$f], 0, ',', '.'); ?>
                         </td>
                         </tr>
                     <?php 
@@ -257,11 +283,32 @@
                 
                             }
                 }
+                    $pa='';
+                    if($penjualanById->diskon == 'nominal'){
+                        $ca=$penjualanById->jumlahDiskon;
+                    }else if($penjualanById->diskon == 'persen'){
+                        $pa=''.$penjualanById->jumlahDiskon.' %';
+                        $ca=$penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100;
+                    }else if ($penjualanById->diskon == 'tidak'){
+                        $ca='0';
+                    }
                 ?>
-                        <tr>
-                            <td colspan="3" align="right">Total Bayar&nbsp;</td>
-                    <td ><?php echo $totalJumlah?></td>
-                    <td align='right'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    <tr>
+                        <td colspan="3" align="right">Total Bayar&nbsp;</td>
+                        <td  align='center'><?php echo $totalJumlah?></td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="right">Diskon<?php echo $pa ?>&nbsp;</td>
+                        <td align='right'><?php echo 'Rp. ' . number_format($ca, 0, ',', '.') ?></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="right">Total Bayar&nbsp;</td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo $penjualanById->diskon == 'persen' ? 'Rp. ' . number_format($totalHarga-($totalHarga*$penjualanById->jumlahDiskon/100), 0, ',', '.') : 'Rp. ' . number_format($totalHarga-$penjualanById->jumlahDiskon, 0, ',', '.') ?></td>
+                        <td align='right'>Total Cashback</td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totcashback, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>
@@ -271,7 +318,7 @@
                         <input type="hidden" name="addEdit" value="<?php echo $addEdit == false ? 'add' : 'edit'; ?>"/>
                         <input type="hidden" name="idPenjualan" value="<?php echo $penjualanById == '' ? '' : $penjualanById->id ?>"/>
                         <input type="hidden" name="idTFAU" value="<?php echo $addEdit == '' ? '' : $addEdit->id ?>"/>
-                        <input type="hidden" name="totalBayar" value="<?php echo $totalHarga ?>"/>
+                        <input type="hidden" name="totalBayar" value="<?php echo $totalHarga-$ca ?>"/>
                         <input type="submit" value="Submit"/>&nbsp;
                         <button type="button" onclick="location.href = '<?php echo site_url('penjualan') ?>';">Cancel</button>
                     </td>
@@ -284,8 +331,9 @@
     <script>
         function validateForm() {
             if ($('#idEmployeePic').val() == "") { alert("Pembawa Masih Kosong !!!"); return false; }
+            if ($('#dateTF').val() == "") { alert("Tanggal TF Masih Kosong !!!"); return false; }
             if($('#idEmployeePic').val() != 'tukarFaktur'){
-                if ($('#tipePembayaran').val() == "") { 
+                if ($('#tipePembayaran').val() == "") {
                     alert("Tipe Pembayaran Masih Kosong !!!"); return false; 
                 }else if($('#tipePembayaran').val() == "giro"){
                     if ($('#idBank').val() == "") { alert("Bank Masih Kosong !!!"); return false; }
@@ -297,6 +345,7 @@
                 }else if($('#status').val() == "manual close"){
                     if ($('#nominalInput').val() == "") { alert("Nominal Masih Kosong !!!"); return false; }
                 }
+                if ($('#dateAU').val() == "") { alert("Tanggal AU Masih Kosong !!!"); return false; }
             }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();
@@ -306,6 +355,8 @@
         }
         $(document).ready(function () {
             $("#date").datepicker({ dateFormat: 'dd-mm-yy' });
+            $("#dateTF").datepicker({ dateFormat: 'dd-mm-yy' });
+            $("#dateAU").datepicker({ dateFormat: 'dd-mm-yy' });
             $("#status").change(function () {
                 var status = $(this);
                 if(status.val() == 'manual close'){

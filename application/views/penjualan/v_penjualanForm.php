@@ -22,14 +22,19 @@
                             <td>:</td>
                             <td><input type="text" name="noPo" value="<?php echo $penjualanById == '' ? '' : ucwords($penjualanById->noPo) ?>" size="50"/></td>
                         </tr>
+                        <tr>
+                            <td>Tanggal Faktur</td>
+                            <td>:</td>
+                            <td><span style="color:red;">*</span> <input type="text" name="tanggalFaktur" id="date" size="10" value="<?php echo $penjualanById == '' ? '' : $penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y ?>"/></td>
+                        </tr>
                         <?php
                         if($typeForm != 0){
-                            echo '
-                        <tr>
-                            <td>Tanggal</td>
-                            <td>:</td>
-                            <td>'.date("d-m-Y H:i:s",$penjualanById->date).'</td>
-                        </tr>';
+//                            echo '
+//                        <tr>
+//                            <td>Tanggal</td>
+//                            <td>:</td>
+//                            <td>'.date("d-m-Y H:i:s",$penjualanById->date).'</td>
+//                        </tr>';
                         }
                         ?>
                         <tr>
@@ -71,6 +76,25 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Diskon</td>
+                            <td>:</td>
+                            <td>
+                                <select id="diskon" name="diskon">
+                                    <?php 
+                                        $a=$penjualanById->diskon == 'tidak' && !empty($penjualanById) ? "selected='selected'" : '';
+                                        $b=$penjualanById->diskon == 'nominal' && !empty($penjualanById) ? "selected='selected'" : '';
+                                        $c=$penjualanById->diskon == 'persen' && !empty($penjualanById) ? "selected='selected'" : '';
+                                        
+                                        $z=$penjualanById->diskon == 'tidak' && !empty($penjualanById) ? 'disabled="disabled"' : '';
+                                    ?>
+                                    <option <?php echo $a; ?> value="tidak">Tidak</option>
+                                    <option <?php echo $b; ?> value="nominal">Nominal</option>
+                                    <option <?php echo $c; ?> value="persen">Persen</option>
+                                </select>
+                                <input type="text" <?php echo $z?> id="jumlahDiskon" name="jumlahDiskon" value="<?php echo $penjualanById == '' ? '' : ucfirst($penjualanById->jumlahDiskon) ?>" size="10"/> <span class="cetakHargaDiskon"> </span>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>Keterangan</td>
                             <td>:</td>
                             <td><input type="text" name="keterangan" value="<?php echo $penjualanById == '' ? '' : ucfirst($penjualanById->keterangan) ?>" size="80"/></td>
@@ -95,6 +119,8 @@
                             $paramHargaBeli[$f] = '';
                             $paramHargaJual[$f] = '';
                             $paramjumlah[$f] = '';
+                            $paramHargaEmployee[$f] = '';
+                            $paramScheme[$f] = '';
                         }
                         if ($penjualanDetail != '') {
                             $c1 = 1;
@@ -105,6 +131,8 @@
                                 $paramHargaJual[$c1] = $hasil2->hargaJual;
                                 $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                                 $paramjumlah[$c1] = $hasil2->jumlah;
+                                $paramHargaEmployee[$c1] = $hasil2->hargaEmployee;
+                                $paramScheme[$c1] = $hasil2->scheme;
                                 $c1++;
                             }
                         }
@@ -133,6 +161,8 @@
                          <input class='cekVal2<?php echo $f?>' type="text" name="jumlah<?php echo $f; ?>" value="<?php echo $paramjumlah[$f] == '' ? '' : $paramjumlah[$f] ?>" size="5"/>
                         <input type="hidden" class="hargaBeli" name="hargaBeli<?php echo $f; ?>" value="<?php echo $paramHargaBeli[$f] == '' ? '' : $paramHargaBeli[$f] ?>"/>
                         <input type="hidden" class="hargaJual" name="hargaJual<?php echo $f; ?>" value="<?php echo $paramHargaJual[$f] == '' ? '' : $paramHargaJual[$f] ?>"/>
+                        <input type="hidden" class="hargaEmployee" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $paramHargaEmployee[$f] == '' ? '' : $paramHargaEmployee[$f] ?>"/>
+                        <input type="hidden" class="scheme" name="scheme<?php echo $f; ?>" value="<?php echo $paramScheme[$f] == '' ? '' : $paramScheme[$f] ?>"/>
                         <input type="hidden" name="id<?php echo $f; ?>" value="<?php echo $paramId[$f] == '' ? '' : $paramId[$f] ?>"/>
                     </td>
                 </tr>
@@ -153,9 +183,11 @@
 <script>
         function validateForm() {
             var a;
+            if ($('#date').val() == "") { alert("Tanggal Faktur Masih Kosong !!!"); return false; }
             if ($('#idClient').val() == "") { alert("Client Masih Kosong !!!"); return false; }
             if ($('#idEmployeePic').val() == "") { alert("Pembawa Masih Kosong !!!"); return false; }
-            for(a=1;a<=35;a++){
+            if ($('#diskon').val() != "tidak" && $("#jumlahDiskon").val() == '') { alert("Nominal / Persen Diskon Masih Kosong !!!"); return false; }
+            for(a=1;a<=50;a++){
                 if(($('.cekVal1'+a).val() == '' && $('.cekVal2'+a).val() != '') || ($('.cekVal1'+a).val() != '' && $('.cekVal2'+a).val() == '')){
                     alert("Produk / Jumlah Ada Yang Masih Kosong !!!");
                     return false;
@@ -168,6 +200,7 @@
             document.height = window.innerHeight;
         }
     $(document).ready(function () {
+        $("#date").datepicker({ dateFormat: 'dd-mm-yy' });
         $(".idProduct").change(function(){
             var product = $(this),client;
             if($("#idClient").val() != ''){
@@ -181,17 +214,46 @@
                             product.parent().parent().find('.cetakHargaJual').val(data.cetakHargaJual);
                             product.parent().parent().find('.hargaJual').val(data.hargaJual);
                             product.parent().parent().find('.hargaBeli').val(data.hargaBeli);
+                            product.parent().parent().find('.hargaEmployee').val(data.hargaEmployee);
+                            product.parent().parent().find('.scheme').val(data.scheme);
                       });
                 }else{
                     product.parent().parent().find('.cetakHargaJual').val('');
                     product.parent().parent().find('.hargaJual').val('');
                     product.parent().parent().find('.hargaBeli').val('');
+                    product.parent().parent().find('.hargaEmployee').val('');
+                    product.parent().parent().find('.scheme').val('');
                 }
             }else{
                 alert('Client harap di pilih dahulu');
                 product[0].selectedIndex=0;
             }
     
+        });
+        $("#diskon").change(function(){
+            $("#jumlahDiskon").val('');
+            $(".cetakHargaDiskon").html('');
+            var tis = $(this);
+            if(tis.val() != 'tidak'){
+                $('#jumlahDiskon').removeAttr('disabled');
+            }else{
+                $('#jumlahDiskon').attr('disabled','disabled');
+            }
+        });
+        $("#jumlahDiskon").change(function(){
+            var tis = $(this);
+            if(tis.val() != '' && $("#diskon").val() == 'nominal'){
+                $.ajax({
+                type: "POST",
+                dataType : "json",
+                url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                data: 'val='+tis.val()
+              }).done(function( data ) {
+                    tis.parent().find('.cetakHargaDiskon').html(data.val);
+              });
+            }else if(tis.val() != '' && $("#diskon").val() == 'persen'){
+                tis.parent().find('.cetakHargaDiskon').html(tis.val()+' %');
+            }
         });
     });
 </script>

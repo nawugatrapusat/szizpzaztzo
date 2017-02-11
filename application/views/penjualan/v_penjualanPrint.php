@@ -17,16 +17,24 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
     
     <h3>Cetak </h3>
     <!--<h3>Cetak Faktur</h3>-->
-    <button type="button" onclick="window.open('<?php echo site_url('cetak/faktur/'.$id) ?>')">Cetak Faktur</button><br/><br/>
+    <!--<button type="button" onclick="window.open('<?php echo site_url('cetak/faktur/'.$id) ?>')">Cetak Faktur</button><br/><br/>-->
+    <select id='fakturNama'>
+        <option value='1'>Sari Puspita Herba</option>
+        <option value='2'>CV DODO_MIS</option>
+    </select>
+    <button type="button" id='cetakFaktur'>Cetak Faktur</button><br/><br/>
     <!--<h3>Cetak Surat Jalan</h3>-->
     <button type="button" onclick="window.open('<?php echo site_url('cetak/suratJalan/'.$id) ?>')">Cetak Surat Jalan</button><br/><br/>
     <!--<h3>Cetak Kwitansi</h3>-->
-    <!--<button type="button" onclick="window.open('<?php echo site_url('cetak/kwitansi/'.$id) ?>')">Cetak Kwitansi</button><br/>-->
+    <button type="button" onclick="window.open('<?php echo site_url('cetak/kwitansiForm/'.$id) ?>')">Cetak Kwitansi</button><br/><br/>
     <!--<h3>Cetak Tukar Faktur</h3>-->
     <div class="flexme"></div>
     
 <script>
 $(document).ready(function(){     
+    $('#cetakFaktur').click(function () {
+        window.open('<?php echo site_url('cetak/faktur/'.$id.'/') ?>'+$('#fakturNama').val());
+    });
     $(".flexme").flexigrid({
     url: '<?php echo site_url('penjualan/penjualanPrintTable/'.$idClient);?>',
     dataType: 'json',
@@ -85,6 +93,15 @@ function print(com,grid){
             window.open('<?php echo site_url('cetak/tukarFaktur/') ?>'+a);
         });
 }
+});$(window).load(function(){ 
+    $('.flexme > tbody  > tr').each(function() {
+        $(this).find('td').each(function(){
+            var tis=$(this);
+            if(tis.attr('abbr') == 'status' && tis.text() == 'Tukar Faktur'){
+                tis.parent().css('background-color','#FAEFC4');
+            }
+        });
+    });
 });
 </script>
     

@@ -54,7 +54,7 @@
                     <b><span style='font-size:12pt'>Tukar Faktur</span></b></br>
                     Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
                     <?php echo ucwords($detailClient->alamat) ?><br/>
-                    Telah diterima dari : Sari Puspita Herba<br/>
+                    <!--Telah diterima dari : Sari Puspita Herba<br/>-->
                     Faktur sebanyak : <?php echo $datas['jumlah']?> lembar
                 </td>
             </tr>

@@ -64,6 +64,8 @@ class Penjualan extends CI_Controller {
                         if(($hasil->idProduct != '' && $hasil->hargaJual != '') && ($hasil->idProduct == $idProduct)){
                             $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJual,0,',','.');
                             $data->hargaJual=$hasil->hargaJual;
+                            $data->cetakHargaEmployee=$hasil->hargaEmployee == '' ? '' : 'Rp. '.number_format($hasil->hargaEmployee,0,',','.');
+                            $data->hargaEmployee=$hasil->hargaEmployee;
                             $c++;
                         }
                     }    
@@ -71,12 +73,11 @@ class Penjualan extends CI_Controller {
                 if($c == 0){
                     $data->cetakHargaJual='Rp. '.number_format($product->hargaJual,0,',','.');
                     $data->hargaJual=$product->hargaJual;
+                    $data->cetakHargaEmployee=$product->hargaEmployee == '' ? '' : 'Rp. '.number_format($product->hargaEmployee,0,',','.');
+                    $data->hargaEmployee=$product->hargaEmployee;
                 }
-                if($product->scheme == 'cashback'){
-                    $data->hargaBeli=$product->hargaEmployee;
-                }else{
-                    $data->hargaBeli=$product->hargaBeli;
-                }
+                $data->scheme=$product->scheme;
+                $data->hargaBeli=$product->hargaBeli;
                         
                 echo json_encode($data);
             }
@@ -266,6 +267,7 @@ class Penjualan extends CI_Controller {
             $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
             $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
             $bank=$this->m_bank->bankGetAll();
+            
             $data=array(
                 'client'=>$client,
                 'product'=>$product,
@@ -274,7 +276,8 @@ class Penjualan extends CI_Controller {
                 'employee'=>$employee,
                 'TF'=>$TF,
                 'AU'=>$AU,
-                'bank'=>$bank
+                'bank'=>$bank,
+                'cashback'=>$this->cashback($id)
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
@@ -306,6 +309,27 @@ class Penjualan extends CI_Controller {
             $this->load->view('penjualan/v_penjualanPrint.php',$data);
             $this->load->view('template/footer.php');  
 	}
+        
+        function cashback($id){
+            $client=$this->m_client->clientGetAll();
+            $product=$this->m_product->productGetAll();
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $employee=$this->m_employee->empGetAll();
+            $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
+            $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
+            $bank=$this->m_bank->bankGetAll();
+            $cashback=0;
+            
+            if($penjualanDetail != false){
+                foreach ($penjualanDetail as $penj) {
+                    if($penj->scheme == 'cashback'){
+                        $cashback=$cashback+((($penj->hargaJual-$penj->hargaEmployee)/2)*$penj->jumlah);
+                    }
+                }
+            }
+            return $cashback;
+        }
         
 //-------------------------------------------------------------------------------------------------------------------------------------------------------        
         
@@ -343,17 +367,22 @@ class Penjualan extends CI_Controller {
                     $query='0';
                 }
             }
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
+            if($qtype == 'time' && $query != ''){
+                $ttime=explode('-', $query);
+                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
+            }else{
+                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
+            }
 
             // Setup paging SQL
             $pageStart = ($page-1)*$rp;
             $limitSql = "limit $pageStart, $rp";
-
+            
             // Create JSON data
             $data = array();
             $data['page'] = $page;
             $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic,penjualan.nominalFaktur";
+            $select = "client.nama,penjualan.noFaktur,penjualan.diskon,penjualan.jumlahDiskon,penjualan.noPo,penjualan.d,penjualan.m,penjualan.y,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic,penjualan.nominalFaktur";
             $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
             $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
 //            echo $sql;
@@ -363,7 +392,7 @@ class Penjualan extends CI_Controller {
 
             $results = $this->m_penjualan->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     if($row->idEmployeePic == '0'){
@@ -372,14 +401,17 @@ class Penjualan extends CI_Controller {
                         $a=$this->m_employee->empGetById($row->idEmployeePic);
                         $employeePic=$a->nama;
                     }
-                    if($row->totalBayar != ''){
-                        $totByr='Rp. ' . number_format($row->totalBayar, 0, ',', '.');
-                    }else{
-                        $totByr='';
+                    if($row->totalBayar != '') $totByr='Rp. ' . number_format($row->totalBayar, 0, ',', '.'); else $totByr='';
+                    if($row->diskon == 'nominal'){
+                        $nominalFaktur='Rp. ' . number_format($row->nominalFaktur-$row->jumlahDiskon, 0, ',', '.');
+                    }else if($row->diskon == 'persen'){
+                        $nominalFaktur='Rp. ' . number_format($row->nominalFaktur-($row->jumlahDiskon*$row->nominalFaktur/100), 0, ',', '.');
+                    }else if ($row->diskon == 'tidak'){
+                        $nominalFaktur='Rp. ' . number_format($row->nominalFaktur, 0, ',', '.');
                     }
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
+                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-M-Y",strtotime($row->d.'-'.$row->m.'-'.$row->y)),$nominalFaktur,$totByr,ucwords($row->status))
                     );
                     $no++;
                 }        
@@ -418,7 +450,12 @@ class Penjualan extends CI_Controller {
             }
             // Setup sort and search SQL using posted data
             $sortSql = "order by $sortname $sortorder";
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'";
+            if($qtype == 'time' && $query != ''){
+                $ttime=explode('-', $query);
+                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'";
+            }else{
+                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.idClient='$idClient' AND penjualan.deleted='0'";
+            }
 
             // Setup paging SQL
             $pageStart = ($page-1)*$rp;
@@ -428,7 +465,7 @@ class Penjualan extends CI_Controller {
             $data = array();
             $data['page'] = $page;
             $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic";
+            $select = "client.nama,penjualan.noFaktur,penjualan.diskon,penjualan.jumlahDiskon,penjualan.noPo,penjualan.d,penjualan.m,penjualan.y,penjualan.status,penjualan.id,penjualan.nominalFaktur,penjualan.idEmployeePic";
             $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
             $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
 //            echo $sql;
@@ -438,7 +475,7 @@ class Penjualan extends CI_Controller {
 
             $results = $this->m_penjualan->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     if($row->status != 'ambil uang' && $row->status != 'manual close' ){
@@ -448,9 +485,16 @@ class Penjualan extends CI_Controller {
                             $a=$this->m_employee->empGetById($row->idEmployeePic);
                             $employeePic=$a->nama;
                         }
+                        if($row->diskon == 'nominal'){
+                            $nominalFaktur='Rp. ' . number_format($row->nominalFaktur-$row->jumlahDiskon, 0, ',', '.');
+                        }else if($row->diskon == 'persen'){
+                            $nominalFaktur='Rp. ' . number_format($row->nominalFaktur-($row->jumlahDiskon*$row->nominalFaktur/100), 0, ',', '.');
+                        }else if ($row->diskon == 'tidak'){
+                            $nominalFaktur='Rp. ' . number_format($row->nominalFaktur, 0, ',', '.');
+                        }
                         $data['rows'][] = array(
                         'id' => $row->id,
-                        'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),'Rp. ' . number_format($row->totalBayar, 0, ',', '.'),ucwords($row->status))
+                        'cell' => array($no,$row->noFaktur,$row->noPo,  ucwords($row->nama), ucwords($employeePic),date("d-M-Y",strtotime($row->d.'-'.$row->m.'-'.$row->y)),$nominalFaktur,ucwords($row->status))
                         );
                         $no++;
                     }

@@ -429,7 +429,7 @@ class Setting extends CI_Controller {
 
             $results = $this->m_client->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     $clientPrice=$this->m_client->clientPriceGetByIdClient($row->id);
@@ -502,7 +502,7 @@ class Setting extends CI_Controller {
 
             $results = $this->m_product->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     $data['rows'][] = array(

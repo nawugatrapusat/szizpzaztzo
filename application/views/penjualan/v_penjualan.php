@@ -170,5 +170,17 @@ function view(com,grid){
         });
 }
 });
+$(window).load(function(){ 
+    $('.flexme > tbody  > tr').each(function() {
+        $(this).find('td').each(function(){
+            var tis=$(this);
+            if(tis.attr('abbr') == 'status' && ( tis.text() == 'Manual Close' || tis.text() == 'Ambil Uang')){
+                tis.parent().css('background-color','#c4fad1');
+            }else if(tis.attr('abbr') == 'status' && tis.text() == 'Tukar Faktur'){
+                tis.parent().css('background-color','#FAEFC4');
+            }
+        });
+    });
+});
 </script>
     

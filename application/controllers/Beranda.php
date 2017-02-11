@@ -81,7 +81,12 @@ class Beranda extends CI_Controller {
                     $query='0';
                 }
             }
-            $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND tukarfaktur.idPenjualan=penjualan.id AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND tukarfaktur.idPenjualan=penjualan.id AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'";
+            if($qtype == 'time' && $query != ''){
+                $ttime=explode('-', $query);
+                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'";
+            }else{
+                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND STATUS <> 'ambil uang' AND STATUS <> 'manual close' AND penjualan.deleted='0'";
+            }
 
             // Setup paging SQL
             $pageStart = ($page-1)*$rp;
@@ -91,9 +96,9 @@ class Beranda extends CI_Controller {
             $data = array();
             $data['page'] = $page;
             $data['rows'] = array();
-            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.date,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic,penjualan.nominalFaktur,tukarfaktur.tanggalKembali";
-            $sql = "SELECT $select FROM penjualan,client,tukarfaktur $whereSql $sortSql $limitSql";
-            $sqlcount = "SELECT $select FROM penjualan,client,tukarfaktur $whereSql $sortSql";
+            $select = "client.nama,penjualan.noFaktur,penjualan.noPo,penjualan.d,penjualan.m,penjualan.y,penjualan.status,penjualan.id,penjualan.totalBayar,penjualan.idEmployeePic,penjualan.nominalFaktur";
+            $sql = "SELECT $select FROM penjualan,client $whereSql $sortSql $limitSql";
+            $sqlcount = "SELECT $select FROM penjualan,client $whereSql $sortSql";
 //            echo $sql;
             // Get total count of records
             $total = $this->m_penjualan->get_count_query($sqlcount);
@@ -101,7 +106,7 @@ class Beranda extends CI_Controller {
 
             $results = $this->m_penjualan->get_query($sql);
 
-            $no=1;
+            $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
                     if($row->idEmployeePic == '0'){
@@ -115,9 +120,11 @@ class Beranda extends CI_Controller {
                     }else{
                         $totByr='';
                     }
+                    $fakturData=$this->m_penjualan->tukarFakturGetByIdPenjualan($row->id);
+                    if($fakturData != false) $tglKembali=$fakturData->tanggalKembali; else $tglKembali='';
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-m-Y H:i:s",$row->date),$row->tanggalKembali,'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
+                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-M-Y",strtotime($row->d.'-'.$row->m.'-'.$row->y)),date("d-M-Y",strtotime($tglKembali)),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
                     );
                     $no++;
                 }        

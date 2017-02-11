@@ -36,7 +36,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo date("d-m-Y H:i:s",$penjualanById->date) ?></td>
+                            <td><?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
@@ -66,7 +66,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php echo empty($TF) ? '' : date("d-m-Y H:i:s",$TF->date) ?></td>
+                            <td><?php echo empty($TF) ? '' : date("d-M-Y",strtotime($TF->d.'-'.$TF->m.'-'.$TF->y)) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
@@ -101,7 +101,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td><?php if(!empty($AU))echo date("d-m-Y H:i:s",$AU->date) ?></td>
+                            <td><?php if(!empty($AU))echo date("d-M-Y",strtotime($AU->d.'-'.$AU->m.'-'.$AU->y)) ?></td>
                         </tr>
                         <tr>
                             <td>Pembawa</td>
@@ -133,11 +133,49 @@
                         <tr>
                             <td>Bank</td>
                             <td>:</td>
-                            <td><?php echo ucwords($namaBank).', Giro : '.$penjualanById->noGiro ?></td>
+                            <td><?php echo ucwords($namaBank).', No Giro : '.$penjualanById->noGiro ?></td>
                         </tr>
                         <?php
                         }
                         ?>
+                        <tr>
+                            <td>Nominal Faktur</td>
+                            <td>:</td>
+                            <td><?php if(!empty($penjualanById) && !empty($penjualanById->nominalFaktur)) echo 'Rp. ' . number_format($penjualanById->nominalFaktur, 0, ',', '.') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Diskon</td>
+                            <td>:</td>
+                            <td><?php 
+                                $pa='';
+                                if($penjualanById->diskon == 'nominal'){
+                                    $ca=$penjualanById->jumlahDiskon;
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur-$penjualanById->jumlahDiskon, 0, ',', '.');
+                                }else if($penjualanById->diskon == 'persen'){
+                                    $pa=''.$penjualanById->jumlahDiskon.' %';
+                                    $ca=$penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100;
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur-($penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100), 0, ',', '.');
+                                }else if ($penjualanById->diskon == 'tidak'){
+                                    $ca='0';
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur, 0, ',', '.');
+                                }
+                            if(!empty($penjualanById) && !empty($penjualanById->diskon)) echo ucwords($penjualanById->diskon).' / '.$pa.' / '.'Rp. ' . number_format($ca, 0, ',', '.')
+                            ?></td>
+                        </tr>
+                        <tr>
+                            <td>Nominal Faktur</td>
+                            <td>:</td>
+                            <td><?php 
+                                if($penjualanById->diskon == 'nominal'){
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur-$penjualanById->jumlahDiskon, 0, ',', '.');
+                                }else if($penjualanById->diskon == 'persen'){
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur-($penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100), 0, ',', '.');
+                                }else if ($penjualanById->diskon == 'tidak'){
+                                    $ct='Rp. ' . number_format($penjualanById->nominalFaktur, 0, ',', '.');
+                                }
+                                if(!empty($penjualanById) && !empty($penjualanById->nominalFaktur)) echo $ct; 
+                            ?></td>
+                        </tr>
                         <tr>
                             <td>Status</td>
                             <td>:</td>
@@ -149,14 +187,14 @@
                             <td><?php if(!empty($penjualanById) && !empty($penjualanById->biayaLain)) echo 'Rp. ' . number_format($penjualanById->biayaLain, 0, ',', '.') ?></td>
                         </tr>
                         <tr>
-                            <td>Nominal Faktur</td>
-                            <td>:</td>
-                            <td><?php if(!empty($penjualanById) && !empty($penjualanById->nominalFaktur)) echo 'Rp. ' . number_format($penjualanById->nominalFaktur, 0, ',', '.') ?></td>
-                        </tr>
-                        <tr>
                             <td>Hasil</td>
                             <td>:</td>
                             <td><?php if(!empty($penjualanById) && !empty($penjualanById->totalBayar)) echo 'Rp. ' . number_format($penjualanById->totalBayar, 0, ',', '.') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Cashback</td>
+                            <td>:</td>
+                            <td><?php echo 'Rp. ' . number_format($cashback, 0, ',', '.') ?></td>
                         </tr>
                         <tr>
                             <td>Keterangan</td>
@@ -175,17 +213,22 @@
                     <td align="center">Produk</td>
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
-                    <td align="center">Total</td>
+                    <td align="center" style='background-color: #c4fad1;'>Total</td>
+                    <td align="center">Harga Employee</td>
+                    <td align="center" style='background-color: #c4fad1;'>Cashback</td>
                 </tr>
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
+                $totcashback=0;
                 for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
                     $paramHargaBeli[$f] = '';
                     $paramHargaJual[$f] = '';
                     $paramjumlah[$f] = '';
+                    $paramcashback[$f]='0';
+                    $paramhargaemp[$f]='0';
                 }
                 if ($penjualanDetail != '') {
                     $c1 = 1;
@@ -196,6 +239,11 @@
                         $paramHargaJual[$c1] = $hasil2->hargaJual;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramjumlah[$c1] = $hasil2->jumlah;
+                        if($hasil2->scheme == 'cashback'){
+                            $paramhargaemp[$c1]=$hasil2->hargaEmployee;
+                            $paramcashback[$c1]=((($hasil2->hargaJual-$hasil2->hargaEmployee)/2)*$hasil2->jumlah);
+                            $totcashback=$totcashback+$paramcashback[$c1];
+                        }
                         $c1++;
                     }
                 }
@@ -217,11 +265,17 @@
                         <td align='right'>
                             <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
                         </td>
-                        <td>
+                        <td align='center'>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
                         <td align='right'>Rp. 
                             <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                        </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramhargaemp[$f], 0, ',', '.'); ?>
+                        </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramcashback[$f], 0, ',', '.'); ?>
                         </td>
                         </tr>
                     <?php 
@@ -231,10 +285,22 @@
                             }
                 }
                 ?>
-                        <tr>
-                            <td colspan="3" align="right">Total Bayar&nbsp;</td>
-                    <td ><?php echo $totalJumlah?></td>
-                    <td  align='right'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                    <tr>
+                        <td colspan="3" align="right">Total Bayar&nbsp;</td>
+                        <td  align='center'><?php echo $totalJumlah?></td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="right">Diskon<?php echo $pa ?>&nbsp;</td>
+                        <td align='right'><?php echo 'Rp. ' . number_format($ca, 0, ',', '.') ?></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" align="right">Total Bayar&nbsp;</td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo $penjualanById->diskon == 'persen' ? 'Rp. ' . number_format($totalHarga-($totalHarga*$penjualanById->jumlahDiskon/100), 0, ',', '.') : 'Rp. ' . number_format($totalHarga-$penjualanById->jumlahDiskon, 0, ',', '.') ?></td>
+                        <td align='right'>Total Cashback</td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totcashback, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>
