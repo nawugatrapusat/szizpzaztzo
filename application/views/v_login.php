@@ -73,7 +73,7 @@ p {
                 <tr>
                     <td>Username</td>
                     <td>:</td>
-                    <td><input type="text" name='user'/></td>
+                    <td><input type="text" name='user' autocomplete="off"/></td>
                 </tr>
                 <tr>
                     <td>Password</td>

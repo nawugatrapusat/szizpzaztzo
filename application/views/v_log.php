@@ -16,8 +16,8 @@ $(document).ready(function(){
             {display: 'No', name : '', width : 40, sortable : true, align: 'left'},
             {display: 'Id', name : 'id_admin', width : 20, sortable : true, align: 'left'},
             {display: 'Category', name : 'category', width : 110, sortable : true, align: 'left'},
-            {display: 'Tanggal', name : 'date', width : 120, sortable : true, align: 'left'},
-            {display: 'Activity', name : 'activuty', width : 890, sortable : true, align: 'left'},
+            {display: 'Tanggal', name : 'date', width : 100, sortable : true, align: 'left'},
+            {display: 'Activity', name : 'activuty', width : 10000, sortable : true, align: 'left'},
             ],
     buttons : [
             {name: 'Detail', bclass: 'detail' ,align:'right', onpress:detail},
@@ -36,7 +36,7 @@ $(document).ready(function(){
     useRp: true,
     rp: 50,
     showTableToggleBtn: true,
-    width: 1280,
+    width: 1340,
     height: 380
 });      
 function detail(com,grid){

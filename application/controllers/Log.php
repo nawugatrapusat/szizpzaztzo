@@ -28,6 +28,7 @@ class Log extends CI_Controller {
 	public function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
                         
             
 //            $data=array(
@@ -44,6 +45,7 @@ class Log extends CI_Controller {
 	public function logDetail()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
                         
             $id=$this->uri->segment(3);
             $detail=$this->m_log->logGetById($id) == false ? '' : $this->m_log->logGetById($id);
@@ -61,6 +63,9 @@ class Log extends CI_Controller {
         
         function logTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order

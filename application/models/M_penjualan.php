@@ -217,9 +217,6 @@ class M_penjualan extends CI_Model {
         }  
         
         function TFAUAddSave($data) {  
-            $tglTF=explode('-',$data['tanggalTF']);
-            $tglAU=explode('-',$data['tanggalAU']);
-            $subs_date= explode('-', date("d-m-Y"));   
             $penjualan=new stdClass();
             $dataPenjualan=new stdClass();
             
@@ -232,6 +229,7 @@ class M_penjualan extends CI_Model {
             $penjualan->keterangan=$data['keterangan'];
             
             if($data['typeForm'] == 'tukarfaktur'){
+                $tglTF=explode('-',$data['tanggalTF']);
                 $dataPenjualan->status='tukar faktur';
                 $penjualan->tanggalKembali=$data['tanggalKembali'];
                 $penjualan->d=$tglTF[0];
@@ -242,6 +240,7 @@ class M_penjualan extends CI_Model {
                 $this->db->update('penjualan',$dataPenjualan);
                 $this->db->insert('tukarfaktur',$penjualan);
             }else{
+                $tglAU=explode('-',$data['tanggalAU']);
                 $penjualan->d=$tglAU[0];
                 $penjualan->m=$tglAU[1];
                 $penjualan->y=$tglAU[2];
@@ -294,6 +293,65 @@ class M_penjualan extends CI_Model {
 //                $this->db->update('ambiluang',$penjualan);
                 return false;
             }
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
+        function histPenjualan($p,$pd) {
+            $this->db->trans_start();
+            
+            $this->db->where('idPenjualan',$p->id);
+            $this->db->delete('histpenjualan');
+            $this->db->where('idPenjualan',$p->id);
+            $this->db->delete('histpenjualandetail');
+            
+            $penjualan=new stdClass();
+            $penjualan->idPenjualan=$p->id;
+            $penjualan->no=$p->no;
+            $penjualan->noFaktur=$p->noFaktur;
+            $penjualan->noPo=$p->noPo;
+            $penjualan->idClient=$p->idClient;
+            $penjualan->idEmployeePic=$p->idEmployeePic;
+            $penjualan->hash=$p->hash;
+            $penjualan->d=$p->d;
+            $penjualan->m=$p->m;
+            $penjualan->y=$p->y;
+            $penjualan->date=$p->date;
+            $penjualan->time=$p->time;
+            $penjualan->id_admin=$p->id_admin;
+            $penjualan->keterangan=$p->keterangan;
+            $penjualan->diskon=$p->diskon;
+            $penjualan->jumlahDiskon=$p->jumlahDiskon;
+            $penjualan->tipePembayaran=$p->tipePembayaran;
+            $penjualan->idBank=$p->idBank;
+            $penjualan->noGiro=$p->noGiro;
+            $penjualan->status=$p->status;
+            $penjualan->nominal=$p->nominal;
+            $penjualan->biayaLain=$p->biayaLain;
+            $penjualan->nominalFaktur=$p->nominalFaktur;
+            $penjualan->totalBayar=$p->totalBayar;
+            
+            $this->db->insert('histpenjualan',$penjualan);
+            
+            foreach($pd as $detail){
+                $penjualandetail=new stdClass();
+                $penjualandetail->idPenjualanDetail=$detail->id;
+                $penjualandetail->idPenjualan=$detail->idPenjualan;
+                $penjualandetail->idProduct=$detail->idProduct;
+                $penjualandetail->hargaBeli=$detail->hargaBeli;
+                $penjualandetail->hargaJual=$detail->hargaJual;
+                $penjualandetail->hargaEmployee=$detail->hargaEmployee;
+                $penjualandetail->scheme=$detail->scheme;
+                $penjualandetail->jumlah=$detail->jumlah;
+                $penjualandetail->id_admin=$detail->id_admin;
+
+                $this->db->insert('histpenjualandetail',$penjualandetail);
+            }
+                    
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;

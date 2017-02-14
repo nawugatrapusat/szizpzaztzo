@@ -31,6 +31,36 @@ class Cetak extends CI_Controller {
 	public function faktur()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            if($this->m_penjualan->histPenjualan($penjualanById,$penjualanDetail) != false){
+                $this->m_log->insert_log('Hist Penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$penjualanDetail))));
+            }else{
+                $this->m_log->insert_log('Hist Penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$penjualanDetail))));
+            }
+            
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product,
+                'fakturNama'=>$fakturNama
+            );
+            
+            $this->load->view('cetak/v_faktur.php',$data); 
+	}	
+    
+	public function suratJalan()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -47,37 +77,20 @@ class Cetak extends CI_Controller {
                 'fakturNama'=>$fakturNama
             );
             
-            $this->load->view('cetak/v_faktur.php',$data); 
-	}	
-    
-	public function suratJalan()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-            
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product
-            );
-            
             $this->load->view('cetak/v_suratJalan.php',$data); 
 	}	
     
 	public function tukarFaktur()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $b=0;
             $datas['inject']=0;
             $datas['failedNotif']='';
-            for($a=3;$a<=13;$a++){
+            $fakturNama=$this->uri->segment(3);
+            $fakturTgl=$this->uri->segment(4);
+            for($a=5;$a<=15;$a++){
                     $id=$this->uri->segment($a);
                 if($id != ''){
                     $penjualanById=$this->m_penjualan->penjualanGetById($id);
@@ -109,7 +122,9 @@ class Cetak extends CI_Controller {
             $data=array(
                 'detailClient'=>$detailClient,
                 'datas'=>$datas,
-                'product'=>$product
+                'product'=>$product,
+                'fakturNama'=>$fakturNama,
+                'fakturTgl'=>$fakturTgl
             );
             
             $this->load->view('cetak/v_tukarFaktur.php',$data); 
@@ -118,8 +133,10 @@ class Cetak extends CI_Controller {
 	public function kwitansiForm()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
@@ -130,7 +147,8 @@ class Cetak extends CI_Controller {
                 'penjualanDetail'=>$penjualanDetail,
                 'detailClient'=>$detailClient,
                 'product'=>$product,
-                'id'=>$id
+                'id'=>$id,
+                'fakturNama'=>$fakturNama
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
@@ -142,8 +160,10 @@ class Cetak extends CI_Controller {
 	public function kwitansi()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
             $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
@@ -153,10 +173,61 @@ class Cetak extends CI_Controller {
                 'penjualanById'=>$penjualanById,
                 'penjualanDetail'=>$penjualanDetail,
                 'detailClient'=>$detailClient,
-                'product'=>$product
+                'product'=>$product,
+                'fakturNama'=>$fakturNama
             );
             
             $this->load->view('cetak/v_kwitansi.php',$data); 
+	}
+    
+	public function kwitansiManualForm()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+//            print_r($penjualanById);
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product,
+                'id'=>$id,
+                'fakturNama'=>$fakturNama
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('cetak/v_kwitansiManualForm.php',$data);
+            $this->load->view('template/footer.php');  
+	}
+    
+	public function kwitansiManual()
+	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
+            $id=$this->uri->segment(3);
+            $fakturNama=$this->uri->segment(4);
+            $penjualanById=$this->m_penjualan->penjualanGetById($id);
+            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
+            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
+            $product=$this->m_product->productGetAll();
+            
+            $data=array(
+                'penjualanById'=>$penjualanById,
+                'penjualanDetail'=>$penjualanDetail,
+                'detailClient'=>$detailClient,
+                'product'=>$product,
+                'fakturNama'=>$fakturNama
+            );
+            
+            $this->load->view('cetak/v_kwitansiManual.php',$data); 
 	}
         
         

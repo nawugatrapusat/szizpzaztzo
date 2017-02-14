@@ -120,21 +120,21 @@ class Penjualan extends CI_Controller {
         function penjualanFormSave(){
 //            print_r($this->input->post());
             if($this->input->post()){
-//                echo str_replace(',','<br/>',json_encode((json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+//                echo str_replace(',','<br/>',json_encode((json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 if($this->input->post('id') == ''){
                     if($this->m_penjualan->penjualanAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_penjualan->penjualanEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -146,14 +146,15 @@ class Penjualan extends CI_Controller {
         
         function penjualanDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $data=$this->uri->segment(3);
             
             if($this->m_penjualan->penjualanDelete($data) != false){
-                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             redirect(site_url('penjualan'));
@@ -161,6 +162,7 @@ class Penjualan extends CI_Controller {
         
         function TFAUForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -213,36 +215,36 @@ class Penjualan extends CI_Controller {
                 if($this->input->post('typeForm') == 'tukarFaktur'){
                     if($this->input->post('addEdit') == 'add'){
                         if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->m_log->insert_log('simpan TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->m_log->insert_log('simpan TF',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                             $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                         }else{
-                            $this->m_log->insert_log('simpan TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->m_log->insert_log('simpan TF',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                             $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                         }
                     }else{
                         if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->m_log->insert_log('edit TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->m_log->insert_log('edit TF',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                             $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                         }else{
-                            $this->m_log->insert_log('edit TF',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->m_log->insert_log('edit TF',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                             $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                         }
                     }
                 }else{
                     if($this->input->post('addEdit') == 'add'){
                         if($this->m_penjualan->TFAUAddSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->m_log->insert_log('simpan AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->m_log->insert_log('simpan AU',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                             $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                         }else{
-                            $this->m_log->insert_log('simpan AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->m_log->insert_log('simpan AU',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                             $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                         }
                     }else{
                         if($this->m_penjualan->TFAUEditSave(array_map('strtolower', $this->input->post())) != false){
-                            $this->m_log->insert_log('edit AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                            $this->m_log->insert_log('edit AU',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                             $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                         }else{
-                            $this->m_log->insert_log('edit AU',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                            $this->m_log->insert_log('edit AU',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                             $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                         }
                     }
@@ -290,6 +292,7 @@ class Penjualan extends CI_Controller {
 	function penjualanPrint()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
                         
 //            $penjualan=$this->m_penjualan->penjualanGetAll();
 //            $data=array(
@@ -335,6 +338,8 @@ class Penjualan extends CI_Controller {
         
         function penjualanTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order
@@ -367,11 +372,12 @@ class Penjualan extends CI_Controller {
                     $query='0';
                 }
             }
+            $employeeInput = $this->session->userdata('id_admin') == '1' ? '' : 'AND penjualan.time like "'.date("d-m-Y").'%" AND penjualan.id_admin="'.$this->session->userdata('id_admin').'"' ;
             if($qtype == 'time' && $query != ''){
                 $ttime=explode('-', $query);
-                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
+                $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'";
             }else{
-                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient AND penjualan.deleted='0'";
+                $whereSql = ($qtype != '' && $query != '') ? "where $qtype LIKE '%$query%' AND client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'";
             }
 
             // Setup paging SQL
@@ -389,7 +395,7 @@ class Penjualan extends CI_Controller {
             // Get total count of records
             $total = $this->m_penjualan->get_count_query($sqlcount);
             $data['total'] = $total;
-
+            
             $results = $this->m_penjualan->get_query($sql);
 
             $no=$pageStart+1;
@@ -422,6 +428,9 @@ class Penjualan extends CI_Controller {
         
         function penjualanPrintTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $idClient=$this->uri->segment(3);
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column

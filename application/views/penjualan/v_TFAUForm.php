@@ -150,13 +150,13 @@
                                     ?>
                                     <option <?php echo $d; ?> value="ambil uang">Ambil Uang</option>
                                     <option <?php echo $e; ?> value="manual close">Manual Close</option>
-                                </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp. <span style="color:red;">*</span><input type="text" id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/> <span class="cetakHargaNominal"> </span>
+                                </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp. <span style="color:red;">*</span><input type="text"  class='onlyNumb' id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/> <span class="cetakHargaNominal"> </span>
                             </td>
                         </tr>
                         <tr>
                             <td>Biaya Lain</td>
                             <td>:</td>
-                            <td>Rp. <input type="text" id='biayaLain' name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/> <span class="cetakHargaBiayaLain"> </td>
+                            <td>Rp. <input type="text" id='biayaLain'  class='onlyNumb' name="biayaLain" value="<?php echo $penjualanById == '' ? '' : $penjualanById->biayaLain ?>"/> <span class="cetakHargaBiayaLain"> </td>
                         </tr>
                         <?php
                         }else{
@@ -213,7 +213,7 @@
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
                     <td align="center" style='background-color: #c4fad1;'>Total</td>
-                    <td align="center">Harga Employee</td>
+                    <td align="center">Harga Karyawan</td>
                     <td align="center" style='background-color: #c4fad1;'>Cashback</td>
                 </tr>
                 <?php

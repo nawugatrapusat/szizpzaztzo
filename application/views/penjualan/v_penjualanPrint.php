@@ -21,19 +21,32 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
     <select id='fakturNama'>
         <option value='1'>Sari Puspita Herba</option>
         <option value='2'>CV DODO_MIS</option>
-    </select>
+    </select><br/><br/>
     <button type="button" id='cetakFaktur'>Cetak Faktur</button><br/><br/>
     <!--<h3>Cetak Surat Jalan</h3>-->
-    <button type="button" onclick="window.open('<?php echo site_url('cetak/suratJalan/'.$id) ?>')">Cetak Surat Jalan</button><br/><br/>
+    <button type="button" id='suratJalan'>Cetak Surat Jalan</button><br/><br/>
     <!--<h3>Cetak Kwitansi</h3>-->
-    <button type="button" onclick="window.open('<?php echo site_url('cetak/kwitansiForm/'.$id) ?>')">Cetak Kwitansi</button><br/><br/>
+    <button type="button" id='kwitansiForm'>Cetak Kwitansi</button><br/><br/>
+    <!--<h3>Cetak Kwitansi</h3>-->
+    <button type="button" id='kwitansiManualForm'>Cetak Kwitansi Manual</button><br/><br/>
     <!--<h3>Cetak Tukar Faktur</h3>-->
+    Tanggal : <input type="text" name="tanggal" id="dateTF" size="10"/>
     <div class="flexme"></div>
     
 <script>
-$(document).ready(function(){     
+$(document).ready(function(){ 
+    $("#dateTF").datepicker({ dateFormat: 'dd-mm-yy' });    
     $('#cetakFaktur').click(function () {
         window.open('<?php echo site_url('cetak/faktur/'.$id.'/') ?>'+$('#fakturNama').val());
+    });
+    $('#suratJalan').click(function () {
+        window.open('<?php echo site_url('cetak/suratJalan/'.$id.'/') ?>'+$('#fakturNama').val());
+    });
+    $('#kwitansiForm').click(function () {
+        window.open('<?php echo site_url('cetak/kwitansiForm/'.$id.'/') ?>'+$('#fakturNama').val());
+    });
+    $('#kwitansiManualForm').click(function () {
+        window.open('<?php echo site_url('cetak/kwitansiManualForm/'.$id.'/') ?>'+$('#fakturNama').val());
     });
     $(".flexme").flexigrid({
     url: '<?php echo site_url('penjualan/penjualanPrintTable/'.$idClient);?>',
@@ -90,10 +103,16 @@ function print(com,grid){
         $('.trSelected',grid).each(function(){
             var id=$(this).attr('id'); 
             id = id.substring(id.lastIndexOf('row')+3);
-            window.open('<?php echo site_url('cetak/tukarFaktur/') ?>'+a);
+            if($('#dateTF').val() != ''){
+                window.open('<?php echo site_url('cetak/tukarFaktur/') ?>'+$('#fakturNama').val()+'/'+$('#dateTF').val()+'/'+a);
+            }else{
+                alert('Tanggal Belum Di Isi !!!');
+            }
         });
 }
-});$(window).load(function(){ 
+
+});
+$(window).load(function(){ 
     $('.flexme > tbody  > tr').each(function() {
         $(this).find('td').each(function(){
             var tis=$(this);

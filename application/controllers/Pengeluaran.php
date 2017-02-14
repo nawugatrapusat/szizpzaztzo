@@ -30,6 +30,7 @@ class Pengeluaran extends CI_Controller {
 	function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
                         
 //            $penjualan=$this->m_penjualan->penjualanGetAll();
 //            $data=array(
@@ -45,6 +46,9 @@ class Pengeluaran extends CI_Controller {
         
         function pengeluaranTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order
@@ -113,6 +117,7 @@ class Pengeluaran extends CI_Controller {
         
         function pengeluaranForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -135,18 +140,18 @@ class Pengeluaran extends CI_Controller {
             if($this->input->post()){
                 if($this->input->post('id') == ''){
                     if($this->m_pengeluarantrx->pengeluarantrxAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_pengeluarantrx->pengeluarantrxEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -158,14 +163,15 @@ class Pengeluaran extends CI_Controller {
         
         function pengeluaranDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $data=$this->uri->segment(3);
             
             if($this->m_pengeluarantrx->pengeluarantrxDelete($data) != false){
-                $this->m_log->insert_log('delete pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             redirect(site_url('pengeluaran'));

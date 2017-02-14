@@ -57,22 +57,33 @@
                         <tr>
                             <td>Pembawa</td>
                             <td>:</td>
-                            <td> <span style="color:red;">*</span> 
-                                <select id="idEmployeePic" name="idEmployeePic">
-                                    <option value="">Pilih Pembawa</option>
-                                    <?php 
-                                    $a=$penjualanById->idEmployeePic == '0' && !empty($penjualanById) ? "selected='selected'" : '';
-                                    ?>
-                                    <option <?php echo $a; ?> value="0">Bawa Sendiri</option>;
-                                    <?php
-                                    if ($employee != '') {
-                                        foreach ($employee as $hasil1) {
-                                            $a = $penjualanById->idEmployeePic == $hasil1->id && !empty($penjualanById) ? "selected='selected'" : '';
-                                            echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
-                                        }
+                            <td> 
+                                <?php
+                                    if($this->session->userdata('id_admin') == '1'){
+                                ?>
+                                    <span style="color:red;">*</span> 
+                                        <select id="idEmployeePic" name="idEmployeePic">
+                                            <option value="">Pilih Pembawa</option>
+                                            <?php 
+                                            $a=$penjualanById->idEmployeePic == '0' && !empty($penjualanById) ? "selected='selected'" : '';
+                                            ?>
+                                            <option <?php echo $a; ?> value="0">Bawa Sendiri</option>;
+                                            <?php
+                                            if ($employee != '') {
+                                                foreach ($employee as $hasil1) {
+                                                    $a = $penjualanById->idEmployeePic == $hasil1->id && !empty($penjualanById) ? "selected='selected'" : '';
+                                                    echo '<option ' . $a . ' value="' . $hasil1->id . '">' . ucwords($hasil1->nama) . ' </option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                <?php
+                                    }else{
+                                        $empp=$this->m_employee->empGetById($this->session->userdata('id_employee'));
+                                        echo ucwords($empp->nama);
+                                        echo '<input type="hidden" id="idEmployeePic" name="idEmployeePic" value="'.$this->session->userdata('id_employee').'"/>';
                                     }
-                                    ?>
-                                </select>
+                                ?>
                             </td>
                         </tr>
                         <tr>
@@ -91,7 +102,7 @@
                                     <option <?php echo $b; ?> value="nominal">Nominal</option>
                                     <option <?php echo $c; ?> value="persen">Persen</option>
                                 </select>
-                                <input type="text" <?php echo $z?> id="jumlahDiskon" name="jumlahDiskon" value="<?php echo $penjualanById == '' ? '' : ucfirst($penjualanById->jumlahDiskon) ?>" size="10"/> <span class="cetakHargaDiskon"> </span>
+                                <input type="text" <?php echo $z?>  class='onlyNumb' id="jumlahDiskon" name="jumlahDiskon" value="<?php echo $penjualanById == '' ? '' : ucfirst($penjualanById->jumlahDiskon) ?>" size="10"/> <span class="cetakHargaDiskon"> </span>
                             </td>
                         </tr>
                         <tr>
@@ -158,7 +169,7 @@
                         <input class="cetakHargaJual" type="text" value="<?php echo $paramHargaJual[$f] == '' ? '' : 'Rp. '.number_format($paramHargaJual[$f],0,',','.') ?>" disabled/>
                     </td>
                     <td>
-                         <input class='cekVal2<?php echo $f?>' type="text" name="jumlah<?php echo $f; ?>" value="<?php echo $paramjumlah[$f] == '' ? '' : $paramjumlah[$f] ?>" size="5"/>
+                         <input class='onlyNumb cekVal2<?php echo $f?>' type="text" name="jumlah<?php echo $f; ?>" value="<?php echo $paramjumlah[$f] == '' ? '' : $paramjumlah[$f] ?>" size="5"/>
                         <input type="hidden" class="hargaBeli" name="hargaBeli<?php echo $f; ?>" value="<?php echo $paramHargaBeli[$f] == '' ? '' : $paramHargaBeli[$f] ?>"/>
                         <input type="hidden" class="hargaJual" name="hargaJual<?php echo $f; ?>" value="<?php echo $paramHargaJual[$f] == '' ? '' : $paramHargaJual[$f] ?>"/>
                         <input type="hidden" class="hargaEmployee" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $paramHargaEmployee[$f] == '' ? '' : $paramHargaEmployee[$f] ?>"/>
@@ -204,6 +215,11 @@
         $(".idProduct").change(function(){
             var product = $(this),client;
             if($("#idClient").val() != ''){
+                    product.parent().parent().find('.cetakHargaJual').val('');
+                    product.parent().parent().find('.hargaJual').val('');
+                    product.parent().parent().find('.hargaBeli').val('');
+                    product.parent().parent().find('.hargaEmployee').val('');
+                    product.parent().parent().find('.scheme').val('');
                 if(product.val() != ''){
                         $.ajax({
                         type: "POST",
@@ -217,13 +233,14 @@
                             product.parent().parent().find('.hargaEmployee').val(data.hargaEmployee);
                             product.parent().parent().find('.scheme').val(data.scheme);
                       });
-                }else{
-                    product.parent().parent().find('.cetakHargaJual').val('');
-                    product.parent().parent().find('.hargaJual').val('');
-                    product.parent().parent().find('.hargaBeli').val('');
-                    product.parent().parent().find('.hargaEmployee').val('');
-                    product.parent().parent().find('.scheme').val('');
                 }
+//                else{
+//                    product.parent().parent().find('.cetakHargaJual').val('');
+//                    product.parent().parent().find('.hargaJual').val('');
+//                    product.parent().parent().find('.hargaBeli').val('');
+//                    product.parent().parent().find('.hargaEmployee').val('');
+//                    product.parent().parent().find('.scheme').val('');
+//                }
             }else{
                 alert('Client harap di pilih dahulu');
                 product[0].selectedIndex=0;

@@ -16,7 +16,13 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
     <div class="warning-area" style="<?php echo $failedNotifShow; ?>"><?php echo $failedNotif; ?></div>
     
     <h2>Penjualan</h2>
-    <div class="flexme"></div>
+    <?php
+        if($this->session->userdata('id_admin') == '1'){
+            echo '<div class="flexme"></div>';
+        }else{
+            echo '<div class="flexmeEmployee"></div>';
+        }
+    ?>
 <script>
 $(document).ready(function(){     
     $(".flexme").flexigrid({
@@ -57,7 +63,45 @@ $(document).ready(function(){
             {display: 'Status', name : 'penjualan.status', isdefault: true},
             ],
     singleSelect:true,
-    sortname: "date",
+    sortname: "noFaktur",
+    sortorder: "desc",
+    usepager: true,
+    //title: 'Kartu Praktikum Hilang',
+    useRp: true,
+    rp: 50,
+    showTableToggleBtn: true,
+    width: 1280,
+    height: 380
+});         
+    $(".flexmeEmployee").flexigrid({
+    url: '<?php echo site_url('penjualan/penjualanTable');?>',
+    dataType: 'json',
+    colModel : [
+            {display: 'No', name : '', width : 20, sortable : true, align: 'left'},
+            {display: 'No Faktur', name : 'noFaktur', width : 90, sortable : true, align: 'left'},
+            {display: 'No PO', name : 'noPo', width : 90, sortable : true, align: 'left'},
+            {display: 'Nama Client', name : 'nama', width : 300, sortable : true, align: 'left'},
+            {display: 'Pembawa', name : 'idEmployeePic', width : 140, sortable : true, align: 'left'},
+            {display: 'Tanggal', name : 'date', width : 120, sortable : true, align: 'left'},
+            {display: 'Nominal Faktur', name : 'nominalFaktur', width : 120, sortable : true, align: 'left'},
+            {display: 'Hasil', name : 'totalBayar', width : 120, sortable : true, align: 'left'},
+            {display: 'Status', name : 'status', width : 120, sortable : true, align: 'left'},
+            ],
+    buttons : [
+            {name: 'Tambah', bclass: 'add' ,align:'right', onpress:tambah},
+            {separator: true},
+            {name: 'Detail', bclass: 'view' ,align:'right', onpress:view},
+            ],
+    searchitems : [
+            {display: 'No Faktur', name : 'penjualan.noFaktur', isdefault: true},
+            {display: 'No PO', name : 'penjualan.noPo', isdefault: true},
+            {display: 'Nama Client', name : 'client.nama', isdefault: true},
+            {display: 'Nama Pembawa Kirim Barang', name : 'penjualan.idEmployeePic', isdefault: true},
+            {display: 'Tanggal dd-mm-yyyy', name : 'time', isdefault: true},
+            {display: 'Status', name : 'penjualan.status', isdefault: true},
+            ],
+    singleSelect:true,
+    sortname: "noFaktur",
     sortorder: "desc",
     usepager: true,
     //title: 'Kartu Praktikum Hilang',
@@ -171,16 +215,18 @@ function view(com,grid){
 }
 });
 $(window).load(function(){ 
-    $('.flexme > tbody  > tr').each(function() {
-        $(this).find('td').each(function(){
-            var tis=$(this);
-            if(tis.attr('abbr') == 'status' && ( tis.text() == 'Manual Close' || tis.text() == 'Ambil Uang')){
-                tis.parent().css('background-color','#c4fad1');
-            }else if(tis.attr('abbr') == 'status' && tis.text() == 'Tukar Faktur'){
-                tis.parent().css('background-color','#FAEFC4');
-            }
+    setTimeout(function() { 
+        $('.flexme > tbody  > tr').each(function() {
+            $(this).find('td').each(function(){
+                var tis=$(this);
+                if(tis.attr('abbr') == 'status' && ( tis.text() == 'Manual Close' || tis.text() == 'Ambil Uang')){
+                    tis.parent().css('background-color','#c4fad1');
+                }else if(tis.attr('abbr') == 'status' && tis.text() == 'Tukar Faktur'){
+                    tis.parent().css('background-color','#FAEFC4');
+                }
+            });
         });
-    });
+    }, 7000);
 });
 </script>
     

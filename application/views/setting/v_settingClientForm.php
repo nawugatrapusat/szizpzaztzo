@@ -48,6 +48,7 @@
                             <td align="center">Produk</td>
                             <td align="center">Harga Karyawan</td>
                             <td align="center">Harga Jual</td>
+                            <td align="center">Harga Jual Diskon</td>
                         </tr>
                         <?php
                         for ($f = 1; $f <= 30; $f++) {
@@ -56,6 +57,7 @@
                                 $param3[$f] = '';
                                 $param4[$f] = '';
                                 $param5[$f] = '';
+                                $param6[$f] = '';
                         }
                         if ($clientPrice != '') {
                             $c1 = 1;
@@ -64,6 +66,7 @@
                                 $param2[$c1] = $hasil2->idProduct;
                                 $param3[$c1] = $hasil2->hargaJual;
                                 $param4[$c1] = $hasil2->hargaEmployee;
+                                $param6[$c1] = $hasil2->hargaJualDiskon;
                                 $c1++;
                             }
                         }
@@ -87,12 +90,14 @@
                             </select>
                     </td>
                     <td>
-                        Rp. <input type="text" <?php echo $param5[$f] == 'cashback' ? '':'disabled="disabled"'?> class="hargaEmployee cekVal3<?php echo $f?>" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $param4[$f] == '' ? '' : $param4[$f] ?>" /> <span class="cetakHargaEmployee"> </span>
+                        Rp. <input size='10' type="text" <?php echo $param5[$f] == 'cashback' ? '':'disabled="disabled"'?> class="onlyNumb hargaEmployee cekVal3<?php echo $f?>" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $param4[$f] == '' ? '' : $param4[$f] ?>" /> <span class="cetakHargaEmployee"> </span>
                     </td>
                     <td>
-                        Rp. <input type="text" class="hargaJual cekVal2<?php echo $f?>" name="hargaJual<?php echo $f; ?>" value="<?php echo $param3[$f] == '' ? '' : $param3[$f] ?>" /> <span class="cetakHarga"> </span>
+                        Rp. <input size='10' type="text" class="onlyNumb hargaJual cekVal2<?php echo $f?>" name="hargaJual<?php echo $f; ?>" value="<?php echo $param3[$f] == '' ? '' : $param3[$f] ?>" /> <span class="cetakHarga"> </span>
                         <input type="hidden" name="idClientPrice<?php echo $f; ?>" value="<?php echo $param1[$f] == '' ? '' : $param1[$f] ?>"/>
                     </td>
+                    <td>
+                        Rp. <input size='10' type="text" class="onlyNumb hargaJualDiskon cekVal4<?php echo $f?>" name="hargaJualDiskon<?php echo $f; ?>" value="<?php echo $param6[$f] == '' ? '' : $param6[$f] ?>" /> <span class="cetakHargaDiskon"> </span>                    </td>
                 </tr>
             <?php } ?>
         </table>
@@ -127,6 +132,9 @@
                 }else if($('.cekVal3'+a).val() == '' && $('.cekVal3'+a).attr('disabled') != 'disabled'){
                     alert("Harga Karyawan Ada Yang Masih Kosong !!!");
                     return false;   
+                }else if(($('.cekVal1'+a).val() == '' && $('.cekVal4'+a).val() != '') || ($('.cekVal1'+a).val() != '' && $('.cekVal4'+a).val() == '')){
+                    alert("Harga Jual Diskon Ada Yang Masih Kosong !!!");
+                    return false;   
                 }
             }
             window.scrollTo(0, 0);
@@ -158,7 +166,10 @@
             var tis=$(this);
             if(tis.val() == ''){
                 tis.parent().find('.cetakHarga').html('');
+                tis.parent().parent().find('.cetakHargaDiskon').html('');
+                tis.parent().parent().find('.hargaJualDiskon').val('');
             }else{
+                tis.parent().parent().find('.hargaJualDiskon').val(tis.val());
                 $.ajax({
                 type: "POST",
                 dataType : "json",
@@ -166,6 +177,22 @@
                 data: 'val='+tis.val()
               }).done(function( data ) {
                     tis.parent().find('.cetakHarga').html(data.val);
+                    tis.parent().parent().find('.cetakHargaDiskon').html(data.val);
+              });
+            }
+        });
+        $('.hargaJualDiskon').bind('change', function(){
+            var tis=$(this);
+            if(tis.val() == ''){
+                tis.parent().find('.cetakHargaDiskon').html('');
+            }else{
+                $.ajax({
+                type: "POST",
+                dataType : "json",
+                url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                data: 'val='+tis.val()
+              }).done(function( data ) {
+                    tis.parent().find('.cetakHargaDiskon').html(data.val);
               });
             }
         });

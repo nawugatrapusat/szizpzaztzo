@@ -14,6 +14,13 @@ class M_employee extends CI_Model {
             if($query->num_rows() != 0) return $query->row(); else return false;
         }        
 	        
+         function empGetByIdAdmin($id) {            
+            $this->db->where('deleted','0');
+            $this->db->where('idAdmin',$id);
+            $query=$this->db->get('employee');
+            if($query->num_rows() != 0) return $query->row(); else return false;
+        }        
+	        
          function empGetAll() {            
             $this->db->where('deleted','0');
             $this->db->order_by('nama','ASC');

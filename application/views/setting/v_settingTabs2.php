@@ -12,6 +12,7 @@ $(document).ready(function(){
             {display: 'Harga Beli', name : 'hargaBeli', width : 100, sortable : true, align: 'left'},
             {display: 'Harga Karyawan', name : 'hargaEmployee', width : 120, sortable : true, align: 'left'},
             {display: 'Harga Jual', name : 'hargaJual', width : 100, sortable : true, align: 'left'},
+            {display: 'Harga Jual Diskon', name : 'hargaJualDiskon', width : 130, sortable : true, align: 'left'},
             {display: 'Skema', name : 'scheme', width : 60, sortable : true, align: 'left'},
             ],
     buttons : [

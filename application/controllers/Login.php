@@ -23,6 +23,7 @@ class Login extends CI_Controller {
 		parent::__construct();
                 date_default_timezone_set('Asia/Jakarta');
                 $this->load->model('m_login', '', TRUE);
+                $this->load->model('m_employee', '', TRUE);
                 $this->load->model('m_log', '', TRUE);
 	}
     
@@ -41,13 +42,19 @@ class Login extends CI_Controller {
         public function Verif()
 	{
             if($_POST){
-                $name=$this->input->post('user');
+                $name=  strtolower($this->input->post('user'));
                 $pass=do_hash($this->input->post('pwd'),'md5');
                 $det=$this->m_login->validasi($name,$pass);
                 if($det != false){
                     $this->session->set_userdata('id_admin',$det->id);
-                    $this->m_log->insert_log('Login','Sukses Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$name);
-                    redirect('beranda');
+                    $this->m_log->insert_log('Login','Sukses Login, '.$_SERVER['HTTP_USER_AGENT'].', IP '.$this->input->ip_address().' - '.$name);
+                    if($det->id == 1){
+                        redirect('beranda'); 
+                    }else{ 
+                        $empp=$this->m_employee->empGetByIdAdmin($this->session->userdata('id_admin'));
+                        $this->session->set_userdata('id_employee',$empp->id);
+                        redirect('penjualan');
+                    }
                 }else{
                     $this->m_log->insert_log('Login','Gagal Login, Nama : '.php_uname('n').', IP '.$this->input->ip_address().' - '.$name);
                     $this->input->set_cookie('notif','0',time()+6000);

@@ -68,11 +68,12 @@ class M_client extends CI_Model {
                 $insertId=$this->db->insert_id();
             
             for($a=1;$a<=30;$a++){
-                if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != ''){
+                if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != '' && $data['hargaJualDiskon'.$a] != ''){
                     $clientPrice=new stdClass();
                     $clientPrice->idClient=$insertId;
                     $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                     $clientPrice->hargaJual=$data['hargaJual'.$a];
+                    $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                     $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
                     $clientPrice->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('clientprice',$clientPrice);
@@ -103,24 +104,28 @@ class M_client extends CI_Model {
             
             for($a=1;$a<=30;$a++){
                 if($data['idClientPrice'.$a] == ''){
-                    if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != ''){
+                    if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != '' && $data['hargaJualDiskon'.$a] != ''){
                         $clientPrice=new stdClass();
                         $clientPrice->idClient=$client->id;
                         $clientPrice->idProduct=$data['clientPriceProduct'.$a];
                         $clientPrice->hargaJual=$data['hargaJual'.$a];
+                        $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                         $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
                         $clientPrice->id_admin=$this->session->userdata('id_admin');
                         $this->db->insert('clientprice',$clientPrice);
                     }
                 }else{
-                    $clientPrice=new stdClass();
-                    $clientPrice->id=$data['idClientPrice'.$a];
-                    $clientPrice->idProduct=$data['clientPriceProduct'.$a];
-                    $clientPrice->hargaJual=$data['hargaJual'.$a];
-                    $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
+                    if($data['clientPriceProduct'.$a] != '' && $data['hargaJual'.$a] != '' && $data['hargaJualDiskon'.$a] != ''){
+                        $clientPrice=new stdClass();
+                        $clientPrice->id=$data['idClientPrice'.$a];
+                        $clientPrice->idProduct=$data['clientPriceProduct'.$a];
+                        $clientPrice->hargaJual=$data['hargaJual'.$a];
+                        $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
+                        $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
 
-                    $this->db->where('id',$clientPrice->id);
-                    $this->db->update('clientprice',$clientPrice);
+                        $this->db->where('id',$clientPrice->id);
+                        $this->db->update('clientprice',$clientPrice);
+                    }
                 }
             }
             $this->db->trans_complete();

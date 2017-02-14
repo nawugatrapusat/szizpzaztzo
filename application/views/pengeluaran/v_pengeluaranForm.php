@@ -23,7 +23,7 @@
             <tr>
                 <td>Jumlah</td>
                 <td>:</td>
-                <td>Rp. <span style="color:red;">*</span><input type="text" id="jumlah" name="jumlah" value="<?php echo $pengeluaranDetail == '' ? '' : $pengeluaranDetail->jumlah?>"/> <span class="cetakHarga"> </span></td>
+                <td>Rp. <span style="color:red;">*</span><input type="text" class='onlyNumb' id="jumlah" name="jumlah" value="<?php echo $pengeluaranDetail == '' ? '' : $pengeluaranDetail->jumlah?>"/> <span class="cetakHarga"> </span></td>
             </tr>
             <tr>
                 <td>Keterangan</td>

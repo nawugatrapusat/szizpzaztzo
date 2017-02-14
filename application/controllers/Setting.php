@@ -33,6 +33,7 @@ class Setting extends CI_Controller {
 	function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
                         
             
             $client=$this->m_client->clientGetAll();
@@ -57,6 +58,7 @@ class Setting extends CI_Controller {
         
         function clientForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -83,18 +85,18 @@ class Setting extends CI_Controller {
 //                print_r($this->input->post());
                 if($this->input->post('id') == ''){
                     if($this->m_client->clientAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan setting client',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan setting client',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_client->clientEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit setting client',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit setting client',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -107,15 +109,16 @@ class Setting extends CI_Controller {
         
         function clientDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
             
             if($this->m_client->clientDelete($data) != false){
-                $this->m_log->insert_log('delete setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting client',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -126,6 +129,7 @@ class Setting extends CI_Controller {
         
         function productForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -147,18 +151,18 @@ class Setting extends CI_Controller {
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
                     if($this->m_product->productAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan setting product',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan setting product',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_product->productEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit setting product',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit setting product',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -171,15 +175,16 @@ class Setting extends CI_Controller {
         
         function productDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
             
             if($this->m_product->productDelete($data) != false){
-                $this->m_log->insert_log('delete setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting product',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -190,6 +195,7 @@ class Setting extends CI_Controller {
         
         function empForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -212,18 +218,18 @@ class Setting extends CI_Controller {
                 
                 if($this->input->post('id') == ''){
                     if($this->m_employee->empAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan setting employee',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan setting employee',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_employee->empEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit setting employee',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit setting employee',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -236,15 +242,16 @@ class Setting extends CI_Controller {
         
         function empDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
             
             if($this->m_employee->empDelete($data) != false){
-                $this->m_log->insert_log('delete setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting employee',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -255,6 +262,7 @@ class Setting extends CI_Controller {
         
         function bankForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -276,18 +284,18 @@ class Setting extends CI_Controller {
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
                     if($this->m_bank->bankAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan setting bank',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan setting bank',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_bank->bankEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit setting bank',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit setting bank',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -300,15 +308,16 @@ class Setting extends CI_Controller {
         
         function bankDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
             
             if($this->m_bank->bankDelete($data) != false){
-                $this->m_log->insert_log('delete setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting bank',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -319,6 +328,7 @@ class Setting extends CI_Controller {
         
         function pengeluaranForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -340,18 +350,18 @@ class Setting extends CI_Controller {
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
                     if($this->m_pengeluaran->pengeluaranAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan setting pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('simpan setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan setting pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_pengeluaran->pengeluaranEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit setting pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit setting pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -364,15 +374,16 @@ class Setting extends CI_Controller {
         
         function pengeluaranDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
             
             if($this->m_pengeluaran->pengeluaranDelete($data) != false){
-                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -382,6 +393,9 @@ class Setting extends CI_Controller {
         
         function clientTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order
@@ -455,6 +469,9 @@ class Setting extends CI_Controller {
         
         function productTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order
@@ -509,7 +526,7 @@ class Setting extends CI_Controller {
                     'id' => $row->id,
                     'cell' => array($no, ucwords($row->merek),  ucwords($row->nama),$row->berat.' gr',
                     'Rp. '.number_format($row->hargaBeli,0,',','.'),$row->hargaEmployee == '' ? '' : 'Rp. '.number_format($row->hargaEmployee,0,',','.'),
-                    'Rp. '.number_format($row->hargaJual,0,',','.'),ucwords($row->scheme))
+                    'Rp. '.number_format($row->hargaJual,0,',','.'),'Rp. '.number_format($row->hargaJualDiskon,0,',','.'),ucwords($row->scheme))
                     );
                     $no++;
                 }        

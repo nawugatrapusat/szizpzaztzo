@@ -33,6 +33,7 @@ class Beranda extends CI_Controller {
 	public function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $all_produk='';
             
@@ -49,6 +50,9 @@ class Beranda extends CI_Controller {
         
         function penjualanTable()
 	{
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
             $sortorder = 'desc'; // Sort order
@@ -121,10 +125,10 @@ class Beranda extends CI_Controller {
                         $totByr='';
                     }
                     $fakturData=$this->m_penjualan->tukarFakturGetByIdPenjualan($row->id);
-                    if($fakturData != false) $tglKembali=$fakturData->tanggalKembali; else $tglKembali='';
+                    if($fakturData != false) $tglKembali=date("d-M-Y",strtotime($fakturData->tanggalKembali)); else $tglKembali='';
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-M-Y",strtotime($row->d.'-'.$row->m.'-'.$row->y)),date("d-M-Y",strtotime($tglKembali)),'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
+                    'cell' => array($no,$row->noFaktur,  strtoupper($row->noPo),  ucwords($row->nama), ucwords($employeePic),date("d-M-Y",strtotime($row->d.'-'.$row->m.'-'.$row->y)),$tglKembali,'Rp. ' . number_format($row->nominalFaktur, 0, ',', '.'),$totByr,ucwords($row->status))
                     );
                     $no++;
                 }        

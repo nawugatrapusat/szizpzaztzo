@@ -22,7 +22,7 @@
             }*/
             @page {
                 size: auto;  
-                margin: 22 0 30 0; 
+                margin: 20 0 30 0; 
 /*                padding-top: 20px;
                 padding-bottom: 20px;*/
             }
@@ -49,6 +49,11 @@
     <center>
         <table id='watermark' style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
         <!--<table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>-->
+            <tr style="border-collapse: collapse;">
+                <td style="border-collapse: collapse;"></td>
+                <td style="border-collapse: collapse;"></td>
+                <td width="20" align="right" style="border-collapse: collapse;font-size: 7">KRM11217 V00</td>
+            </tr>
             <tr>
                 <td>
                     <img src="<?php echo site_url('public/images/admin/logo.png')?>" width="80;"/>
@@ -68,11 +73,12 @@
                 </td>
                 <td style='vertical-align:top' width='40%' align='left'>
                     <b><span style='font-size:12pt'>Faktur Penjualan</span></b></br>
+                    Tanggal : <?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?><br/>
+                    <b>Kepada Yth. <?php echo ucwords($detailClient->nama) ?></b></br>
+                    <?php echo ucwords($detailClient->alamat) ?></br>
                     No Faktur : <?php echo $penjualanById->noFaktur ?><br/>
                     No PO : <?php echo strtoupper($penjualanById->noPo) ?></br>
-                    Tanggal : <?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?><br/>
-                    Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
-                    <?php echo ucwords($detailClient->alamat) ?>
+                    
                 </td>
             </tr>
         </table><br/>
@@ -171,7 +177,7 @@
                 <td rowspan="2" align='center'>Hormat Kami,</br></br></br></br></br></br>(...........................)</td>
             </tr>
             <tr>
-                <td style='padding:5px; text-align:center; width:30%'> Rekening BCA 473-110-1722</br>an. JOSEPH SOEHARDI</td>
+                <td style='padding:5px; text-align:center; width:30%'> Rekening BCA 473-110-1722</br>an. Joseph Soehardi</td>
             </tr>
         </table>
     </center>

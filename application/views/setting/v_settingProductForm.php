@@ -16,7 +16,7 @@
             <tr>
                 <td>Berat</td>
                 <td>:</td>
-                <td> <span style="color:red;">*</span> <input id="berat" type="text" name="berat" value="<?php echo $product == '' ? '' : $product->berat?>"/> Gram</td>
+                <td> <span style="color:red;">*</span> <input class='onlyNumb' id="berat" type="text" name="berat" value="<?php echo $product == '' ? '' : $product->berat?>"/> Gram</td>
             </tr>
 <!--            <tr>
                 <td>Stock</td>
@@ -26,7 +26,7 @@
             <tr>
                 <td>Harga Beli</td>
                 <td>:</td>
-                <td> <span style="color:red;">*</span> Rp.<input id="hargaBeli" type="text" name="hargaBeli" value="<?php echo $product == '' ? '' : $product->hargaBeli?>"/> <span class="cetakHargaBeli"> </td>
+                <td> <span style="color:red;">*</span> Rp.<input class='onlyNumb' id="hargaBeli" type="text" name="hargaBeli" value="<?php echo $product == '' ? '' : $product->hargaBeli?>"/> <span class="cetakHargaBeli"> </td>
             </tr>
             <tr>
                 <td>Skema</td>
@@ -41,13 +41,18 @@
                         ?>
                         <option <?php echo $a; ?> value="cashback">Cashback</option>;
                         <option <?php echo $b; ?> value="kinerja">Kinerja</option>;
-                    </select>&nbsp;<span id="hargaEmployee" style="<?php echo $c; ?>">,&nbsp;Harga Karyawan : Rp. <span style="color:red;">*</span> <input type="text" id="hargaEmployeeInput" name="hargaEmployee" value="<?php echo $product == '' ? '' : $product->hargaEmployee ?>"/></span> <span class="cetakHargaEmployee"> 
+                    </select>&nbsp;<span id="hargaEmployee" style="<?php echo $c; ?>">,&nbsp;Harga Karyawan : Rp. <span style="color:red;">*</span> <input type="text" class='onlyNumb' id="hargaEmployeeInput" name="hargaEmployee" value="<?php echo $product == '' ? '' : $product->hargaEmployee ?>"/></span> <span class="cetakHargaEmployee"> 
                 </td>
             </tr>
             <tr>
                 <td>Harga Jual</td>
                 <td>:</td>
-                <td> <span style="color:red;">*</span> Rp.<input id="hargaJual" type="text" name="hargaJual" value="<?php echo $product == '' ? '' : $product->hargaJual?>"/> <span class="cetakHargaJual"> </td>
+                <td> <span style="color:red;">*</span> Rp.<input class='onlyNumb' id="hargaJual" type="text" name="hargaJual" value="<?php echo $product == '' ? '' : $product->hargaJual?>"/> <span class="cetakHargaJual"> </td>
+            </tr>
+            <tr>
+                <td>Harga Jual Diskon</td>
+                <td>:</td>
+                <td> <span style="color:red;">*</span> Rp.<input class='onlyNumb' id="hargaJualDiskon" type="text" name="hargaJualDiskon" value="<?php echo $product == '' ? '' : $product->hargaJualDiskon?>"/> <span class="cetakHargaJualDiskon"> </td>
             </tr>
             <tr>
                 <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">
@@ -71,6 +76,7 @@
                 if($('#hargaEmployeeInput').val() == ''){ alert("Harga Karyawan Masih Kosong !!!"); return false; }
             }
             if ($('#hargaJual').val() == "") { alert("Harga jual Masih Kosong !!!"); return false; }
+            if ($('#hargaJualDiskon').val() == "") { alert("Harga jual Diskon Masih Kosong !!!"); return false; }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();
             document.body.scroll = "no";
@@ -97,7 +103,10 @@
                 var tis=$(this);
                 if(tis.val() == ''){
                     tis.parent().find('.cetakHargaJual').html('');
+                    tis.parent().parent().parent().find('.cetakHargaJualDiskon').html('');
+                    tis.parent().parent().parent().find('#hargaJualDiskon').val('');
                 }else{
+                    tis.parent().parent().parent().find('#hargaJualDiskon').val(tis.val());
                     $.ajax({
                     type: "POST",
                     dataType : "json",
@@ -105,6 +114,22 @@
                     data: 'val='+tis.val()
                   }).done(function( data ) {
                         tis.parent().find('.cetakHargaJual').html(data.val);
+                        tis.parent().parent().parent().find('.cetakHargaJualDiskon').html(data.val);
+                  });
+                }
+            });
+            $('#hargaJualDiskon').bind('change', function(){
+                var tis=$(this);
+                if(tis.val() == ''){
+                    tis.parent().find('.cetakHargaJualDiskon').html('');
+                }else{
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('penjualan/numberFormat'); ?>",
+                    data: 'val='+tis.val()
+                  }).done(function( data ) {
+                        tis.parent().find('.cetakHargaJualDiskon').html(data.val);
                   });
                 }
             });

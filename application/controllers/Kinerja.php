@@ -33,6 +33,7 @@ class Kinerja extends CI_Controller {
 	function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -52,6 +53,7 @@ class Kinerja extends CI_Controller {
         
         function employee(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $bulan=$this->input->post('bulan');
             $tahun=$this->input->post('tahun');
@@ -86,19 +88,19 @@ class Kinerja extends CI_Controller {
             if($this->input->post()){
                 if($this->input->post('id') == ''){
                     if($this->m_penjualan->penjualanAddSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
 //                        echo 1;
                     }else{
-                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('simpan penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
                     }
                 }else{
                     if($this->m_penjualan->penjualanEditSave(array_map('strtolower', $this->input->post())) != false){
-                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                         $this->input->set_cookie('successNotif','Sukses Edit Data',time()+6000);
                     }else{
-                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                        $this->m_log->insert_log('edit penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                         $this->input->set_cookie('failedNotif','Edit Data Gagal !!!',time()+6000);
                     }
                 }
@@ -110,14 +112,15 @@ class Kinerja extends CI_Controller {
         
         function penjualanDelete(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $data=$this->uri->segment(3);
             
             if($this->m_penjualan->penjualanDelete($data) != false){
-                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'sukses']))));
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete penjualan',json_encode((array_merge($this->input->post(), ["statusAction" => 'gagal']))));
+                $this->m_log->insert_log('delete penjualan',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             redirect(site_url('penjualan'));

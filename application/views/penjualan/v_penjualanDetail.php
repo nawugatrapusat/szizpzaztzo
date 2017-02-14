@@ -214,7 +214,7 @@
                     <td align="center">Harga Jual</td>
                     <td align="center">Jumlah</td>
                     <td align="center" style='background-color: #c4fad1;'>Total</td>
-                    <td align="center">Harga Employee</td>
+                    <td align="center">Harga Karyawan</td>
                     <td align="center" style='background-color: #c4fad1;'>Cashback</td>
                 </tr>
                 <?php

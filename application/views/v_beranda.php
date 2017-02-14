@@ -53,7 +53,7 @@ $(document).ready(function(){
             {display: 'Status', name : 'penjualan.status', isdefault: true},
             ],
     singleSelect:true,
-    sortname: "date",
+    sortname: "noFaktur",
     sortorder: "desc",
     usepager: true,
     title: 'Pending Faktur',

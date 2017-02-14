@@ -37,12 +37,22 @@
     <body style='font-family:tahoma; font-size:8pt;padding-top:20px;'>
     <center style='<?php echo $bodyShow; ?>'>
         <table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
+            <tr style="border-collapse: collapse;">
+                <td style="border-collapse: collapse;"></td>
+                <td style="border-collapse: collapse;"></td>
+                <td width="20" align="right" style="border-collapse: collapse;font-size: 7">TAG211217 V00</td>
+            </tr>
             <tr>
                 <td>
                     <img src="<?php echo site_url('public/images/admin/logo.png')?>" width="80;"/>
                 </td>
                 <td width='60%' align='left' style='padding-right:80px; vertical-align:top'>
-                    <span style='font-size:12pt'><b>Sari Puspita Herba</b></span></br>
+                    <span style='font-size:12pt'><b>
+                    <?php
+                        echo $fakturNama == 1 ? 'Sari Puspita Herba' : 'CV DODO_MIS';
+//                        echo 'Sari Puspita Herba';
+                    ?>
+                    </b></span></br>
                     Pamulang Permai I Blok N 2 C </br>
                     Tangerang 15417</br>
                     Tlp &nbsp;&nbsp;&nbsp; : 0851-0048-5662</br>
@@ -52,7 +62,8 @@
                 </td>
                 <td style='vertical-align:top' width='40%' align='left'>
                     <b><span style='font-size:12pt'>Tukar Faktur</span></b></br>
-                    Kepada YTH <?php echo ucwords($detailClient->nama) ?></br>
+                    Tanggal : <?php echo date("d-M-Y",strtotime($fakturTgl)) ?><br/>
+                    <b>Kepada Yth. <?php echo ucwords($detailClient->nama) ?></b></br>
                     <?php echo ucwords($detailClient->alamat) ?><br/>
                     <!--Telah diterima dari : Sari Puspita Herba<br/>-->
                     Faktur sebanyak : <?php echo $datas['jumlah']?> lembar
@@ -70,7 +81,7 @@
                 $b=1;
                 $totalHarga=0;
                     if($datas != ''){
-                        for($a=3;$a<3+$datas['jumlah'];$a++){
+                        for($a=5;$a<5+$datas['jumlah'];$a++){
                             echo '
                                     <tr>
                                         <td style="padding-left: 5px;">'.$b.'</td>
