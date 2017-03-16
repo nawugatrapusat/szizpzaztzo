@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
 <?php
 $successNotif = get_cookie('successNotif');
 $failedNotif = get_cookie('failedNotif');

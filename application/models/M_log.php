@@ -16,7 +16,7 @@ class M_log extends CI_Model {
             $this->db->set('date',time());
             $this->db->set('time',date("d-m-Y H:i:s"));
             $this->db->set('category',$ca);
-            $this->db->set('activity',$ac);
+            $this->db->set('activity',$_SERVER['HTTP_USER_AGENT']." - IP ".$this->input->ip_address()."<br/>".$ac);
             $this->db->set('id_admin',$this->session->userdata('id_admin'));
             $this->db->insert('log');
             

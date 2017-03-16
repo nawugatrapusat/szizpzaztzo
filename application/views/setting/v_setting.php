@@ -18,7 +18,7 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
     });
 </script>
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <?php $this->load->view('template/menu') ?>
     
     <div class="notification-area" style="<?php echo $successNotifShow; ?>"><?php echo $successNotif; ?></div>
@@ -64,14 +64,26 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
 //                }
 //            });
             $('.empDeleteButton').click(function () {
+                var tis=$(this);
                 if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
-                    window.scrollTo(0, 0);
-                    $('#loadingAnim').show();
-                    document.body.scroll = "no";
-                    document.body.style.overflow = 'hidden';
-                    document.height = window.innerHeight;
-                    location.href = '<?php echo site_url("setting/empDelete/2/") ?>' + $(this).attr('aid');
-                    $(this).hide();
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('setting/cekDeleteEmployee'); ?>",
+                    data: 'idEmployee='+tis.attr('aid')
+                  }).done(function( data ) {
+                            if(data.c == 0){
+                                window.scrollTo(0, 0);
+                                $('#loadingAnim').show();
+                                document.body.scroll = "no";
+                                document.body.style.overflow = 'hidden';
+                                document.height = window.innerHeight;
+                                location.href = '<?php echo site_url("setting/empDelete/2/") ?>' + tis.attr('aid');
+                                tis.hide();
+                            }else{
+                                alert(data.val);
+                            }
+                  });
                 }
             });
             $('.bankDeleteButton').click(function () {

@@ -137,6 +137,8 @@ class Pengeluaran extends CI_Controller {
         }
         
         function pengeluaranFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 if($this->input->post('id') == ''){
                     if($this->m_pengeluarantrx->pengeluarantrxAddSave(array_map('strtolower', $this->input->post())) != false){
@@ -162,6 +164,8 @@ class Pengeluaran extends CI_Controller {
         }
         
         function pengeluaranDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             

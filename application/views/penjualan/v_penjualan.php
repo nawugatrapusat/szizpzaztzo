@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
 <?php
 $successNotif = get_cookie('successNotif');
 $failedNotif = get_cookie('failedNotif');
@@ -89,7 +89,11 @@ $(document).ready(function(){
             ],
     buttons : [
             {name: 'Tambah', bclass: 'add' ,align:'right', onpress:tambah},
+            {separator: true},{separator: true},{separator: true},{separator: true},{separator: true},{separator: true},
+            {name: 'Tukar Faktur', bclass: 'edit' ,align:'right', onpress:tukarFaktur},
             {separator: true},
+            {name: 'Ambil Uang', bclass: 'edit' ,align:'right', onpress:ambilUang},
+            {separator: true},{separator: true},{separator: true},{separator: true},{separator: true},{separator: true},
             {name: 'Detail', bclass: 'view' ,align:'right', onpress:view},
             ],
     searchitems : [

@@ -21,6 +21,11 @@
             }
         });
     });
+
+$(window).load(function(){ 
+    $('.bodyclass').show();
+    $('#loadingAnim').hide();
+});
 </script>
 </body>
 </html>

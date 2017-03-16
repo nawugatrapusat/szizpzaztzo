@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tambah Client' : 'Edit Client '; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="myForm" action="<?php echo site_url('setting/clientFormSave/0') ?>" method="POST">
         <table style="border: 1px solid black;">
@@ -10,6 +10,11 @@
                             <td>Nama Client <span style="color:red;">*</span></td>
                             <td>:</td>
                             <td><input id='nama' type="text" name="nama" value="<?php echo $client == '' ? '' : ucwords($client->nama) ?>" size="50"/></td>
+                        </tr>
+                        <tr>
+                            <td>Nama PT</td>
+                            <td>:</td>
+                            <td><input id='namaPT' type="text" name="namaPT" value="<?php echo $client == '' ? '' : ucwords($client->namaPT) ?>" size="50"/></td>
                         </tr>
                         <tr>
                             <td>Alamat Client <span style="color:red;">*</span></td>
@@ -36,6 +41,11 @@
                             <td>:</td>
                             <td><input type="text" name="picTagihan" value="<?php echo $client == '' ? '' : ucwords($client->picTagihan) ?>"/></td>
                         </tr>
+                        <tr>
+                            <td>Keterangan TF</td>
+                            <td>:</td>
+                            <td><input id='keteranganTF' type="text" name="keteranganTF" value="<?php echo $client == '' ? '' : ucwords($client->keteranganTF) ?>" size="100"/></td>
+                        </tr>
                     </table>
                 </td>
             <tr/>
@@ -49,6 +59,7 @@
                             <td align="center">Harga Karyawan</td>
                             <td align="center">Harga Jual</td>
                             <td align="center">Harga Jual Diskon</td>
+                            <td align="center">Perhitungan</td>
                         </tr>
                         <?php
                         for ($f = 1; $f <= 30; $f++) {
@@ -58,6 +69,7 @@
                                 $param4[$f] = '';
                                 $param5[$f] = '';
                                 $param6[$f] = '';
+                                $param7[$f] = '';
                         }
                         if ($clientPrice != '') {
                             $c1 = 1;
@@ -67,6 +79,7 @@
                                 $param3[$c1] = $hasil2->hargaJual;
                                 $param4[$c1] = $hasil2->hargaEmployee;
                                 $param6[$c1] = $hasil2->hargaJualDiskon;
+                                $param7[$c1] = $hasil2->perhitungan;
                                 $c1++;
                             }
                         }
@@ -90,14 +103,25 @@
                             </select>
                     </td>
                     <td>
-                        Rp. <input size='10' type="text" <?php echo $param5[$f] == 'cashback' ? '':'disabled="disabled"'?> class="onlyNumb hargaEmployee cekVal3<?php echo $f?>" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $param4[$f] == '' ? '' : $param4[$f] ?>" /> <span class="cetakHargaEmployee"> </span>
+                        Rp. <input size='10' type="text" <?php echo $param5[$f] == 'cashback' || $param7[$f] == 'selisih' ? '':'disabled="disabled"'?> class="onlyNumb hargaEmployee cekVal3<?php echo $f?>" name="hargaEmployee<?php echo $f; ?>" value="<?php echo $param4[$f] == '' ? '' : $param4[$f] ?>" /> <span class="cetakHargaEmployee"> </span>
                     </td>
                     <td>
                         Rp. <input size='10' type="text" class="onlyNumb hargaJual cekVal2<?php echo $f?>" name="hargaJual<?php echo $f; ?>" value="<?php echo $param3[$f] == '' ? '' : $param3[$f] ?>" /> <span class="cetakHarga"> </span>
                         <input type="hidden" name="idClientPrice<?php echo $f; ?>" value="<?php echo $param1[$f] == '' ? '' : $param1[$f] ?>"/>
                     </td>
                     <td>
-                        Rp. <input size='10' type="text" class="onlyNumb hargaJualDiskon cekVal4<?php echo $f?>" name="hargaJualDiskon<?php echo $f; ?>" value="<?php echo $param6[$f] == '' ? '' : $param6[$f] ?>" /> <span class="cetakHargaDiskon"> </span>                    </td>
+                        Rp. <input size='10' type="text" class="onlyNumb hargaJualDiskon cekVal4<?php echo $f?>" name="hargaJualDiskon<?php echo $f; ?>" value="<?php echo $param6[$f] == '' ? '' : $param6[$f] ?>" /> <span class="cetakHargaDiskon"> </span>                    
+                    </td>
+                    <td>
+                        <select class="perhitungan cekVal5<?php echo $f?>" name="perhitungan<?php echo $f; ?>">
+                            <?php
+                                $a = $param7[$f] == 'default' ? "selected='selected'" : '';
+                                $b = $param7[$f] == 'selisih' ? "selected='selected'" : '';
+                                echo '<option ' . $a . ' value="default">Default</option>';
+                                echo '<option ' . $b . ' value="selisih">Selisih</option>';
+                            ?>
+                        </select>
+                    </td>
                 </tr>
             <?php } ?>
         </table>
@@ -136,6 +160,41 @@
                     alert("Harga Jual Diskon Ada Yang Masih Kosong !!!");
                     return false;   
                 }
+                if($('.cekVal1'+a).val() != '' && $('.cekVal2'+a).val() != ''){
+                    for (b = 1; b <= 30; b++) {
+                        if(a != b){
+                            if($('.cekVal1' + a).val() == $('.cekVal1' + b).val() ){
+                                alert($('.cekVal1' + b+ ' option:selected').text()+", Sudah Pernah Dipilih !!!");
+                                return false;
+                            }
+                        }
+                    }
+                }
+                if($('.cekVal1'+a).val() != '' && $('.cekVal2'+a).val() != ''){
+                    if(isNaN($('.cekVal2'+a).val()) == true){
+                        alert("Harga Jual Ada Yang Tidak Menggunakan Angka !!!");
+                        return false;
+                    }else if($('.cekVal2'+a).val() % 1 != 0){
+                        alert("Harga Jual Ada Yang Desimal !!!");
+                        return false;
+                    }
+                }if($('.cekVal1'+a).val() != '' && $('.cekVal3'+a).val() != ''){
+                    if(isNaN($('.cekVal3'+a).val()) == true){
+                        alert("Harga Karyawan Ada Yang Tidak Menggunakan Angka !!!");
+                        return false;
+                    }else if($('.cekVal3'+a).val() % 1 != 0){
+                        alert("Harga Karyawan Ada Yang Desimal !!!");
+                        return false;
+                    }
+                }if($('.cekVal1'+a).val() != '' && $('.cekVal4'+a).val() != ''){
+                    if(isNaN($('.cekVal4'+a).val()) == true){
+                        alert("Harga Jual Diskon Ada Yang Tidak Menggunakan Angka !!!");
+                        return false;
+                    }else if($('.cekVal4'+a).val() % 1 != 0){
+                        alert("Harga Jual Diskon Ada Yang Desimal !!!");
+                        return false;
+                    }
+                }
             }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();
@@ -146,6 +205,7 @@
     $(document).ready(function () {
         $('.produk').bind('change', function(){
             var tis=$(this);
+            tis.parent().parent().find('.perhitungan')[0].selectedIndex=0;
             tis.parent().parent().find('.cetakHargaEmployee').html('');
             tis.parent().parent().find('.hargaEmployee').val('');
             if($('option:selected',this).attr('scheme') == 'cashback'){
@@ -161,6 +221,20 @@
               }).done(function( data ) {
                     tis.parent().find('.cetakHarga').html(data.val);
               });
+        });
+        $('.perhitungan').bind('change', function(){
+            var tis=$(this);
+            if(tis.val() == 'selisih'){
+                tis.parent().parent().find('.hargaEmployee').removeAttr('disabled');
+            }else{
+                if(tis.parent().parent().find('.produk option:selected').attr('scheme') == 'cashback'){
+                    tis.parent().parent().find('.hargaEmployee').removeAttr('disabled');
+                }else{
+                    tis.parent().parent().find('.hargaEmployee').attr({'disabled':'disabled'});
+                    tis.parent().parent().find('.cetakHargaEmployee').html('');
+                    tis.parent().parent().find('.hargaEmployee').val('');
+                }
+            }
         });
         $('.hargaJual').bind('change', function(){
             var tis=$(this);
@@ -210,6 +284,10 @@
                     tis.parent().find('.cetakHargaEmployee').html(data.val);
               });
             }
+        });
+        $('#nama').bind('change', function(){
+            var tis=$(this);
+            $('#namaPT').val(tis.val());
         });
     });
 </script>

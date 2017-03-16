@@ -22,6 +22,7 @@ text-decoration: underline;
 
 .notification-area{margin:0px 0px 10px 0px;padding:10px 10px 10px 45px;border:1px solid #41eb6b;color:green;background:#c4fad1 url('../../images/admin/notif_back.jpg') 10px center no-repeat}
 .warning-area{margin:0px 0px 10px 0px;padding:10px 10px 10px 45px;border:1px solid #ff6666; color:#BF0000;background:#ffcccc url('../../images/admin/warn_back.jpg') 10px center no-repeat}
+.warning-area-beranda{margin:0px 0px 10px 0px;padding:10px 10px 10px 45px;border:1px solid #ff6666; color:#BF0000;background:#ffcccc url('../../images/admin/warn_back.jpg') 10px center no-repeat}
 .notification-area:hover,
 .warning-area:hover{cursor:pointer}
 

@@ -23,6 +23,7 @@ class Log extends CI_Controller {
 		parent::__construct();
                 date_default_timezone_set('Asia/Jakarta');
                 $this->load->model('m_log', '', TRUE);
+                $this->load->model('m_login', '', TRUE);
 	}
     
 	public function index()
@@ -121,9 +122,15 @@ class Log extends CI_Controller {
             $no=$pageStart+1;
             if($results != false){
                 foreach($results as $row){
+                    if($row->id_admin != ''){
+                        $datas=$this->m_login->adminGetById($row->id_admin);
+                        $user= ucwords($datas->nama);
+                    }else{
+                        $user='';
+                    }
                     $data['rows'][] = array(
                     'id' => $row->id,
-                    'cell' => array($no,$row->id_admin,  ucwords($row->category), date("d-m-Y H:i:s",$row->date),$row->activity)
+                    'cell' => array($no,$user,  ucwords($row->category), date("d-m-Y H:i:s",$row->date),$row->activity)
                     );
                     $no++;
                 }        

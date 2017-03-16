@@ -54,7 +54,7 @@ p {
 }
 </style>
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <?php
         if(get_cookie('notif') == '0'){
             $a='';
@@ -89,6 +89,8 @@ p {
     
 
 <script>
-
+$(window).load(function(){ 
+    $('.bodyclass').show();
+});
 </script>
     

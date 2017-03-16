@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tambah Pengeluaran' : 'Edit Pengeluaran '; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()"  name="pengeluaranForm" action="<?php echo site_url('setting/pengeluaranFormSave/4') ?>" method="POST">
         <table style="border: 1px solid black;">

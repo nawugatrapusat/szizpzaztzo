@@ -61,9 +61,11 @@ class Penjualan extends CI_Controller {
 
                 if ($clientPrice != '') {
                     foreach ($clientPrice as $hasil) {
-                        if(($hasil->idProduct != '' && $hasil->hargaJual != '') && ($hasil->idProduct == $idProduct)){
-                            $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJual,0,',','.');
+                        if(($hasil->idProduct != '' && $hasil->hargaJualDiskon != '') && ($hasil->idProduct == $idProduct)){
+                            $data->cetakHargaJual='Rp. '.number_format($hasil->hargaJualDiskon,0,',','.');
                             $data->hargaJual=$hasil->hargaJual;
+                            $data->hargaJualDiskon=$hasil->hargaJualDiskon;
+                            $data->perhitungan=$hasil->perhitungan;
                             $data->cetakHargaEmployee=$hasil->hargaEmployee == '' ? '' : 'Rp. '.number_format($hasil->hargaEmployee,0,',','.');
                             $data->hargaEmployee=$hasil->hargaEmployee;
                             $c++;
@@ -71,8 +73,10 @@ class Penjualan extends CI_Controller {
                     }    
                 }
                 if($c == 0){
-                    $data->cetakHargaJual='Rp. '.number_format($product->hargaJual,0,',','.');
+                    $data->cetakHargaJual='Rp. '.number_format($product->hargaJualDiskon,0,',','.');
                     $data->hargaJual=$product->hargaJual;
+                    $data->hargaJualDiskon=$product->hargaJualDiskon;
+                    $data->perhitungan='default';
                     $data->cetakHargaEmployee=$product->hargaEmployee == '' ? '' : 'Rp. '.number_format($product->hargaEmployee,0,',','.');
                     $data->hargaEmployee=$product->hargaEmployee;
                 }
@@ -118,6 +122,8 @@ class Penjualan extends CI_Controller {
         }
         
         function penjualanFormSave(){
+            $this->load->view('v_loading.php');
+                
 //            print_r($this->input->post());
             if($this->input->post()){
 //                echo str_replace(',','<br/>',json_encode((json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
@@ -145,6 +151,8 @@ class Penjualan extends CI_Controller {
         }
         
         function penjualanDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -162,7 +170,6 @@ class Penjualan extends CI_Controller {
         
         function TFAUForm(){
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -211,6 +218,8 @@ class Penjualan extends CI_Controller {
         }
         
         function TFAUFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 if($this->input->post('typeForm') == 'tukarFaktur'){
                     if($this->input->post('addEdit') == 'add'){
@@ -261,14 +270,14 @@ class Penjualan extends CI_Controller {
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             
             $id=$this->uri->segment(3);
-            $client=$this->m_client->clientGetAll();
-            $product=$this->m_product->productGetAll();
+            $client=$this->m_client->clientGetAllAll();
+            $product=$this->m_product->productGetAllAll();
             $penjualanById=$this->m_penjualan->penjualanGetById($id);
             $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $employee=$this->m_employee->empGetAll();
+            $employee=$this->m_employee->empGetAllAll();
             $TF=$this->m_penjualan->TFGetByIdPenjualan($penjualanById->id);
             $AU=$this->m_penjualan->AUGetByIdPenjualan($penjualanById->id);
-            $bank=$this->m_bank->bankGetAll();
+            $bank=$this->m_bank->bankGetAllAll();
             
             $data=array(
                 'client'=>$client,
@@ -326,8 +335,12 @@ class Penjualan extends CI_Controller {
             
             if($penjualanDetail != false){
                 foreach ($penjualanDetail as $penj) {
+                    $temp=0;
+                    $temp1=0;
                     if($penj->scheme == 'cashback'){
-                        $cashback=$cashback+((($penj->hargaJual-$penj->hargaEmployee)/2)*$penj->jumlah);
+                        $temp=((($penj->hargaJual-$penj->hargaEmployee)/2)*$penj->jumlah);
+                        $temp1=$penj->perhitungan == 'default' ? $temp : 0;
+                        $cashback=$cashback+$temp1;
                     }
                 }
             }
@@ -372,7 +385,8 @@ class Penjualan extends CI_Controller {
                     $query='0';
                 }
             }
-            $employeeInput = $this->session->userdata('id_admin') == '1' ? '' : 'AND penjualan.time like "'.date("d-m-Y").'%" AND penjualan.id_admin="'.$this->session->userdata('id_admin').'"' ;
+//            $employeeInput = $this->session->userdata('id_admin') == '1' ? '' : 'AND penjualan.time like "'.date("d-m-Y").'%" AND penjualan.id_admin="'.$this->session->userdata('id_admin').'"' ;
+            $employeeInput = $this->session->userdata('id_admin') == '1' ? '' : 'AND penjualan.id_admin="'.$this->session->userdata('id_admin').'"' ;
             if($qtype == 'time' && $query != ''){
                 $ttime=explode('-', $query);
                 $whereSql = ($qtype != '' && $query != '') ? "where d=$ttime[0] AND m=$ttime[1] AND y=$ttime[2] AND client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'" : "WHERE  client.id=penjualan.idClient $employeeInput AND penjualan.deleted='0'";

@@ -50,13 +50,24 @@ function hapus(com,grid){
             var id=$(this).attr('id'); 
             id = id.substring(id.lastIndexOf('row')+3);
             if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
-                window.scrollTo(0, 0);
-                $('#loadingAnim').show();
-                document.body.scroll = "no";
-                document.body.style.overflow = 'hidden';
-                document.height = window.innerHeight;
-                $('.delete').hide();
-                location.href = '<?php echo site_url("setting/clientDelete/0/") ?>' + id;
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('setting/cekDeleteClient'); ?>",
+                    data: 'idClient='+id
+                  }).done(function( data ) {
+                            if(data.c == 0){
+                                window.scrollTo(0, 0);
+                                $('#loadingAnim').show();
+                                document.body.scroll = "no";
+                                document.body.style.overflow = 'hidden';
+                                document.height = window.innerHeight;
+                                $('.delete').hide();
+                                location.href = '<?php echo site_url("setting/clientDelete/0/") ?>' + id;
+                            }else{
+                                alert(data.val);
+                            }
+                  });
             }
         });
 }

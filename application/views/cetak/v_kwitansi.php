@@ -19,12 +19,12 @@
             }
         </style>
     </head>
-    <body style='font-family:tahoma; font-size:8pt;padding-top:20px;'>
+    <body style='font-family:tahoma; font-size:9pt;padding-top:20px;'>
     <center>
-        <table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
+        <table style='width:550px; font-size:9pt; font-family:calibri; border-collapse: collapse;' border = '0'>
             <tr style="border-collapse: collapse;">
                 <td style="border-collapse: collapse;"></td>
-                <td width="20" align="right" style="border-collapse: collapse;font-size: 7">TAG11217 V00</td>
+                <td width="20" align="right" style="border-collapse: collapse;font-size:7">TAG11217 V00</td>
             </tr>
             <tr>
                 <td>
@@ -43,8 +43,8 @@
                     Email : sbpsbpsbp@gmail.com
                 </td>
             </tr>
-        </table><br/>
-        <table cellspacing='0' style='width:550px; font-size:8pt; font-family:calibri;  border-collapse: collapse;border: 1px solid black;'>
+        </table>
+        <table cellspacing='0' style='width:550px; font-size:9pt; font-family:calibri;  border-collapse: collapse;border: 1px solid black;'>
                 <tr>
                     <td style="padding-top: 10;padding-bottom: 10;" align="center" colspan="3" ><b style="font-size: 14">KWITANSI</b></td>
                 </tr>
@@ -56,12 +56,12 @@
                 <tr>
                     <td style="padding-left: 10;" align="left">Telah terima dari</td>
                     <td align="left">:</td>
-                    <td align="left"><u><?php echo ucwords($detailClient->nama)?></u></td>
+                    <td align="left"><u><?php echo strtoupper($detailClient->namaPT)?></u></td>
                 </tr>
                 <tr>
                     <td style="padding-left: 10;" align="left">Terbilang</td>
                     <td align="left">:</td>
-                    <td align="left"><u><?php echo ucwords($this->input->post('uangSejumlah'))?></u></td>
+                    <td align="left"><u><?php echo ucfirst($this->input->post('uangSejumlah'))?></u></td>
                 </tr>
                 <tr>
                     <td style="padding-left: 10;" align="left" valign="top">Untuk pembayaran</td>
@@ -98,3 +98,6 @@
     </center>
 </body>
 </html>
+<script>
+window.print()
+</script>

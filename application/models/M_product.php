@@ -30,6 +30,12 @@ class M_product extends CI_Model {
             $query=$this->db->get('product');
             if($query->num_rows() != 0) return $query->result(); else return false;
         }      
+	        
+         function productGetAllAll() {         
+            $this->db->order_by('nama','ASC');
+            $query=$this->db->get('product');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }      
         
         function productAddSave($data) {            
             $this->db->trans_start();
@@ -55,11 +61,37 @@ class M_product extends CI_Model {
             }
         }
         
+        function productUpdate($id,$data) {
+            $this->db->trans_start();
+        
+            $this->db->where('id',$id);
+            $this->db->update('product',$data);
+            
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
          function productDelete($id) {            
             $this->db->trans_start();
                 $this->db->where('id',$id);
                 $this->db->set('deleted',1);
                 $this->db->update('product');
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
+        function productStockFormSave($id,$data) {            
+            $this->db->trans_start();
+                $this->db->where('id',$id);
+                $this->db->update('product',$data);
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;

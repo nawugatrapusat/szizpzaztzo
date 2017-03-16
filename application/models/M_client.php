@@ -37,6 +37,13 @@ class M_client extends CI_Model {
             if($query->num_rows() != 0) return $query->row(); else return false;
         }        
 	        
+         function clientPriceGetAll() {            
+            $this->db->where('deleted','0');
+            $this->db->order_by('id','ASC');
+            $query=$this->db->get('clientprice');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }
+	        
          function clientPriceGetByIdClient($id) {            
             $this->db->where('deleted','0');
             $this->db->where('idClient',$id);
@@ -52,16 +59,24 @@ class M_client extends CI_Model {
             if($query->num_rows() != 0) return $query->result(); else return false;
         }
         
+         function clientGetAllAll() {            
+            $this->db->order_by('nama','ASC');
+            $query=$this->db->get('client');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }
+        
         function clientAddSave($data) {  
             
             $this->db->trans_start();
             $client=new stdClass();
             $client->nama=$data['nama'];
+            $client->namaPT=$data['namaPT'];
             $client->alamat=$data['alamat'];
             $client->noTelp=$data['noTelp'];
             $client->noHp=$data['noHp'];
             $client->picPembelian=$data['picPembelian'];
             $client->picTagihan=$data['picTagihan'];
+            $client->keteranganTF=$data['keteranganTF'];
             $client->id_admin=$this->session->userdata('id_admin');
             
                 $this->db->insert('client',$client);
@@ -75,6 +90,7 @@ class M_client extends CI_Model {
                     $clientPrice->hargaJual=$data['hargaJual'.$a];
                     $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                     $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
+                    $clientPrice->perhitungan=$data['perhitungan'.$a];
                     $clientPrice->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('clientprice',$clientPrice);
                 }
@@ -92,11 +108,13 @@ class M_client extends CI_Model {
             $this->db->trans_start();
             $client=new stdClass();
             $client->nama=$data['nama'];
+            $client->namaPT=$data['namaPT'];
             $client->alamat=$data['alamat'];
             $client->noTelp=$data['noTelp'];
             $client->noHp=$data['noHp'];
             $client->picPembelian=$data['picPembelian'];
             $client->picTagihan=$data['picTagihan'];
+            $client->keteranganTF=$data['keteranganTF'];
             $client->id=$data['id'];
             
                 $this->db->where('id',$client->id);
@@ -111,6 +129,7 @@ class M_client extends CI_Model {
                         $clientPrice->hargaJual=$data['hargaJual'.$a];
                         $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                         $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
+                        $clientPrice->perhitungan=$data['perhitungan'.$a];
                         $clientPrice->id_admin=$this->session->userdata('id_admin');
                         $this->db->insert('clientprice',$clientPrice);
                     }
@@ -122,7 +141,14 @@ class M_client extends CI_Model {
                         $clientPrice->hargaJual=$data['hargaJual'.$a];
                         $clientPrice->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                         $clientPrice->hargaEmployee=empty($data['hargaEmployee'.$a]) ? '':$data['hargaEmployee'.$a];
+                        $clientPrice->perhitungan=$data['perhitungan'.$a];
 
+                        $this->db->where('id',$clientPrice->id);
+                        $this->db->update('clientprice',$clientPrice);
+                    }else{
+                        $clientPrice=new stdClass();
+                        $clientPrice->id=$data['idClientPrice'.$a];
+                        $clientPrice->deleted=1;
                         $this->db->where('id',$clientPrice->id);
                         $this->db->update('clientprice',$clientPrice);
                     }
@@ -150,11 +176,54 @@ class M_client extends CI_Model {
             }
         }
         
+        function clientPriceUpdate($id,$data) {
+            $this->db->trans_start();
+        
+            $this->db->where('id',$id);
+            $this->db->update('clientprice',$data);
+            
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
+        function clientUpdate($id,$data) {
+            $this->db->trans_start();
+        
+            $this->db->where('id',$id);
+            $this->db->update('client',$data);
+            
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
          function clientDelete($id) {            
             $this->db->trans_start();
                 $this->db->where('id',$id);
                 $this->db->set('deleted',1);
                 $this->db->update('client');
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        
+        function deleteClientpriceUpdateByIdProduct($id) {
+            $this->db->trans_start();
+        
+            $this->db->where('idProduct',$id);
+            $this->db->set('deleted',1);
+            $this->db->update('clientprice');
+            
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE){
                 return false;

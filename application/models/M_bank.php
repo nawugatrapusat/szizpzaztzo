@@ -20,6 +20,12 @@ class M_bank extends CI_Model {
             $query=$this->db->get('bank');
             if($query->num_rows() != 0) return $query->result(); else return false;
         }      
+	        
+         function bankGetAllAll() {            
+            $this->db->order_by('namaBank','ASC');
+            $query=$this->db->get('bank');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }      
         
         function bankAddSave($data) {            
             $this->db->trans_start();

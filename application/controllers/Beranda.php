@@ -34,11 +34,54 @@ class Beranda extends CI_Controller {
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
+//            update hargaJualDiskon----------------------------------------------------------------------------------------------------------------------
+//            $clientPrice=$this->m_client->clientPriceGetAll();
+//            foreach($clientPrice as $detail){
+//                $data=new stdClass();
+//                $data->hargaJualDiskon=$detail->hargaJual;
+//                $this->m_client->clientPriceUpdate($detail->id,$data);
+//            }
+//            $product=$this->m_product->productGetAll();
+//            foreach($product as $detail){
+//                $data=new stdClass();
+//                $data->hargaJualDiskon=$detail->hargaJual;
+//                $this->m_product->productUpdate($detail->id,$data);
+//            }
+//            $PenjualanDetail=$this->m_penjualan->penjualanDetailGetAll();
+//            foreach($PenjualanDetail as $detail){
+//                $data=new stdClass();
+//                $data->hargaJualDiskon=$detail->hargaJual;
+//                $this->m_penjualan->penjualanDetailUpdate($detail->id,$data);
+//            }            
+//            update scheme penjualan detail----------------------------------------------------------------------------------------------------------------------
+            /*$PenjualanDetail=$this->m_penjualan->penjualanDetailGetAll();
+            foreach($PenjualanDetail as $detail){
+                if($detail->idProduct != ''){
+                    $dp=$this->m_product->productGetById($detail->idProduct);
+                    $data=new stdClass();
+                    $data->scheme=$dp->scheme;
+                    $this->m_penjualan->penjualanDetailUpdate($detail->id,$data);
+                }
+            } */   
+//            update namaPT----------------------------------------------------------------------------------------------------------------------
+            /*$clientPrice=$this->m_client->clientGetAll();
+            foreach($clientPrice as $detail){
+                $data=new stdClass();
+                $data->namaPT=$detail->nama;
+                $this->m_client->clientUpdate($detail->id,$data);
+            }*/
+//            cek hagrga beli < harga jual----------------------------------------------------------------------------------------------------------------------            
+            
+            
             
             $all_produk='';
+            $product=$this->m_product->productGetAll();
+            $client=$this->m_client->clientGetAll();
             
             $data=array(
-                'all_produk'=>$all_produk
+                'all_produk'=>$all_produk,
+                'client'=>$client,
+                'product'=>$product
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));

@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tambah Produk' : 'Edit Produk '; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="productForm" action="<?php echo site_url('setting/productFormSave/1') ?>" method="POST">
         <table style="border: 1px solid black;">
@@ -70,13 +70,53 @@
             if ($('#berat').val() == "") { alert("Berat Masih Kosong !!!"); return false; }
 //            if ($('#stock').val() == "") { alert("Stock Masih Kosong !!!"); return false; }
             if ($('#hargaBeli').val() == "") { alert("Harga beli Masih Kosong !!!"); return false; }
+                if ($('#hargaBeli').val() != ''){
+                    if(isNaN($('#hargaBeli').val()) == true){
+                        alert("Harga Beli Harus Angka !!!");
+                        return false;
+                    }else if($('#hargaBeli').val() % 1 != 0){
+                        alert("Harga Beli Tidak Boleh Desimal !!!");
+                        return false;
+                    }
+                }
             if ($('#scheme').val() == "") { 
                 alert("Skema Masih Kosong !!!"); return false; 
             }else if($('#scheme').val() == 'cashback'){
                 if($('#hargaEmployeeInput').val() == ''){ alert("Harga Karyawan Masih Kosong !!!"); return false; }
+                    if ($('#hargaEmployeeInput').val() != ''){
+                        if(isNaN($('#hargaEmployeeInput').val()) == true){
+                            alert("Harga Karyawan Harus Angka !!!");
+                            return false;
+                        }else if($('#hargaEmployeeInput').val() % 1 != 0){
+                            alert("Harga Karyawan Tidak Boleh Desimal !!!");
+                            return false;
+                        }
+                    }
             }
             if ($('#hargaJual').val() == "") { alert("Harga jual Masih Kosong !!!"); return false; }
+                if ($('#hargaJual').val() != ''){
+                    if(isNaN($('#hargaJual').val()) == true){
+                        alert("Harga Jual Harus Angka !!!");
+                        return false;
+                    }else if($('#hargaJual').val() % 1 != 0){
+                        alert("Harga Jual Tidak Boleh Desimal !!!");
+                        return false;
+                    }
+                }
             if ($('#hargaJualDiskon').val() == "") { alert("Harga jual Diskon Masih Kosong !!!"); return false; }
+                if ($('#hargaJualDiskon').val() != ''){
+                    if(isNaN($('#hargaJualDiskon').val()) == true){
+                        alert("Harga Jual Diskon Harus Angka !!!");
+                        return false;
+                    }else if($('#hargaJualDiskon').val() % 1 != 0){
+                        alert("Harga Jual Diskon Tidak Boleh Desimal !!!");
+                        return false;
+                    }
+                }
+            if(parseInt($('#hargaBeli').val()) > parseInt($('#hargaJual').val()) || parseInt($('#hargaBeli').val()) > parseInt($('#hargaJualDiskon').val())) 
+                { alert("Harga Tidak Sesuai (Lebih Kecil / Lebih Besar Dari Harga Beli / Harga Jual / Harga Jual Diskon)"); return false; }
+            if($('#scheme').val() == 'cashback' && parseInt($('#hargaEmployeeInput').val()) > parseInt($('#hargaJual').val()) || parseInt($('#hargaEmployeeInput').val()) > parseInt($('#hargaJualDiskon').val())) 
+                { alert("Harga Tidak Sesuai (Lebih Kecil / Lebih Besar Dari Harga Karyawan / Harga Jual / Harga Jual Diskon)"); return false; }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();
             document.body.scroll = "no";

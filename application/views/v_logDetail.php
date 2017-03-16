@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2>Detail Log</h2>
         <table style="border: 1px solid black;">
             <tr>

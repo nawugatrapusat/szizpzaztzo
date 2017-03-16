@@ -24,6 +24,7 @@ class Setting extends CI_Controller {
                 date_default_timezone_set('Asia/Jakarta');
                 $this->load->model('m_log', '', TRUE);
                 $this->load->model('m_client', '', TRUE);
+                $this->load->model('m_penjualan', '', TRUE);
                 $this->load->model('m_product', '', TRUE);
                 $this->load->model('m_employee', '', TRUE);
                 $this->load->model('m_bank', '', TRUE);
@@ -80,6 +81,8 @@ class Setting extends CI_Controller {
         }
         
         function clientFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
 //                print_r($this->input->post());
@@ -108,6 +111,8 @@ class Setting extends CI_Controller {
         }
         
         function clientDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -115,10 +120,10 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_client->clientDelete($data) != false){
-                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'sukses'],["data" =>$data]))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting client',json_encode((array_merge(["statusAction" => 'gagal'],["data" =>$data]))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -147,6 +152,8 @@ class Setting extends CI_Controller {
         }
         
         function productFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
@@ -174,6 +181,8 @@ class Setting extends CI_Controller {
         }
         
         function productDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -181,14 +190,67 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_product->productDelete($data) != false){
-                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'sukses'],["data" =>$data]))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting product',json_encode((array_merge(["statusAction" => 'gagal'],["data" =>$data]))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
             redirect(site_url('setting'));
+        }
+        
+        function productStockForm(){
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            
+            $product=$this->m_product->productGetAll();
+            $data=array(
+                'product'=>$product
+            );
+            
+            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
+            
+            $this->load->view('template/header.php',$header);    
+            $this->load->view('setting/v_settingProductStockForm.php',$data);
+            $this->load->view('template/footer.php');  
+        }
+        
+        function productStockFormSave(){
+            $this->load->view('v_loading.php');
+                
+            if($this->input->post()){
+//                print_r($this->input->post());
+                $product=$this->m_product->productGetAll();
+                $c=0;
+                foreach ($product as $detail){
+                    $data=new stdClass();
+                    $data->minStock=$this->input->post('minStock'.$detail->id);
+                    if($this->input->post('jumlah'.$detail->id) != ''){
+                        if($this->input->post('tipeStock') == 'tambah'){
+                            $data->stock=$detail->stock+$this->input->post('jumlah'.$detail->id);
+                        }else if($this->input->post('tipeStock') == 'update'){
+                            $data->stock=$this->input->post('jumlah'.$detail->id);
+                        }
+                    }
+                    $tmp=$this->m_product->productStockFormSave($detail->id,$data);
+                    if($tmp == false) $c++;
+//                    print_r($data);
+//                    echo "<br/>";
+                }
+                if($c == 0){
+                    $this->m_log->insert_log('simpan setting product stock',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                    $this->input->set_cookie('successNotif','Sukses Tambah Data',time()+6000);
+                }else{
+                    $this->m_log->insert_log('simpan setting product stock',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                    $this->input->set_cookie('failedNotif','Tambah Data Gagal !!!',time()+6000);
+                }
+                
+                $this->input->set_cookie('tab',1,time()+6000);
+                redirect(site_url('setting'));
+            }else{
+                redirect('login');
+            }
         }
         
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -213,6 +275,8 @@ class Setting extends CI_Controller {
         }
         
         function empFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
                 
@@ -241,6 +305,8 @@ class Setting extends CI_Controller {
         }
         
         function empDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -248,10 +314,10 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_employee->empDelete($data) != false){
-                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'sukses'],["data" =>$data]))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting employee',json_encode((array_merge(["statusAction" => 'gagal'],["data" =>$data]))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -280,6 +346,8 @@ class Setting extends CI_Controller {
         }
         
         function bankFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
@@ -307,6 +375,8 @@ class Setting extends CI_Controller {
         }
         
         function bankDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -314,10 +384,10 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_bank->bankDelete($data) != false){
-                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'sukses'],["data" =>$data]))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting bank',json_encode((array_merge(["statusAction" => 'gagal'],["data" =>$data]))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
@@ -346,6 +416,8 @@ class Setting extends CI_Controller {
         }
         
         function pengeluaranFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 $tab=$this->uri->segment(3);
                 if($this->input->post('id') == ''){
@@ -373,6 +445,8 @@ class Setting extends CI_Controller {
         }
         
         function pengeluaranDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             
@@ -380,15 +454,93 @@ class Setting extends CI_Controller {
             $data=$this->uri->segment(4);
             
             if($this->m_pengeluaran->pengeluaranDelete($data) != false){
-                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'sukses'],["data" =>$data]))));
                 $this->input->set_cookie('successNotif','Sukses Hapus Data',time()+6000);
             }else{
-                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],$this->input->post()))));
+                $this->m_log->insert_log('delete setting pengeluaran',json_encode((array_merge(["statusAction" => 'gagal'],["data" =>$data]))));
                 $this->input->set_cookie('failedNotif','Hapus Data Gagal !!!',time()+6000);
             }
             $this->input->set_cookie('tab',$tab,time()+6000);
             redirect(site_url('setting'));
         }
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      
+        function cekDeleteProduct(){
+            if($_POST){
+                $data=new stdClass();
+                $data->val="Gagal hapus produk dikarenakan ada penjualan yang pending : \n";
+                $data->c=0;
+                $data->stdelete=true;
+                
+                $idProduct=  $this->input->post('idProduct');
+
+                $cekProduk=$this->m_penjualan->cekProductGetByIdFromPenjualandetail($idProduct);
+                
+                if($cekProduk != false){
+                    foreach ($cekProduk as $hasil) {
+                        $data->val=$data->val."No Faktur : ".$hasil->noFaktur." - ".ucwords($hasil->nama)."\n";
+                        $data->c++;
+                    }    
+                }
+                
+                if($data->c == 0){
+                    $stdelete=$this->m_client->deleteClientpriceUpdateByIdProduct($idProduct);
+                    if($stdelete == false) $data->stdelete=false;
+                    $this->m_log->insert_log('delete client price product',"id product : ".$idProduct.", status : ".$stdelete);
+                }
+                
+                echo json_encode($data);
+            }
+        }
+        function cekDeleteClient(){
+            if($_POST){
+                $data=new stdClass();
+                $data->val="Gagal hapus client dikarenakan ada penjualan yang pending : \n";
+                $data->c=0;
+                $data->stdelete=true;
+                
+                $idClient=  $this->input->post('idClient');
+
+                $cekClient=$this->m_penjualan->cekClientGetByIdFromPenjualan($idClient);
+                
+                if($cekClient != false){
+                    foreach ($cekClient as $hasil) {
+                        $data->val=$data->val."No Faktur : ".$hasil->noFaktur." - ".ucwords($hasil->nama)."\n";
+                        $data->c++;
+                    }    
+                }
+                
+                echo json_encode($data);
+            }
+        }
+        function cekDeleteEmployee(){
+            if($_POST){
+                $data=new stdClass();
+                $data->val="Gagal hapus karyawan dikarenakan ada penjualan yang pending : \n";
+                $data->c=0;
+                
+                $idEmployee=  $this->input->post('idEmployee');
+
+                $cekEmployee=$this->m_penjualan->cekEmployeeGetByIdFromPenjualan($idEmployee);
+                if($cekEmployee != false){
+                    foreach ($cekEmployee as $hasil) {
+                        $data->val=$data->val."No Faktur : ".$hasil->noFaktur." - ".ucwords($hasil->nama)."\n";
+                        $data->c++;
+                    }    
+                }
+
+                $cekEmployee2=$this->m_penjualan->cekEmployeeGetByIdFromTukarfaktur($idEmployee);
+                if($cekEmployee2 != false){
+                    foreach ($cekEmployee2 as $hasil) {
+                        $data->val=$data->val."No Faktur : ".$hasil->noFaktur." - ".ucwords($hasil->nama)."\n";
+                        $data->c++;
+                    }    
+                }
+                
+                echo json_encode($data);
+            }
+        }
+        
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         function clientTable()

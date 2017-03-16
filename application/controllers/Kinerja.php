@@ -85,6 +85,8 @@ class Kinerja extends CI_Controller {
         }
         
         function penjualanFormSave(){
+            $this->load->view('v_loading.php');
+                
             if($this->input->post()){
                 if($this->input->post('id') == ''){
                     if($this->m_penjualan->penjualanAddSave(array_map('strtolower', $this->input->post())) != false){
@@ -111,6 +113,8 @@ class Kinerja extends CI_Controller {
         }
         
         function penjualanDelete(){
+            $this->load->view('v_loading.php');
+                
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
             

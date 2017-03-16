@@ -5,13 +5,58 @@
     }
 </style>
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
 <?php $this->load->view('template/menu')?>
     <h2>Beranda</h2>
-    <div id="detail"></div>
 
-
-    <div class="flexme"></div>
+<?php
+            if($this->session->userdata('id_admin') == '1') {
+//                echo '<table>';
+                foreach($product as $detail){
+                    if($detail->hargaBeli > $detail->hargaJual || $detail->hargaBeli > $detail->hargaJualDiskon){
+                        echo '<div style="background-color:#ffcccc;margin-bottom:1px;">'
+                        . ''.ucwords($detail->nama).'|| harga beli : '.$detail->hargaBeli.' || harga jual : '.$detail->hargaJual.' || harga karyawan : '.$detail->hargaEmployee.' || '
+                                . 'harga jual diskon :'.$detail->hargaJualDiskon.'</div>';
+//                        echo '<tr style="background-color:#ffcccc">
+//                                    <td>'.$detail->nama.'</td>
+//                                    <td> || harga beli : '.$detail->hargaBeli.' || </td>
+//                                    <td>harga jual : '.$detail->hargaJual.' || </td>
+//                                    <td>harga karyawan : '.$detail->hargaEmployee.' || </td>
+//                                    <td>harga jual diskon :'.$detail->hargaJualDiskon.'</td>
+//                                </tr>';
+                    }else if($detail->hargaEmployee != '' && ($detail->hargaBeli > $detail->hargaEmployee)){
+                        echo '<div style="background-color:#ffcccc;margin-bottom:1px;">'
+                        . ''.ucwords($detail->nama).'|| harga beli : '.$detail->hargaBeli.' || harga jual : '.$detail->hargaJual.' || harga karyawan : '.$detail->hargaEmployee.' || '
+                                . 'harga jual diskon :'.$detail->hargaJualDiskon.'</div>';
+//                        echo '<tr style="background-color:#ffcccc">
+//                                    <td>'.$detail->nama.'</td>
+//                                    <td> || harga beli : '.$detail->hargaBeli.' || </td>
+//                                    <td>harga jual : '.$detail->hargaJual.' || </td>
+//                                    <td>harga karyawan : '.$detail->hargaEmployee.' || </td>
+//                                    <td>harga jual diskon :'.$detail->hargaJualDiskon.'</td>
+//                                </tr>';
+                    }
+                    if($detail->stock < $detail->minStock){
+                        echo '<div style="background-color:#ffcccc;;margin-bottom:1px;">
+                            Barang '.ucwords($detail->nama).', Stock Sudah Minimum / Stock Habis  </div>';
+                    } 
+                }
+//                echo '</table>';
+            }
+echo "<br/><br/>";
+echo '<span style="font-weight:bold;">Informasi TF</span><br/><br/>';
+    foreach($client as $detail){
+        if($detail->keteranganTF != ''){
+            echo "TF ".ucwords($detail->nama)." - ".ucfirst($detail->keteranganTF)."<br/>";
+        }
+    }
+?>
+    <br/>
+    <?php
+//echo "<br/>";
+//echo '<span style="font-weight:bold;">Pending Faktur</span><br/><br/>';
+    ?>
+    <!--<div class="flexme"></div>-->
 <script>
 $(document).ready(function(){     
     $(".flexme").flexigrid({
@@ -56,7 +101,7 @@ $(document).ready(function(){
     sortname: "noFaktur",
     sortorder: "desc",
     usepager: true,
-    title: 'Pending Faktur',
+//    title: 'Pending Faktur',
     useRp: true,
     rp: 50,
     showTableToggleBtn: true,

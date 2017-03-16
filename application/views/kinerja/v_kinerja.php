@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <?php 
     $this->load->view('template/menu') ;
         function bulan($id){

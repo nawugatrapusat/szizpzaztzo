@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tambah Pengeluaran' : 'Edit Pengeluaran '; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()"  name="pengeluaranForm" action="<?php echo site_url('pengeluaran/pengeluaranFormSave') ?>" method="POST">
         <table style="border: 1px solid black;">
@@ -41,8 +41,17 @@
     </form>
     <script>
         function validateForm() {
-            if ($('#idPengeluaran').val() == "") { alert("Pengeluaran Masih Kosong !!!"); return false; }
+            if ($('#idPengeluaran').val() == "") { alert("Nama Pengeluaran Masih Kosong !!!"); return false; }
             if ($('#jumlah').val() == "") { alert("Jumlah Masih Kosong !!!"); return false; }
+            if ($('#jumlah').val() != ''){
+                if(isNaN($('#jumlah').val()) == true){
+                    alert("Jumlah Harus Angka !!!");
+                    return false;
+                }else if($('#jumlah').val() % 1 != 0){
+                    alert("Jumlah Tidak Boleh Desimal !!!");
+                    return false;
+                }
+            }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();
             document.body.scroll = "no";

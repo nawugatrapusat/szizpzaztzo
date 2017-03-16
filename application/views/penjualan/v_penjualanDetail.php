@@ -216,19 +216,23 @@
                     <td align="center" style='background-color: #c4fad1;'>Total</td>
                     <td align="center">Harga Karyawan</td>
                     <td align="center" style='background-color: #c4fad1;'>Cashback</td>
+                    <td align="center" style='background-color: #c4fad1;'>Pendapatan</td>
                 </tr>
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
                 $totcashback=0;
+                $totperhitungan=0;
                 for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
                     $paramHargaBeli[$f] = '';
                     $paramHargaJual[$f] = '';
+                    $paramHargaJualDiskon[$f] = '';
                     $paramjumlah[$f] = '';
                     $paramcashback[$f]='0';
                     $paramhargaemp[$f]='0';
+                    $paramperhitungan[$f]='0';
                 }
                 if ($penjualanDetail != '') {
                     $c1 = 1;
@@ -237,18 +241,24 @@
                         $paramIdProduct[$c1] = $hasil2->idProduct;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramHargaJual[$c1] = $hasil2->hargaJual;
+                        $paramHargaJualDiskon[$c1] = $hasil2->hargaJualDiskon;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramjumlah[$c1] = $hasil2->jumlah;
                         if($hasil2->scheme == 'cashback'){
                             $paramhargaemp[$c1]=$hasil2->hargaEmployee;
                             $paramcashback[$c1]=((($hasil2->hargaJual-$hasil2->hargaEmployee)/2)*$hasil2->jumlah);
+                            $paramcashback[$c1]=$hasil2->perhitungan == 'default' ? $paramcashback[$c1] : 0;
                             $totcashback=$totcashback+$paramcashback[$c1];
+                        }
+                        if($hasil2->perhitungan == 'selisih'){
+                            $paramperhitungan[$c1]=($hasil2->hargaJual-$hasil2->hargaEmployee)*$hasil2->jumlah;
+                            $totperhitungan=$totperhitungan+$paramperhitungan[$c1];
                         }
                         $c1++;
                     }
                 }
                 for ($f = 1; $f <= 50; $f++) {
-                    if ($paramHargaJual[$f] != '' && $paramjumlah[$f] != '') {
+                    if ($paramHargaJualDiskon[$f] != '' && $paramjumlah[$f] != '') {
                         echo '
                                         <tr>
                                             <td align="center">' . $f . '</td>
@@ -263,13 +273,13 @@
                         ?>
                         </td>
                         <td align='right'>
-                            <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
+                            <?php echo 'Rp. ' . number_format($paramHargaJualDiskon[$f], 0, ',', '.'); ?>
                         </td>
                         <td align='center'>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
                         <td align='right'>Rp. 
-                            <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                            <?php echo number_format($paramjumlah[$f]*$paramHargaJualDiskon[$f], 0, ',', '.'); ?>
                         </td>
                         <td align='right'>Rp. 
                             <?php echo number_format($paramhargaemp[$f], 0, ',', '.'); ?>
@@ -277,30 +287,34 @@
                         <td align='right'>Rp. 
                             <?php echo number_format($paramcashback[$f], 0, ',', '.'); ?>
                         </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramperhitungan[$f], 0, ',', '.'); ?>
+                        </td>
                         </tr>
                     <?php 
-                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
+                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJualDiskon[$f]);
                         $totalJumlah=$totalJumlah+$paramjumlah[$f];
                 
                             }
                 }
                 ?>
                     <tr>
-                        <td colspan="3" align="right">Total Bayar&nbsp;</td>
+                        <td colspan="3" align="right">Total&nbsp;</td>
                         <td  align='center'><?php echo $totalJumlah?></td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                     </tr>
                     <tr>
                         <td colspan="4" align="right">Diskon<?php echo $pa ?>&nbsp;</td>
                         <td align='right'><?php echo 'Rp. ' . number_format($ca, 0, ',', '.') ?></td>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                     </tr>
                     <tr>
                         <td colspan="4" align="right">Total Bayar&nbsp;</td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo $penjualanById->diskon == 'persen' ? 'Rp. ' . number_format($totalHarga-($totalHarga*$penjualanById->jumlahDiskon/100), 0, ',', '.') : 'Rp. ' . number_format($totalHarga-$penjualanById->jumlahDiskon, 0, ',', '.') ?></td>
-                        <td align='right'>Total Cashback</td>
+                        <td align='right'>Total</td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totcashback, 0, ',', '.')?></td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totperhitungan, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>

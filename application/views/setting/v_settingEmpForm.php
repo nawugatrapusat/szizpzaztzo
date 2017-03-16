@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tambah Karyawan' : 'Edit Karyawan '; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()"  name="empForm" action="<?php echo site_url('setting/empFormSave/2') ?>" method="POST">
         <table style="border: 1px solid black;">
@@ -21,7 +21,7 @@
             <tr>
                 <td>No HP</td>
                 <td>:</td>
-                <td><input type="text" name="noHp" value="<?php echo $emp == '' ? '' : $emp->noHp?>" size="100"/></td>
+                <td><input type="text" class='onlyNumb' name="noHp" value="<?php echo $emp == '' ? '' : $emp->noHp?>" size="100"/></td>
             </tr>
             <tr>
                 <td  style="padding-top:30px;padding-bottom:15px;" colspan="3">

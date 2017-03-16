@@ -27,6 +27,12 @@ class M_employee extends CI_Model {
             $query=$this->db->get('employee');
             if($query->num_rows() != 0) return $query->result(); else return false;
         }      
+	        
+         function empGetAllAll() {            
+            $this->db->order_by('nama','ASC');
+            $query=$this->db->get('employee');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }      
         
         function empAddSave($data) {            
             $this->db->trans_start();

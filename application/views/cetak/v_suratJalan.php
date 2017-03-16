@@ -19,32 +19,31 @@
             }
         </style>
     </head>
-    <body style='font-family:tahoma; font-size:8pt;padding-top:20px;'>
+    <body style='font-family:tahoma; font-size:9pt;padding-top:20px;'>
     <center>
-        <table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
+        <table style='width:650px; font-size:9pt; font-family:calibri; border-collapse: collapse;' border = '0'>
             <tr style="border-collapse: collapse;">
                 <td style="border-collapse: collapse;"></td>
                 <td style="border-collapse: collapse;"></td>
-                <td width="20" align="right" style="border-collapse: collapse;font-size: 7">XPD11217 V00</td>
+                <td width="20" align="right" style="border-collapse: collapse;font-size:7">XPD11217 V00</td>
             </tr>
             <tr>
                 <td>
                     <img src="<?php echo site_url('public/images/admin/logo.png')?>" width="80;"/>
                 </td>
-                <td width='60%' align='left' style='padding-right:80px; vertical-align:top'>
+                <td width='55%' align='left' style='padding-right:80px; vertical-align:top'>
                     <span style='font-size:12pt'><b>
                     <?php
                         echo $fakturNama == 1 ? 'Sari Puspita Herba' : 'CV DODO_MIS';
                     ?>
                     </b></span></br>
-                    Pamulang Permai I Blok N 2 C </br>
-                    Tangerang 15417</br>
+                    Pamulang Permai I Blok N 2 C Tangerang 15417</br>
                     Tlp &nbsp;&nbsp;&nbsp; : 0851-0048-5662</br>
                     Fax &nbsp;&nbsp;&nbsp; : 021-74710908</br>
                     HP &nbsp;&nbsp;&nbsp;&nbsp; : 0813-8777-5505</br>
                     Email : sbpsbpsbp@gmail.com
                 </td>
-                <td style='vertical-align:top' width='40%' align='left'>
+                <td style='vertical-align:top' width='45%' align='left'>
                     <b><span style='font-size:12pt'>Surat Jalan</span></b></br>
                     Tanggal : <?php echo date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y)) ?><br/>
                     <b>Kepada Yth. <?php echo ucwords($detailClient->nama) ?></b></br>
@@ -52,8 +51,8 @@
                     No : <?php echo $penjualanById->noFaktur ?>
                 </td>
             </tr>
-        </table><br/>
-        <table cellspacing='0' style='width:550px; font-size:8pt; font-family:calibri;  border-collapse: collapse;' border='1'>
+        </table>
+        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>
                 <tr>
                     <td align="left" width='20px;' colspan="3" style="padding: 10px 5px 10px 5px;">
                         Kami kirimkan barang-barang tersebut dibawah ini dengan kendaraan R4 / R2 No
@@ -67,6 +66,7 @@
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
+                $count=0;
                 for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
@@ -108,17 +108,27 @@
                     <?php 
                         $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
                         $totalJumlah=$totalJumlah+$paramjumlah[$f];
-                
+                                $count++;
                             }
                 }
+                            if($count < 15){
+                                for($u=$count+1;$u <= 15;$u++){
+                                    echo '<tr>
+                                            <td align="center">'.$u.'</td>
+                                            <td></td>
+                                            <td></td>
+                                         </tr>
+                                        ';
+                                }
+                            }
                 ?>
                         <tr>
                             <td colspan="2" align="right">Total&nbsp;&nbsp;&nbsp;</td>
                     <td align='center'><?php echo $totalJumlah?></td>
                     </tr>
                 <tr>
-        </table><br/>
-        <table style='width:650; font-size:7pt;' cellspacing='2'>
+        </table>
+        <table style='width:650; font-size:9pt;' cellspacing='2'>
             <tr>
                 <td align='center'>Diterima Oleh,</br></br></br></br></br></br>(...........................)</td>
                 <td align='center'>Hormat Kami,</br></br></br></br></br></br>(...........................)</td>
@@ -127,3 +137,6 @@
     </center>
 </body>
 </html>
+<script>
+window.print()
+</script>

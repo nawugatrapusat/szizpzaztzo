@@ -34,33 +34,32 @@
 
     <div class="warning-area" style="<?php echo $failedNotifShow; ?>"><?php echo $datas['failedNotif']; ?></div>
     
-    <body style='font-family:tahoma; font-size:8pt;padding-top:20px;'>
+    <body style='font-family:tahoma; font-size:9pt;padding-top:20px;'>
     <center style='<?php echo $bodyShow; ?>'>
-        <table style='width:550px; font-size:8pt; font-family:calibri; border-collapse: collapse;' border = '0'>
+        <table style='width:650px; font-size:9pt; font-family:calibri; border-collapse: collapse;' border = '0'>
             <tr style="border-collapse: collapse;">
                 <td style="border-collapse: collapse;"></td>
                 <td style="border-collapse: collapse;"></td>
-                <td width="20" align="right" style="border-collapse: collapse;font-size: 7">TAG211217 V00</td>
+                <td width="20" align="right" style="border-collapse: collapse;font-size:7">TAG211217 V00</td>
             </tr>
             <tr>
                 <td>
                     <img src="<?php echo site_url('public/images/admin/logo.png')?>" width="80;"/>
                 </td>
-                <td width='60%' align='left' style='padding-right:80px; vertical-align:top'>
+                <td width='55%' align='left' style='padding-right:80px; vertical-align:top'>
                     <span style='font-size:12pt'><b>
                     <?php
                         echo $fakturNama == 1 ? 'Sari Puspita Herba' : 'CV DODO_MIS';
 //                        echo 'Sari Puspita Herba';
                     ?>
                     </b></span></br>
-                    Pamulang Permai I Blok N 2 C </br>
-                    Tangerang 15417</br>
+                    Pamulang Permai I Blok N 2 C Tangerang 15417</br>
                     Tlp &nbsp;&nbsp;&nbsp; : 0851-0048-5662</br>
                     Fax &nbsp;&nbsp;&nbsp; : 021-74710908</br>
                     HP &nbsp;&nbsp;&nbsp;&nbsp; : 0813-8777-5505</br>
                     Email : sbpsbpsbp@gmail.com
                 </td>
-                <td style='vertical-align:top' width='40%' align='left'>
+                <td style='vertical-align:top' width='45%' align='left'>
                     <b><span style='font-size:12pt'>Tukar Faktur</span></b></br>
                     Tanggal : <?php echo date("d-M-Y",strtotime($fakturTgl)) ?><br/>
                     <b>Kepada Yth. <?php echo ucwords($detailClient->nama) ?></b></br>
@@ -69,8 +68,8 @@
                     Faktur sebanyak : <?php echo $datas['jumlah']?> lembar
                 </td>
             </tr>
-        </table><br/>
-        <table cellspacing='0' style='width:550px; font-size:8pt; font-family:calibri;  border-collapse: collapse;' border='1'>
+        </table>
+        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>
             <tr>
                     <td align="center" width='20px;'>No</td>
                     <td align="center" width='176px;'>Tanggal</td>
@@ -84,7 +83,7 @@
                         for($a=5;$a<5+$datas['jumlah'];$a++){
                             echo '
                                     <tr>
-                                        <td style="padding-left: 5px;">'.$b.'</td>
+                                        <td align="center" style="padding-left: 5px;">'.$b.'</td>
                                         <td style="padding-left: 5px;">'.$datas[$a]['tanggal'].'</td>
                                         <td style="padding-left: 5px;">'.$datas[$a]['noFaktur'].'</td>
                                         <td style="padding-left: 5px;">Rp. '.number_format($datas[$a]['totalBayar'], 0, ',', '.').'</td>
@@ -94,13 +93,24 @@
                             $totalHarga=$totalHarga+$datas[$a]['totalBayar'];
                         }
                     }
+                            if($b < 10){
+                                for($u=$b+1;$u <= 10;$u++){
+                                    echo '<tr>
+                                            <td align="center">'.$u.'</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                         </tr>
+                                        ';
+                                }
+                            }
                 ?>
                         <tr>
                             <td colspan="3" align="right">Total Bayar&nbsp;&nbsp;&nbsp;</td>
                     <td  style='padding-left: 5px;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
                     </tr>
-        </table><br/>
-        <table style='width:500px; font-size:7pt;' cellspacing='2'>
+        </table>
+        <table style='width:650px; font-size:9pt;' cellspacing='2'>
             <tr>
                 <td align='center' valign='top'>Kembali Tanggal : ................................</td>
                 <td align='center'>Cap / Tanda Tangan,</br></br></br></br></br></br>(...........................)</td>
@@ -109,3 +119,6 @@
     </center>
 </body>
 </html>
+<script>
+window.print()
+</script>

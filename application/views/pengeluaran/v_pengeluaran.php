@@ -11,7 +11,7 @@ if (empty($successNotif)) $successNotifShow = 'display: none;'; else $successNot
 if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifShow = '';
 ?>
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <?php $this->load->view('template/menu') ?>
     
     <div class="notification-area" style="<?php echo $successNotifShow; ?>"><?php echo $successNotif; ?></div>

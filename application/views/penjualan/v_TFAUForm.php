@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2><?php echo $typeForm == 0 ? 'Tukar Faktur' : 'Ambil Uang'; ?></h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()" name="penjualanForm" action="<?php echo site_url('penjualan/TFAUFormSave') ?>" method="POST">
         <table style="border: 1px solid black;">
@@ -104,7 +104,7 @@
                         <tr>
                             <td>Tanggal AU</td>
                             <td>:</td>
-                            <td><span style="color:red;">*</span> <input type="text" name="tanggalAU" id="dateAU" size="10"/></td>
+                            <td><span style="color:red;">*</span> <input type="text"  autocomplete="off" name="tanggalAU" id="dateAU" size="10"/></td>
                         </tr>
                         <tr>
                             <td valign="top">Tipe Pembayaran</td>
@@ -149,7 +149,7 @@
                                     $f = $penjualanById->status == 'manual close' ? "" : 'display:none';
                                     ?>
                                     <option <?php echo $d; ?> value="ambil uang">Ambil Uang</option>
-                                    <option <?php echo $e; ?> value="manual close">Manual Close</option>
+                                    <!--<option <?php echo $e; ?> value="manual close">Manual Close</option>-->
                                 </select>&nbsp;<span id="nominal" style="<?php echo $f; ?>">,&nbsp;Nominal : Rp. <span style="color:red;">*</span><input type="text"  class='onlyNumb' id="nominalInput" name="nominal" value="<?php echo $penjualanById->nominal == '' ? '' : $penjualanById->nominal ?>"/> <span class="cetakHargaNominal"> </span>
                             </td>
                         </tr>
@@ -164,12 +164,12 @@
                         <tr>
                             <td>Tanggal TF</td>
                             <td>:</td>
-                            <td><span style="color:red;">*</span> <input type="text" name="tanggalTF" id="dateTF" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->d.'-'.$addEdit->m.'-'.$addEdit->y ?>"/></td>
+                            <td><span style="color:red;">*</span> <input type="text"  autocomplete="off" name="tanggalTF" id="dateTF" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->d.'-'.$addEdit->m.'-'.$addEdit->y ?>"/></td>
                         </tr>
                         <tr>
                             <td>Tanggal Kembali</td>
                             <td>:</td>
-                            <td><input type="text" name="tanggalKembali" id="date" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->tanggalKembali ?>"/></td>
+                            <td><input type="text"  autocomplete="off" name="tanggalKembali" id="date" size="10" value="<?php echo $addEdit == '' ? '' : $addEdit->tanggalKembali ?>"/></td>
                         </tr>
                         <?php
                         }
@@ -178,6 +178,9 @@
                             <td>Pembawa</td>
                             <td>:</td>
                             <td>
+                                <?php
+                                if ($this->session->userdata('id_admin') == '1') {
+                                    ?>
                                 <span style="color:red;">*</span><select id="idEmployeePic" name="idEmployeePic">
                                     <option value="">Pilih Pembawa</option>
                                     <?php
@@ -193,6 +196,13 @@
                                     }
                                     ?>
                                 </select>
+                                <?php
+                                } else {
+                                    $empp = $this->m_employee->empGetById($this->session->userdata('id_employee'));
+                                    echo ucwords($empp->nama);
+                                    echo '<input type="hidden" id="idEmployeePic" name="idEmployeePic" value="' . $this->session->userdata('id_employee') . '"/>';
+                                }
+                                ?>
                             </td>
                         </tr>
                         <tr>
@@ -215,19 +225,23 @@
                     <td align="center" style='background-color: #c4fad1;'>Total</td>
                     <td align="center">Harga Karyawan</td>
                     <td align="center" style='background-color: #c4fad1;'>Cashback</td>
+                    <td align="center" style='background-color: #c4fad1;'>Pendapatan</td>
                 </tr>
                 <?php
                 $totalHarga=0;
                 $totalJumlah=0;
                 $totcashback=0;
+                $totperhitungan=0;
                 for ($f = 1; $f <= 50; $f++) {
                     $paramId[$f] = '';
                     $paramIdProduct[$f] = '';
                     $paramHargaBeli[$f] = '';
                     $paramHargaJual[$f] = '';
+                    $paramHargaJualDiskon[$f] = '';
                     $paramjumlah[$f] = '';
                     $paramcashback[$f]='0';
                     $paramhargaemp[$f]='0';
+                    $paramperhitungan[$f]='0';
                 }
                 if ($penjualanDetail != '') {
                     $c1 = 1;
@@ -236,18 +250,24 @@
                         $paramIdProduct[$c1] = $hasil2->idProduct;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramHargaJual[$c1] = $hasil2->hargaJual;
+                        $paramHargaJualDiskon[$c1] = $hasil2->hargaJualDiskon;
                         $paramHargaBeli[$c1] = $hasil2->hargaBeli;
                         $paramjumlah[$c1] = $hasil2->jumlah;
                         if($hasil2->scheme == 'cashback'){
                             $paramhargaemp[$c1]=$hasil2->hargaEmployee;
                             $paramcashback[$c1]=((($hasil2->hargaJual-$hasil2->hargaEmployee)/2)*$hasil2->jumlah);
+                            $paramcashback[$c1]=$hasil2->perhitungan == 'default' ? $paramcashback[$c1] : 0;
                             $totcashback=$totcashback+$paramcashback[$c1];
+                        }
+                        if($hasil2->perhitungan == 'selisih'){
+                            $paramperhitungan[$c1]=($hasil2->hargaJual-$hasil2->hargaEmployee)*$hasil2->jumlah;
+                            $totperhitungan=$totperhitungan+$paramperhitungan[$c1];
                         }
                         $c1++;
                     }
                 }
                 for ($f = 1; $f <= 50; $f++) {
-                    if ($paramHargaJual[$f] != '' && $paramjumlah[$f] != '') {
+                    if ($paramHargaJualDiskon[$f] != '' && $paramjumlah[$f] != '') {
                         echo '
                                         <tr>
                                             <td align="center">' . $f . '</td>
@@ -262,13 +282,13 @@
                         ?>
                         </td>
                         <td align='right'>
-                            <?php echo 'Rp. ' . number_format($paramHargaJual[$f], 0, ',', '.'); ?>
+                            <?php echo 'Rp. ' . number_format($paramHargaJualDiskon[$f], 0, ',', '.'); ?>
                         </td>
                         <td align='center'>
                             <?php echo $paramjumlah[$f] ?>
                         </td>
                         <td align='right'>Rp. 
-                            <?php echo number_format($paramjumlah[$f]*$paramHargaJual[$f], 0, ',', '.'); ?>
+                            <?php echo number_format($paramjumlah[$f]*$paramHargaJualDiskon[$f], 0, ',', '.'); ?>
                         </td>
                         <td align='right'>Rp. 
                             <?php echo number_format($paramhargaemp[$f], 0, ',', '.'); ?>
@@ -276,9 +296,12 @@
                         <td align='right'>Rp. 
                             <?php echo number_format($paramcashback[$f], 0, ',', '.'); ?>
                         </td>
+                        <td align='right'>Rp. 
+                            <?php echo number_format($paramperhitungan[$f], 0, ',', '.'); ?>
+                        </td>
                         </tr>
                     <?php 
-                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJual[$f]);
+                        $totalHarga=$totalHarga+($paramjumlah[$f]*$paramHargaJualDiskon[$f]);
                         $totalJumlah=$totalJumlah+$paramjumlah[$f];
                 
                             }
@@ -294,21 +317,22 @@
                     }
                 ?>
                     <tr>
-                        <td colspan="3" align="right">Total Bayar&nbsp;</td>
+                        <td colspan="3" align="right">Total&nbsp;</td>
                         <td  align='center'><?php echo $totalJumlah?></td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totalHarga, 0, ',', '.')?></td>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                     </tr>
                     <tr>
                         <td colspan="4" align="right">Diskon<?php echo $pa ?>&nbsp;</td>
                         <td align='right'><?php echo 'Rp. ' . number_format($ca, 0, ',', '.') ?></td>
-                        <td colspan="2"></td>
+                        <td colspan="3"></td>
                     </tr>
                     <tr>
                         <td colspan="4" align="right">Total Bayar&nbsp;</td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo $penjualanById->diskon == 'persen' ? 'Rp. ' . number_format($totalHarga-($totalHarga*$penjualanById->jumlahDiskon/100), 0, ',', '.') : 'Rp. ' . number_format($totalHarga-$penjualanById->jumlahDiskon, 0, ',', '.') ?></td>
                         <td align='right'>Total Cashback</td>
                         <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totcashback, 0, ',', '.')?></td>
+                        <td align='right' style='background-color: #c4fad1;'><?php echo 'Rp. ' . number_format($totperhitungan, 0, ',', '.')?></td>
                     </tr>
             </table>
                 <table>
@@ -332,7 +356,7 @@
         function validateForm() {
             if ($('#idEmployeePic').val() == "") { alert("Pembawa Masih Kosong !!!"); return false; }
             if ($('#dateTF').val() == "") { alert("Tanggal TF Masih Kosong !!!"); return false; }
-            if($('#idEmployeePic').val() != 'tukarFaktur'){
+            if($('#typeForm').val() != 'tukarFaktur'){
                 if ($('#tipePembayaran').val() == "") {
                     alert("Tipe Pembayaran Masih Kosong !!!"); return false; 
                 }else if($('#tipePembayaran').val() == "giro"){
@@ -344,8 +368,26 @@
                     return false; 
                 }else if($('#status').val() == "manual close"){
                     if ($('#nominalInput').val() == "") { alert("Nominal Masih Kosong !!!"); return false; }
+                    if ($('#nominalInput').val() != ''){
+                        if(isNaN($('#nominalInput').val()) == true){
+                            alert("Nominal Tidak Menggunakan Angka !!!");
+                            return false;
+                        }else if($('#nominalInput').val() % 1 != 0){
+                            alert("Nominal Tidak Boleh Desimal !!!");
+                            return false;
+                        }
+                    }
                 }
                 if ($('#dateAU').val() == "") { alert("Tanggal AU Masih Kosong !!!"); return false; }
+                if ($('#biayaLain').val() != ''){
+                    if(isNaN($('#biayaLain').val()) == true){
+                        alert("Biaya Lain Harus Angka !!!");
+                        return false;
+                    }else if($('#biayaLain').val() % 1 != 0){
+                        alert("Biaya Lain Tidak Boleh Desimal !!!");
+                        return false;
+                    }
+                }
             }
             window.scrollTo(0, 0);
             $('#loadingAnim').show();

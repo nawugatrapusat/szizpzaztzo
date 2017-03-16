@@ -54,6 +54,13 @@ class M_penjualan extends CI_Model {
             $query=$this->db->get('penjualan');
             if($query->num_rows() != 0) return $query->result(); else return false;
         }      
+        
+        function penjualanDetailGetAll() {            
+            $this->db->where('deleted','0');
+            $this->db->order_by('id','ASC');
+            $query=$this->db->get('penjualandetail');
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }      
 	        
         function penjualanGetDetail($id) {            
             $this->db->where('deleted','0');
@@ -96,18 +103,26 @@ class M_penjualan extends CI_Model {
             
             $nominalFaktur=0;
             for($a=1;$a<=50;$a++){
-                if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
+                if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJualDiskon'.$a] != '' && $data['jumlah'.$a] != ''){
                     $penjualandetail=new stdClass();
                     $penjualandetail->idPenjualan=$insertId;
                     $penjualandetail->idProduct=$data['idProduct'.$a];
                     $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                     $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                    $penjualandetail->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                     $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                    $penjualandetail->perhitungan=$data['perhitungan'.$a];
                     $penjualandetail->scheme=$data['scheme'.$a];
                     $penjualandetail->jumlah=$data['jumlah'.$a];
                     $penjualandetail->id_admin=$this->session->userdata('id_admin');
                     $this->db->insert('penjualandetail',$penjualandetail);
-                    $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJual*$penjualandetail->jumlah);
+                    $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJualDiskon*$penjualandetail->jumlah);
+                    
+                    $updateProduct=new stdClass();
+                    $detProduct=$this->productGetById($penjualandetail->idProduct);
+                    $updateProduct->stock=($detProduct->stock+$data['tmpJumlah'.$a])-$penjualandetail->jumlah;
+                    $this->db->where('id',$detProduct->id);
+                    $this->db->update('product',$updateProduct);
                 }
             }
             $updatePenjualan=new stdClass();
@@ -145,36 +160,60 @@ class M_penjualan extends CI_Model {
             $nominalFaktur=0;
             for($a=1;$a<=50;$a++){
                 if($data['id'.$a] == ''){
-                    if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJual'.$a] != '' && $data['jumlah'.$a] != ''){
+                    if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJualDiskon'.$a] != '' && $data['jumlah'.$a] != ''){
                         $penjualandetail=new stdClass();
                         $penjualandetail->idPenjualan=$penjualan->id;
                         $penjualandetail->idProduct=$data['idProduct'.$a];
                         $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
                         $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                        $penjualandetail->hargaJualDiskon=$data['hargaJualDiskon'.$a];
                         $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                        $penjualandetail->perhitungan=$data['perhitungan'.$a];
                         $penjualandetail->scheme=$data['scheme'.$a];
                         $penjualandetail->jumlah=$data['jumlah'.$a];
                         $penjualandetail->id_admin=$this->session->userdata('id_admin');
                         
-                        $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJual*$penjualandetail->jumlah);
-                
+                        $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJualDiskon*$penjualandetail->jumlah);
+                        
                         $this->db->insert('penjualandetail',$penjualandetail);
+                        
+                            $updateProduct=new stdClass();
+                            $detProduct=$this->productGetById($penjualandetail->idProduct);
+                            $updateProduct->stock=($detProduct->stock+$data['tmpJumlah'.$a])-$penjualandetail->jumlah;
+                            $this->db->where('id',$detProduct->id);
+                            $this->db->update('product',$updateProduct);
                     }
                 }else{
-                    $penjualandetail=new stdClass();
-                    $penjualandetail->id=$data['id'.$a];
-                    $penjualandetail->idProduct=$data['idProduct'.$a];
-                    $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
-                    $penjualandetail->hargaJual=$data['hargaJual'.$a];
-                    $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
-                    $penjualandetail->scheme=$data['scheme'.$a];
-                    $penjualandetail->jumlah=$data['jumlah'.$a];
-                    $penjualandetail->id_admin=$this->session->userdata('id_admin');
+                    if($data['idProduct'.$a] != '' && $data['hargaBeli'.$a] != '' && $data['hargaJualDiskon'.$a] != '' && $data['jumlah'.$a] != ''){
+                        $penjualandetail=new stdClass();
+                        $penjualandetail->id=$data['id'.$a];
+                        $penjualandetail->idProduct=$data['idProduct'.$a];
+                        $penjualandetail->hargaBeli=$data['hargaBeli'.$a];
+                        $penjualandetail->hargaJual=$data['hargaJual'.$a];
+                        $penjualandetail->hargaJualDiskon=$data['hargaJualDiskon'.$a];
+                        $penjualandetail->hargaEmployee=$data['hargaEmployee'.$a];
+                        $penjualandetail->perhitungan=$data['perhitungan'.$a];
+                        $penjualandetail->scheme=$data['scheme'.$a];
+                        $penjualandetail->jumlah=$data['jumlah'.$a];
+                        $penjualandetail->id_admin=$this->session->userdata('id_admin');
 
-                    $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJual*$penjualandetail->jumlah);
-                    
-                    $this->db->where('id',$penjualandetail->id);
-                    $this->db->update('penjualandetail',$penjualandetail);
+                        $nominalFaktur=$nominalFaktur+($penjualandetail->hargaJualDiskon*$penjualandetail->jumlah);
+
+                        $this->db->where('id',$penjualandetail->id);
+                        $this->db->update('penjualandetail',$penjualandetail);
+
+                            $updateProduct=new stdClass();
+                            $detProduct=$this->productGetById($penjualandetail->idProduct);
+                            $updateProduct->stock=($detProduct->stock+$data['tmpJumlah'.$a])-$penjualandetail->jumlah;
+                            $this->db->where('id',$detProduct->id);
+                            $this->db->update('product',$updateProduct);
+                    }else{
+                        $penjualandetail=new stdClass();
+                        $penjualandetail->deleted=1;
+                        $penjualandetail->id=$data['id'.$a];
+                        $this->db->where('id',$penjualandetail->id);
+                        $this->db->update('penjualandetail',$penjualandetail);
+                    }
                 }
             }
             $updatePenjualan=new stdClass();
@@ -359,6 +398,67 @@ class M_penjualan extends CI_Model {
                 return true;
             }
         }
+        
+        function penjualanDetailUpdate($id,$data) {
+            $this->db->trans_start();
+        
+            $this->db->where('id',$id);
+            $this->db->update('penjualandetail',$data);
+            
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE){
+                return false;
+            }else{
+                return true;
+            }
+        }
+         function productGetById($id) {            
+            $this->db->where('id',$id);
+            $query=$this->db->get('product');
+            if($query->num_rows() != 0) return $query->row(); else return false;
+        }        
+	        
+         function cekProductGetByIdFromPenjualandetail($id) {     
+            $this->db->from('penjualan'); 
+            $this->db->join('penjualandetail','penjualan.id=penjualandetail.idPenjualan');
+            $this->db->join('client','client.id=penjualan.idClient');
+            $this->db->where('penjualandetail.idProduct',$id);
+            $this->db->where('penjualan.status !=','ambil uang');
+            $this->db->where('penjualan.status !=','manual close');
+            $query=$this->db->get();
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }        
+	        
+         function cekClientGetByIdFromPenjualan($id) {     
+            $this->db->from('penjualan'); 
+            $this->db->join('client','client.id=penjualan.idClient');
+            $this->db->where('penjualan.idClient',$id);
+            $this->db->where('penjualan.status !=','ambil uang');
+            $this->db->where('penjualan.status !=','manual close');
+            $query=$this->db->get();
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }       
+	        
+         function cekEmployeeGetByIdFromPenjualan($id) {     
+            $this->db->from('penjualan'); 
+            $this->db->join('client','client.id=penjualan.idClient');
+            $this->db->where('penjualan.idEmployeePic',$id);
+            $this->db->where('penjualan.status !=','ambil uang');
+            $this->db->where('penjualan.status !=','manual close');
+            $query=$this->db->get();
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }       
+	        
+         function cekEmployeeGetByIdFromTukarfaktur($id) {     
+            $this->db->from('penjualan'); 
+            $this->db->join('client','client.id=penjualan.idClient');
+            $this->db->join('tukarfaktur','tukarfaktur.idPenjualan=penjualan.id');
+            $this->db->where('tukarfaktur.idEmployeePic',$id);
+            $this->db->where('penjualan.status !=','ambil uang');
+            $this->db->where('penjualan.status !=','manual close');
+            $query=$this->db->get();
+            if($query->num_rows() != 0) return $query->result(); else return false;
+        }       
 }
 
 /* End of file welcome.php */

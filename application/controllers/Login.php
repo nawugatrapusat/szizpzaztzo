@@ -41,13 +41,15 @@ class Login extends CI_Controller {
         
         public function Verif()
 	{
+            $this->load->view('v_loading.php');
+                
             if($_POST){
                 $name=  strtolower($this->input->post('user'));
                 $pass=do_hash($this->input->post('pwd'),'md5');
                 $det=$this->m_login->validasi($name,$pass);
                 if($det != false){
                     $this->session->set_userdata('id_admin',$det->id);
-                    $this->m_log->insert_log('Login','Sukses Login, '.$_SERVER['HTTP_USER_AGENT'].', IP '.$this->input->ip_address().' - '.$name);
+                    $this->m_log->insert_log('Login','Sukses Login, IP '.$this->input->ip_address().' - '.$name);
                     if($det->id == 1){
                         redirect('beranda'); 
                     }else{ 

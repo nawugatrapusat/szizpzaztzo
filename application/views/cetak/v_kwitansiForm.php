@@ -1,5 +1,5 @@
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
     <h2>Cetak Kwitansi</h2>
     <form style="padding-left:13px; padding-top: 10px;" onsubmit="return validateForm()"  name="kwitansiForm" action="<?php echo site_url('cetak/kwitansi/'.$id.'/'.$fakturNama) ?>" method="POST">
         <table style="border: 1px solid black;">

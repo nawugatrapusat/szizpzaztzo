@@ -1,6 +1,6 @@
 
 </head>
-<body>
+<body class="bodyclass" style="display: none;">
 <?php $this->load->view('template/menu')?>
 
     
@@ -14,7 +14,7 @@ $(document).ready(function(){
     dataType: 'json',
     colModel : [
             {display: 'No', name : '', width : 40, sortable : true, align: 'left'},
-            {display: 'Id', name : 'id_admin', width : 20, sortable : true, align: 'left'},
+            {display: 'user', name : 'id_admin', width : 50, sortable : true, align: 'left'},
             {display: 'Category', name : 'category', width : 110, sortable : true, align: 'left'},
             {display: 'Tanggal', name : 'date', width : 100, sortable : true, align: 'left'},
             {display: 'Activity', name : 'activuty', width : 10000, sortable : true, align: 'left'},

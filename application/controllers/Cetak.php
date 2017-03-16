@@ -115,7 +115,7 @@ class Cetak extends CI_Controller {
             }
             $datas['jumlah']=$b;
             
-            $penjualanById=$this->m_penjualan->penjualanGetById($this->uri->segment(3));
+            $penjualanById=$this->m_penjualan->penjualanGetById($this->uri->segment(5));
             $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
             $product=$this->m_product->productGetAll();
             

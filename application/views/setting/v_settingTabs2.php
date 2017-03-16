@@ -21,6 +21,12 @@ $(document).ready(function(){
             {name: 'Edit', bclass: 'edit' ,align:'right', onpress:edit},
             {separator: true},
             {name: 'Hapus', bclass: 'delete' ,align:'right', onpress:hapus},
+            {separator: true},
+            {separator: true},
+            {separator: true},
+            {separator: true},
+            {separator: true},
+            {name: 'Stock', bclass: 'edit' ,align:'right', onpress:stock},
             ],
     searchitems : [
             {display: 'Nama', name : 'nama', isdefault: true},
@@ -52,15 +58,33 @@ function hapus(com,grid){
             var id=$(this).attr('id'); 
             id = id.substring(id.lastIndexOf('row')+3);
             if (confirm("Apakah Anda Yakin Ingin Menghapus ?")) {
-                window.scrollTo(0, 0);
-                $('#loadingAnim').show();
-                document.body.scroll = "no";
-                document.body.style.overflow = 'hidden';
-                document.height = window.innerHeight;
-                $('.delete').hide();
-                location.href = '<?php echo site_url("setting/productDelete/1/") ?>' + id;
+                    $.ajax({
+                    type: "POST",
+                    dataType : "json",
+                    url: "<?php echo site_url('setting/cekDeleteProduct'); ?>",
+                    data: 'idProduct='+id
+                  }).done(function( data ) {
+                        if(data.stdelete == true){
+                            if(data.c == 0){
+                            window.scrollTo(0, 0);
+                            $('#loadingAnim').show();
+                            document.body.scroll = "no";
+                            document.body.style.overflow = 'hidden';
+                            document.height = window.innerHeight;
+                            $('.delete').hide();
+                            location.href = '<?php echo site_url("setting/productDelete/1/") ?>' + id;
+                            }else{
+                                alert(data.val);
+                            }
+                        }else{
+                            alert("Ada kesalahan dalam delete data, silahkan hubungi administrator website !!!");
+                        }
+                  });
             }
         });
+}
+function stock(com,grid){
+        location.href = '<?php echo site_url("setting/productStockForm") ?>';
 }
 });
 </script>

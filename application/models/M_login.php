@@ -13,6 +13,12 @@ class M_login extends CI_Model {
             $query=$this->db->get('admin');
             if($query->num_rows() != 0) return $query->row(); else return false;
         }
+	        
+        public function adminGetById($id) {
+            $this->db->where('id',$id);
+            $query=$this->db->get('admin');
+            if($query->num_rows() != 0) return $query->row(); else return false;
+        }
         
         public function add_log_login($data) {
             $this->db->trans_start();
