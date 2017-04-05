@@ -78,10 +78,86 @@ class Beranda extends CI_Controller {
             $product=$this->m_product->productGetAll();
             $client=$this->m_client->clientGetAll();
             
+            $penjualan=$this->m_penjualan->penjualanGetAll();
+            $mDate=date("m");
+            $yDate=date("Y");
+            $tFaktur=0;
+            $tFakturYesterday=0;
+            $tFakturYesterday2=0;
+            $tBarang=0;
+            $tBarangYesterday=0;
+            $tBarangYesterday2=0;
+            $tNominal=0;
+            $tNominalYesterday=0;
+            $tNominalYesterday2=0;
+            $tUntung=0;
+            $tUntungYesterday=0;
+            $tUntungYesterday2=0;
+            if(date("m") == 1){
+                $mDateYesterday=12;
+                $mDateYesterday2=11;
+                $yDateYesterday=date("Y")-1;
+                $yDateYesterday2=date("Y")-1;
+            }else if(date("m") == 2){
+                $mDateYesterday=1;
+                $mDateYesterday2=12;
+                $yDateYesterday=date("Y");
+                $yDateYesterday2=date("Y")-1;
+            }else{
+                $mDateYesterday=date("m")-1;
+                $mDateYesterday2=date("m")-2;
+                $yDateYesterday=date("Y");
+                $yDateYesterday2=date("Y");
+            }
+            foreach($penjualan as $detail){
+                if($detail->m == $mDate && $detail->y == $yDate && $detail->status=='ambil uang'){
+                    $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
+                    $tFaktur=$tFaktur+1;
+                    foreach($penjualanDetail as $hasil){
+                        $tBarang=$tBarang+$hasil->jumlah;
+                        $tNominal=$tNominal+($hasil->hargaJual*$hasil->jumlah);
+                        $tUntung=$tUntung+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    }
+                }
+                if($detail->m == $mDateYesterday && $detail->y == $yDateYesterday && $detail->status=='ambil uang'){
+                    $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
+                    $tFakturYesterday=$tFakturYesterday+1;
+                    foreach($penjualanDetail as $hasil){
+                        $tBarangYesterday=$tBarangYesterday+$hasil->jumlah;
+                        $tNominalYesterday=$tNominalYesterday+($hasil->hargaJual*$hasil->jumlah);
+                        $tUntungYesterday=$tUntungYesterday+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    }
+                }
+                if($detail->m == $mDateYesterday2 && $detail->y == $yDateYesterday2 && $detail->status=='ambil uang'){
+                    $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
+                    $tFakturYesterday2=$tFakturYesterday2+1;
+                    foreach($penjualanDetail as $hasil){
+                        $tBarangYesterday2=$tBarangYesterday2+$hasil->jumlah;
+                        $tNominalYesterday2=$tNominalYesterday2+($hasil->hargaJual*$hasil->jumlah);
+                        $tUntungYesterday2=$tUntungYesterday2+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    }
+                }
+            }
+            
             $data=array(
                 'all_produk'=>$all_produk,
                 'client'=>$client,
-                'product'=>$product
+                'product'=>$product,
+                'tFaktur'=>$tFaktur,
+                'tFakturYesterday'=>$tFakturYesterday,
+                'tFakturYesterday2'=>$tFakturYesterday2,
+                'bulanNow'=>$this->namaBulan($mDate).'-'.$yDate,
+                'bulanYesterday'=>$this->namaBulan($mDateYesterday).'-'.$yDateYesterday,
+                'bulanYesterday2'=>$this->namaBulan($mDateYesterday2).'-'.$yDateYesterday2,
+                'tBarang'=>number_format($tBarang,0,',','.'),
+                'tNominal'=>'Rp. '.number_format($tNominal,0,',','.'),
+                'tUntung'=>'Rp. '.number_format($tUntung,0,',','.'),
+                'tBarangYesterday'=>number_format($tBarangYesterday,0,',','.'),
+                'tNominalYesterday'=>'Rp. '.number_format($tNominalYesterday,0,',','.'),
+                'tUntungYesterday'=>'Rp. '.number_format($tUntungYesterday,0,',','.'),
+                'tBarangYesterday2'=>number_format($tBarangYesterday2,0,',','.'),
+                'tNominalYesterday2'=>'Rp. '.number_format($tNominalYesterday2,0,',','.'),
+                'tUntungYesterday2'=>'Rp. '.number_format($tUntungYesterday2,0,',','.')
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));
@@ -180,4 +256,18 @@ class Beranda extends CI_Controller {
             echo json_encode($data);  
         }   
         
+        function namaBulan($a){
+            if($a == 1) return 'Januari';
+            if($a == 2) return 'Februari';
+            if($a == 3) return 'Maret';
+            if($a == 4) return 'April';
+            if($a == 5) return 'Mei';
+            if($a == 6) return 'Juni';
+            if($a == 7) return 'Juli';
+            if($a == 8) return 'Agustus';
+            if($a == 9) return 'September';
+            if($a == 10) return 'Oktober';
+            if($a == 11) return 'November';
+            if($a == 12) return 'Desember';
+        }
 }

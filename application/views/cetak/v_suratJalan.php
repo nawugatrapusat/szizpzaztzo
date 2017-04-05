@@ -52,7 +52,7 @@
                 </td>
             </tr>
         </table>
-        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>
+        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri; ' border='1'>
                 <tr>
                     <td align="left" width='20px;' colspan="3" style="padding: 10px 5px 10px 5px;">
                         Kami kirimkan barang-barang tersebut dibawah ini dengan kendaraan R4 / R2 No

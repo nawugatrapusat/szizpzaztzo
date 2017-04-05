@@ -82,7 +82,7 @@
                 </td>
             </tr>
         </table>
-        <table id='content' cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>
+        <table id='content' cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri; ' border='1'>
         <!--<table cellspacing='0' style='width:550px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>-->
             <thead>
                 <tr>

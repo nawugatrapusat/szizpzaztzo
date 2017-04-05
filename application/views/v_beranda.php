@@ -44,7 +44,95 @@
 //                echo '</table>';
             }
 echo "<br/><br/>";
-echo '<span style="font-weight:bold;">Informasi TF</span><br/><br/>';
+echo '<span style="font-weight:bold;">Dashboard Penjualan Faktur AU</span><br/>';
+?>
+    <table border="1" style="border-collapse: collapse;">
+        <tr>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanNow?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Faktur</td>
+                        <td>:</td>
+                        <td><?php echo $tFaktur?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Barang</td>
+                        <td>:</td>
+                        <td><?php echo $tBarang?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Nominal</td>
+                        <td>:</td>
+                        <td><?php echo $tNominal?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Keuntunagan</td>
+                        <td>:</td>
+                        <td><?php echo $tUntung?></td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanYesterday?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Faktur</td>
+                        <td>:</td>
+                        <td><?php echo $tFakturYesterday?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Barang</td>
+                        <td>:</td>
+                        <td><?php echo $tBarangYesterday?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Nominal</td>
+                        <td>:</td>
+                        <td><?php echo $tNominalYesterday?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Keuntunagan</td>
+                        <td>:</td>
+                        <td><?php echo $tUntungYesterday?></td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanYesterday2?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Faktur</td>
+                        <td>:</td>
+                        <td><?php echo $tFakturYesterday2?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Barang</td>
+                        <td>:</td>
+                        <td><?php echo $tBarangYesterday2?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Nominal</td>
+                        <td>:</td>
+                        <td><?php echo $tNominalYesterday2?></td>
+                    </tr>
+                    <tr>
+                        <td>Total Keuntunagan</td>
+                        <td>:</td>
+                        <td><?php echo $tUntungYesterday2?></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>    
+<?php
+echo '<br/><span style="font-weight:bold;">Informasi TF</span><br/><br/>';
     foreach($client as $detail){
         if($detail->keteranganTF != ''){
             echo "TF ".ucwords($detail->nama)." - ".ucfirst($detail->keteranganTF)."<br/>";

@@ -69,7 +69,7 @@
                 </td>
             </tr>
         </table>
-        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri;  border-collapse: collapse;' border='1'>
+        <table cellspacing='0' style='width:650px; font-size:9pt; font-family:calibri; ' border='1'>
             <tr>
                     <td align="center" width='20px;'>No</td>
                     <td align="center" width='176px;'>Tanggal</td>

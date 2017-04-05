@@ -44,7 +44,7 @@
                 </td>
             </tr>
         </table>
-        <table cellspacing='0' style='width:550px; font-size:9pt; font-family:calibri;  border-collapse: collapse;border: 1px solid black;'>
+        <table cellspacing='0' style='width:550px; font-size:9pt; font-family:calibri;border: 1px solid black;'>
                 <tr>
                     <td style="padding-top: 10;padding-bottom: 10;" align="center" colspan="3" ><b style="font-size: 14">KWITANSI</b></td>
                 </tr>
