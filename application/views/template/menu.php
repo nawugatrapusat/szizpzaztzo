@@ -7,16 +7,24 @@
                 <td><a href="<?php echo site_url('beranda');?>">Beranda</a></td>
                 <td><a href="<?php echo site_url('penjualan');?>">Penjualan</a></td>
                 <td><a href="<?php echo site_url('agenda');?>">Agenda</a></td>
+                <td><a href="<?php echo site_url('rekap');?>">Rekap</a></td>
                 <td><a href="<?php echo site_url('pengeluaran');?>">Pengeluaran</a></td>
-                <!--<td><a href="<?php echo site_url('kinerja');?>">Kinerja</a></td>-->
                 <td><a href="<?php echo site_url('setting');?>">Setting</a></td>
                 <td><a href="<?php echo site_url('log');?>">Log</a></td>
+                <td><a href="<?php echo site_url();?>">Log Out</a></td>
+            <?php
+                }else if($this->session->userdata('id_admin') == '5'){
+            ?>
+                <td><a href="<?php echo site_url('beranda');?>">Beranda</a></td>
+                <td><a href="<?php echo site_url('agenda');?>">Agenda</a></td>
+                <td><a href="<?php echo site_url('rekap');?>">Rekap</a></td>
                 <td><a href="<?php echo site_url();?>">Log Out</a></td>
             <?php
                 }else{
             ?>
                 <td><a href="<?php echo site_url('penjualan');?>">Penjualan</a></td>
                 <td><a href="<?php echo site_url('agenda');?>">Agenda</a></td>
+                <td><a href="<?php echo site_url('rekap');?>">Rekap</a></td>
                 <td><a href="<?php echo site_url();?>">Log Out</a></td>
             <?php
                 }

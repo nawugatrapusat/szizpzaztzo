@@ -28,10 +28,15 @@ class Cetak extends CI_Controller {
                 $this->load->model('m_product', '', TRUE);
 	}
     
-	public function faktur()
-	{
+        public function sessVerif()
+        {
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
+        }
+    
+	public function faktur()
+	{
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -59,8 +64,7 @@ class Cetak extends CI_Controller {
     
 	public function suratJalan()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -82,8 +86,7 @@ class Cetak extends CI_Controller {
     
 	public function tukarFaktur()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $b=0;
             $datas['inject']=0;
@@ -132,8 +135,7 @@ class Cetak extends CI_Controller {
     
 	public function kwitansiForm()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -159,8 +161,7 @@ class Cetak extends CI_Controller {
     
 	public function kwitansi()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -182,8 +183,7 @@ class Cetak extends CI_Controller {
     
 	public function kwitansiManualForm()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);
@@ -209,8 +209,7 @@ class Cetak extends CI_Controller {
     
 	public function kwitansiManual()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $id=$this->uri->segment(3);
             $fakturNama=$this->uri->segment(4);

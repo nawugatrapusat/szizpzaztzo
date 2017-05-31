@@ -16,7 +16,7 @@ $a='d'.$exDate[0];
                     <input type="hidden" name="id" value="<?php echo $dateDetail->id?>"/>
                     <input type="hidden" name="day" value="<?php echo $a?>"/>
                     <input type="submit" value="Submit"/>&nbsp;
-                    <button type="button" onclick="location.href='<?php echo site_url('agenda')?>';">Cancel</button>
+                    <button type="button" onclick="location.href='<?php $this->input->set_cookie('tab',$tab,time()+6000);echo site_url('agenda')?>';">Cancel</button>
                 </td>
             </tr> 
         </table>

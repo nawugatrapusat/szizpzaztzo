@@ -32,21 +32,22 @@ class Agenda extends CI_Controller {
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             
+            $nM=date('m')+1;
             $agenda1=$this->m_agenda->agendaGetByDate(date('m'),date('Y'));
-            $agenda2=$this->m_agenda->agendaGetByDate(date('m', strtotime('+1 month')),date('Y', strtotime('+1 month')));
+            $agenda2=$this->m_agenda->agendaGetByDate($nM,date('Y'));
             if($agenda2 == false) {
                 $dataInsert=new stdClass();
-                $dataInsert->m=date('m', strtotime('+1 month'));
-                $dataInsert->y=date('Y', strtotime('+1 month'));
+                $dataInsert->m=$nM;
+                $dataInsert->y=date('Y');
                 $this->m_agenda->agendaAddSave($dataInsert);
-                $agenda2=$this->m_agenda->agendaGetByDate(date('m', strtotime('+1 month')),date('Y', strtotime('+1 month')));
+                $agenda2=$this->m_agenda->agendaGetByDate($nM,date('Y'));
             }
             $date1=date('m')."-".date('Y');
-            $date2=date('m', strtotime('+1 month'))."-".date('Y', strtotime('+1 month'));
+            $date2=$nM."-".date('Y');
             $dayAgenda1 = date("l", strtotime(date('Y')."-".date('m')."-1"));
-            $dayAgenda2 = date("l", strtotime(date('Y', strtotime('+1 month'))."-".date('m', strtotime('+1 month'))."-1"));
+            $dayAgenda2 = date("l", strtotime(date('Y')."-".$nM."-1"));
             $daysAgenda1=cal_days_in_month(CAL_GREGORIAN,date('m'),date('Y'));
-            $daysAgenda2=cal_days_in_month(CAL_GREGORIAN,date('m', strtotime('+1 month')),date('Y', strtotime('+1 month')));
+            $daysAgenda2=cal_days_in_month(CAL_GREGORIAN,$nM,date('Y'));
             
 //            if($this->m_penjualan->histPenjualan($penjualanById,$penjualanDetail) != false){
 //                $this->m_log->insert_log('Hist Penjualan',json_encode((array_merge(["statusAction" => 'sukses'],$penjualanDetail))));
@@ -63,7 +64,7 @@ class Agenda extends CI_Controller {
                 'date1'=>$date1,
                 'date2'=>$date2,
                 'bulanNow'=>$this->namaBulan(date('m')).'-'.date('Y'),
-                'bulanNext'=>$this->namaBulan(date('m', strtotime('+1 month'))).'-'.date('Y', strtotime('+1 month'))
+                'bulanNext'=>$this->namaBulan($nM).'-'.date('Y')
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style',));
@@ -84,7 +85,7 @@ class Agenda extends CI_Controller {
             $data=array(
                 'dateDetail'=>$dateDetail,
                 'exDate'=>$exDate,
-                'tanggal'=>$exDate[0].'-'.$this->namaBulan(date('m')).'-'.date('Y'),
+                'tanggal'=>$exDate[0].'-'.$this->namaBulan($exDate[1]).'-'.$exDate[2],
                 'tab'=>$tab
             );
             
@@ -133,183 +134,5 @@ class Agenda extends CI_Controller {
             if($a == 11) return 'November';
             if($a == 12) return 'Desember';
         }
-        
-        
-        
-        
-    
-	public function suratJalan()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $fakturNama=$this->uri->segment(4);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-            
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product,
-                'fakturNama'=>$fakturNama
-            );
-            
-            $this->load->view('cetak/v_suratJalan.php',$data); 
-	}	
-    
-	public function tukarFaktur()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $b=0;
-            $datas['inject']=0;
-            $datas['failedNotif']='';
-            $fakturNama=$this->uri->segment(3);
-            $fakturTgl=$this->uri->segment(4);
-            for($a=5;$a<=15;$a++){
-                    $id=$this->uri->segment($a);
-                if($id != ''){
-                    $penjualanById=$this->m_penjualan->penjualanGetById($id);
-                    if($penjualanById != false){
-                        if($penjualanById->diskon == 'nominal'){
-                            $nom= $penjualanById->nominalFaktur-$penjualanById->jumlahDiskon;
-                        }else if($penjualanById->diskon == 'persen'){
-                            $nom= $penjualanById->nominalFaktur-($penjualanById->jumlahDiskon*$penjualanById->nominalFaktur/100);
-                        }else if ($penjualanById->diskon == 'tidak'){
-                            $nom= $penjualanById->nominalFaktur;
-                        }
-                        $datas[$a]['tanggal']=date("d-M-Y",strtotime($penjualanById->d.'-'.$penjualanById->m.'-'.$penjualanById->y));
-                        $datas[$a]['noFaktur']=$penjualanById->noFaktur;
-                        $datas[$a]['totalBayar']=$nom;
-                        $b++;
-                        if($penjualanById->status == 'manual close' || $penjualanById->status == 'ambil uang'){
-                            $datas['inject']=1;
-                            $datas['failedNotif']='Data Ilegal, Silahkan Hubungi Administrator Website';
-                        }
-                    }
-                }
-            }
-            $datas['jumlah']=$b;
-            
-            $penjualanById=$this->m_penjualan->penjualanGetById($this->uri->segment(5));
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-            
-            $data=array(
-                'detailClient'=>$detailClient,
-                'datas'=>$datas,
-                'product'=>$product,
-                'fakturNama'=>$fakturNama,
-                'fakturTgl'=>$fakturTgl
-            );
-            
-            $this->load->view('cetak/v_tukarFaktur.php',$data); 
-	}	
-    
-	public function kwitansiForm()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $fakturNama=$this->uri->segment(4);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-//            print_r($penjualanById);
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product,
-                'id'=>$id,
-                'fakturNama'=>$fakturNama
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('cetak/v_kwitansiForm.php',$data);
-            $this->load->view('template/footer.php');  
-	}
-    
-	public function kwitansi()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $fakturNama=$this->uri->segment(4);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-            
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product,
-                'fakturNama'=>$fakturNama
-            );
-            
-            $this->load->view('cetak/v_kwitansi.php',$data); 
-	}
-    
-	public function kwitansiManualForm()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $fakturNama=$this->uri->segment(4);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-//            print_r($penjualanById);
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product,
-                'id'=>$id,
-                'fakturNama'=>$fakturNama
-            );
-            
-            $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js'),'css'=>array('jquery-ui-1.8.22.custom','style'));
-            $this->load->view('template/header.php',$header);    
-            $this->load->view('cetak/v_kwitansiManualForm.php',$data);
-            $this->load->view('template/footer.php');  
-	}
-    
-	public function kwitansiManual()
-	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
-            
-            $id=$this->uri->segment(3);
-            $fakturNama=$this->uri->segment(4);
-            $penjualanById=$this->m_penjualan->penjualanGetById($id);
-            $penjualanDetail=$this->m_penjualan->penjualanGetDetail($id);
-            $detailClient=$this->m_client->clientGetById($penjualanById->idClient);
-            $product=$this->m_product->productGetAll();
-            
-            $data=array(
-                'penjualanById'=>$penjualanById,
-                'penjualanDetail'=>$penjualanDetail,
-                'detailClient'=>$detailClient,
-                'product'=>$product,
-                'fakturNama'=>$fakturNama
-            );
-            
-            $this->load->view('cetak/v_kwitansiManual.php',$data); 
-	}
-        
         
 }

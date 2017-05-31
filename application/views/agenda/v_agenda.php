@@ -120,9 +120,9 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
             $dayFlag2++;
             if($dayFlag2 % 7 == 0) echo "</tr><tr>";
         }
-        while($a<=35){
+        while($dayFlag2<35){
             echo "<td></td>";
-            $a++;
+            $dayFlag2++;
         }
         echo "</tr>";
 //    }

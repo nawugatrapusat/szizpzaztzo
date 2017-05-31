@@ -27,10 +27,15 @@ class Pengeluaran extends CI_Controller {
                 $this->load->model('m_pengeluaran', '', TRUE);
 	}
     
-	function index()
-	{
+        public function sessVerif()
+        {
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
+        }
+    
+	function index()
+	{
+            $this->sessVerif();
                         
 //            $penjualan=$this->m_penjualan->penjualanGetAll();
 //            $data=array(
@@ -46,8 +51,7 @@ class Pengeluaran extends CI_Controller {
         
         function pengeluaranTable()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
@@ -116,8 +120,7 @@ class Pengeluaran extends CI_Controller {
         }   
         
         function pengeluaranForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -167,7 +170,7 @@ class Pengeluaran extends CI_Controller {
             $this->load->view('v_loading.php');
                 
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1' || $this->session->userdata('id_admin') == '5') redirect (site_url());
             
             $data=$this->uri->segment(3);
             

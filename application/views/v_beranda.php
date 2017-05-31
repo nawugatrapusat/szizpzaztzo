@@ -3,6 +3,17 @@
         padding-top:7px;
         padding-right:100px;
     }
+    .tableClass td{
+        /*width: 175px;*/
+        /*height: 70;*/
+        /*text-align: left;*/
+        /*vertical-align: top;*/
+        /*cursor:pointer;*/
+        padding-left: 3px;
+        padding-right : 3px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
 </style>
 </head>
 <body class="bodyclass" style="display: none;">
@@ -43,10 +54,10 @@
                 }
 //                echo '</table>';
             }
-echo "<br/><br/>";
-echo '<span style="font-weight:bold;">Dashboard Penjualan Faktur AU</span><br/>';
+//echo "<br/><br/>";
+echo '<span style="font-weight:bold;">Dashboard Penjualan</span><br/>';
 ?>
-    <table border="1" style="border-collapse: collapse;">
+    <table border="1" style="border-collapse: collapse;" class="tableClass">
         <tr>
             <td>
                 <table border="0" style="border-collapse: collapse;">
@@ -131,6 +142,36 @@ echo '<span style="font-weight:bold;">Dashboard Penjualan Faktur AU</span><br/>'
             </td>
         </tr>
     </table>    
+<br/>
+<span style="font-weight:bold;">Dashboard Rekap Karyawan</span><br/>
+    <table border="1" style="border-collapse: collapse;" class="tableClass">
+        <tr>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanNow?></td>
+                    </tr>
+                    <?php echo $text1 ?>
+                </table>
+            </td>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanYesterday?></td>
+                    </tr>
+                    <?php echo $text2 ?>
+                </table>
+            </td>
+            <td>
+                <table border="0" style="border-collapse: collapse;">
+                    <tr>
+                        <td colspan="3" align="center" style="border-bottom: 1px solid black;">Bulan <?php echo $bulanYesterday2?></td>
+                    </tr>
+                    <?php echo $text3 ?>
+                </table>
+            </td>
+        </tr>
+    </table>  
 <?php
 echo '<br/><span style="font-weight:bold;">Informasi TF</span><br/><br/>';
     foreach($client as $detail){

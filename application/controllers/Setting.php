@@ -31,10 +31,15 @@ class Setting extends CI_Controller {
                 $this->load->model('m_pengeluaran', '', TRUE);
 	}
     
-	function index()
-	{
+        public function sessVerif()
+        {
             if($this->session->userdata('id_admin') == '') redirect (site_url());
             if($this->session->userdata('id_admin') != '1') redirect (site_url());
+        }
+    
+	function index()
+	{
+            $this->sessVerif();
                         
             
             $client=$this->m_client->clientGetAll();
@@ -58,8 +63,7 @@ class Setting extends CI_Controller {
 	}	
         
         function clientForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -114,7 +118,7 @@ class Setting extends CI_Controller {
             $this->load->view('v_loading.php');
                 
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1' || $this->session->userdata('id_admin') == '5') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
@@ -133,8 +137,7 @@ class Setting extends CI_Controller {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         function productForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -183,8 +186,7 @@ class Setting extends CI_Controller {
         function productDelete(){
             $this->load->view('v_loading.php');
                 
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
@@ -201,8 +203,7 @@ class Setting extends CI_Controller {
         }
         
         function productStockForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $product=$this->m_product->productGetAll();
             $data=array(
@@ -256,8 +257,7 @@ class Setting extends CI_Controller {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         function empForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -307,8 +307,7 @@ class Setting extends CI_Controller {
         function empDelete(){
             $this->load->view('v_loading.php');
                 
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
@@ -327,8 +326,7 @@ class Setting extends CI_Controller {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         function bankForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -377,8 +375,7 @@ class Setting extends CI_Controller {
         function bankDelete(){
             $this->load->view('v_loading.php');
                 
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
@@ -397,8 +394,7 @@ class Setting extends CI_Controller {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
         
         function pengeluaranForm(){
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $typeForm=$this->uri->segment(3);
             $id=$this->uri->segment(4);
@@ -448,7 +444,7 @@ class Setting extends CI_Controller {
             $this->load->view('v_loading.php');
                 
             if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1' || $this->session->userdata('id_admin') == '5') redirect (site_url());
             
             $tab=$this->uri->segment(3);
             $data=$this->uri->segment(4);
@@ -545,8 +541,7 @@ class Setting extends CI_Controller {
         
         function clientTable()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column
@@ -621,8 +616,7 @@ class Setting extends CI_Controller {
         
         function productTable()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column

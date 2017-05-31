@@ -28,12 +28,20 @@ class Beranda extends CI_Controller {
                 $this->load->model('m_product', '', TRUE);
                 $this->load->model('m_employee', '', TRUE);
                 $this->load->model('m_bank', '', TRUE);
+                $this->load->model('m_rekap', '', TRUE);
 	}
     
+        public function sessVerif()
+        {
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') == '2') redirect (site_url());
+            if($this->session->userdata('id_admin') == '3') redirect (site_url());
+            if($this->session->userdata('id_admin') == '4') redirect (site_url());
+        }
+        
 	public function index()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
 //            update hargaJualDiskon----------------------------------------------------------------------------------------------------------------------
 //            $clientPrice=$this->m_client->clientPriceGetAll();
 //            foreach($clientPrice as $detail){
@@ -110,34 +118,100 @@ class Beranda extends CI_Controller {
                 $yDateYesterday2=date("Y");
             }
             foreach($penjualan as $detail){
-                if($detail->m == $mDate && $detail->y == $yDate && $detail->status=='ambil uang'){
+                if($detail->m == $mDate && $detail->y == $yDate){
+//                if($detail->m == $mDate && $detail->y == $yDate && $detail->status=='ambil uang'){
                     $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
-                    $tFaktur=$tFaktur+1;
-                    foreach($penjualanDetail as $hasil){
-                        $tBarang=$tBarang+$hasil->jumlah;
-                        $tNominal=$tNominal+($hasil->hargaJual*$hasil->jumlah);
-                        $tUntung=$tUntung+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    if($penjualanDetail != false){
+                        $tFaktur=$tFaktur+1;
+                        foreach($penjualanDetail as $hasil){
+                            $tBarang=$tBarang+$hasil->jumlah;
+                            $tNominal=$tNominal+($hasil->hargaJual*$hasil->jumlah);
+                            $tUntung=$tUntung+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                        }
                     }
                 }
-                if($detail->m == $mDateYesterday && $detail->y == $yDateYesterday && $detail->status=='ambil uang'){
+                if($detail->m == $mDateYesterday && $detail->y == $yDateYesterday){
                     $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
-                    $tFakturYesterday=$tFakturYesterday+1;
-                    foreach($penjualanDetail as $hasil){
-                        $tBarangYesterday=$tBarangYesterday+$hasil->jumlah;
-                        $tNominalYesterday=$tNominalYesterday+($hasil->hargaJual*$hasil->jumlah);
-                        $tUntungYesterday=$tUntungYesterday+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    if($penjualanDetail != false){
+                        $tFakturYesterday=$tFakturYesterday+1;
+                        foreach($penjualanDetail as $hasil){
+                            $tBarangYesterday=$tBarangYesterday+$hasil->jumlah;
+                            $tNominalYesterday=$tNominalYesterday+($hasil->hargaJual*$hasil->jumlah);
+                            $tUntungYesterday=$tUntungYesterday+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                        }
                     }
                 }
-                if($detail->m == $mDateYesterday2 && $detail->y == $yDateYesterday2 && $detail->status=='ambil uang'){
+                if($detail->m == $mDateYesterday2 && $detail->y == $yDateYesterday2){
                     $penjualanDetail=$this->m_penjualan->penjualanGetDetail($detail->id);
-                    $tFakturYesterday2=$tFakturYesterday2+1;
-                    foreach($penjualanDetail as $hasil){
-                        $tBarangYesterday2=$tBarangYesterday2+$hasil->jumlah;
-                        $tNominalYesterday2=$tNominalYesterday2+($hasil->hargaJual*$hasil->jumlah);
-                        $tUntungYesterday2=$tUntungYesterday2+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                    if($penjualanDetail != false){
+                        $tFakturYesterday2=$tFakturYesterday2+1;
+                        foreach($penjualanDetail as $hasil){
+                            $tBarangYesterday2=$tBarangYesterday2+$hasil->jumlah;
+                            $tNominalYesterday2=$tNominalYesterday2+($hasil->hargaJual*$hasil->jumlah);
+                            $tUntungYesterday2=$tUntungYesterday2+($hasil->jumlah*($hasil->hargaJual - $hasil->hargaBeli));
+                        }
                     }
                 }
             }
+            
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            
+            $rek=$this->m_rekap->rekapGetAll();
+            $emp=$this->m_employee->empGetAll();
+            $text1='';
+            $countTot1=0;
+            $text2='';
+            $countTot2=0;
+            $text3='';
+            $countTot3=0;
+            foreach($rek as $detail){
+                if($detail->m == $mDate && $detail->y == $yDate){
+                    foreach($emp as $hasil){
+                        $count=0;
+                        if($detail->idEmployee == $hasil->id){
+                            for($a=1;$a<=33;$a++){
+                                $v='d'.$a;
+                                $count=$count+($detail->$v == '' ? 0 : $detail->$v);
+                            }
+                            $countTot1=$countTot1+$count;
+                            $text1.="<tr><td>".ucwords($hasil->nama).'</td><td> : </td><td> Rp '.number_format($count,0,',','.').'</td></tr>';
+                        }else{
+//                            $text1.="<tr><td>".ucwords($hasil->nama).' : Rp '.number_format(0,0,',','.').'</td></tr>';
+                        }
+                    }
+                }
+                if($detail->m == $mDateYesterday && $detail->y == $yDateYesterday){
+                    $countTot=0;
+                    foreach($emp as $hasil){
+                        $count=0;
+                        if($detail->idEmployee == $hasil->id){
+                            for($a=1;$a<=33;$a++){
+                                $v='d'.$a;
+                                $count=$count+($detail->$v == '' ? 0 : $detail->$v);
+                            }
+                            $countTot2=$countTot2+$count;
+                            $text2.="<tr><td>".ucwords($hasil->nama).'</td><td> : </td><td> Rp '.number_format($count,0,',','.').'</td></tr>';
+                        }
+                    }
+                }
+                if($detail->m == $mDateYesterday2 && $detail->y == $yDateYesterday2){
+                    $countTot=0;
+                    foreach($emp as $hasil){
+                        $count=0;
+                        if($detail->idEmployee == $hasil->id){
+                            for($a=1;$a<=33;$a++){
+                                $v='d'.$a;
+                                $count=$count+($detail->$v == '' ? 0 : $detail->$v);
+                            }
+                            $countTot3=$countTot3+$count;
+                            $text3.="<tr><td>".ucwords($hasil->nama).'</td><td> : </td><td> Rp '.number_format($count,0,',','.').'</td></tr>';
+                        }
+                    }
+                }
+            }
+            $text1.='<tr><td>Total </td><td> : </td><td> Rp '.number_format($countTot1,0,',','.').'</td></tr>';
+            $text2.='<tr><td>Total </td><td> : </td><td> Rp '.number_format($countTot2,0,',','.').'</td></tr>';
+            $text3.='<tr><td>Total </td><td> : </td><td> Rp '.number_format($countTot3,0,',','.').'</td></tr>';
             
             $data=array(
                 'all_produk'=>$all_produk,
@@ -157,7 +231,10 @@ class Beranda extends CI_Controller {
                 'tUntungYesterday'=>'Rp. '.number_format($tUntungYesterday,0,',','.'),
                 'tBarangYesterday2'=>number_format($tBarangYesterday2,0,',','.'),
                 'tNominalYesterday2'=>'Rp. '.number_format($tNominalYesterday2,0,',','.'),
-                'tUntungYesterday2'=>'Rp. '.number_format($tUntungYesterday2,0,',','.')
+                'tUntungYesterday2'=>'Rp. '.number_format($tUntungYesterday2,0,',','.'),
+                'text1'=>$text1,
+                'text2'=>$text2,
+                'text3'=>$text3
             );
             
             $header = array('js'=>array('jquery-ui-1.8.22.custom.min','js','flexigrid.pack','cookie'),'css'=>array('jquery-ui-1.8.22.custom','style','flexigrid.pack'));
@@ -169,8 +246,7 @@ class Beranda extends CI_Controller {
         
         function penjualanTable()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $page = 1; // The current page
             $sortname = 'noFaktur'; // Sort column

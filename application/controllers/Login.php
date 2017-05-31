@@ -52,7 +52,9 @@ class Login extends CI_Controller {
                     $this->m_log->insert_log('Login','Sukses Login, IP '.$this->input->ip_address().' - '.$name);
                     if($det->id == 1){
                         redirect('beranda'); 
-                    }else{ 
+                    }else if($det->id == 5){
+                        redirect('beranda'); 
+                    }else { 
                         $empp=$this->m_employee->empGetByIdAdmin($this->session->userdata('id_admin'));
                         $this->session->set_userdata('id_employee',$empp->id);
                         redirect('penjualan');

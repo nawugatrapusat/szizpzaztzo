@@ -30,6 +30,12 @@ class Penjualan extends CI_Controller {
                 $this->load->model('m_bank', '', TRUE);
 	}
     
+        public function sessVerif()
+        {
+            if($this->session->userdata('id_admin') == '') redirect (site_url());
+            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+        }
+    
 	function index()
 	{
             if($this->session->userdata('id_admin') == '') redirect (site_url());
@@ -153,8 +159,7 @@ class Penjualan extends CI_Controller {
         function penjualanDelete(){
             $this->load->view('v_loading.php');
                 
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $data=$this->uri->segment(3);
             
@@ -300,8 +305,7 @@ class Penjualan extends CI_Controller {
         
 	function penjualanPrint()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
                         
 //            $penjualan=$this->m_penjualan->penjualanGetAll();
 //            $data=array(
@@ -442,8 +446,7 @@ class Penjualan extends CI_Controller {
         
         function penjualanPrintTable()
 	{
-            if($this->session->userdata('id_admin') == '') redirect (site_url());
-            if($this->session->userdata('id_admin') != '1') redirect (site_url());
+            $this->sessVerif();
             
             $idClient=$this->uri->segment(3);
             $page = 1; // The current page
