@@ -8,7 +8,7 @@ class M_employee extends CI_Model {
 	}
 	        
          function empGetById($id) {            
-            $this->db->where('deleted','0');
+//            $this->db->where('deleted','0');
             $this->db->where('id',$id);
             $query=$this->db->get('employee');
             if($query->num_rows() != 0) return $query->row(); else return false;

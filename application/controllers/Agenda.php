@@ -35,6 +35,13 @@ class Agenda extends CI_Controller {
             $nM=date('m')+1;
             $agenda1=$this->m_agenda->agendaGetByDate(date('m'),date('Y'));
             $agenda2=$this->m_agenda->agendaGetByDate($nM,date('Y'));
+            if($agenda1 == false) {
+                $dataInsert=new stdClass();
+                $dataInsert->m=date('m');
+                $dataInsert->y=date('Y');
+                $this->m_agenda->agendaAddSave($dataInsert);
+                $agenda1=$this->m_agenda->agendaGetByDate(date('m'),date('Y'));
+            }
             if($agenda2 == false) {
                 $dataInsert=new stdClass();
                 $dataInsert->m=$nM;

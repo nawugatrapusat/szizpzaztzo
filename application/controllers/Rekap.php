@@ -55,6 +55,9 @@ class Rekap extends CI_Controller {
             }
             
             $date=date('m')."-".date('Y');
+            if($this->input->post('kustBulan') != '' && $this->input->post('kustTahun') != ''){
+                $date=$this->input->post('kustBulan')."-".$this->input->post('kustTahun');
+            }
             $dayAgenda = date("l", strtotime(date('Y')."-".date('m')."-1"));
             $daysAgenda=cal_days_in_month(CAL_GREGORIAN,date('m'),date('Y'));
             
@@ -62,6 +65,12 @@ class Rekap extends CI_Controller {
             $kustEmployee=get_cookie('kustEmployee') != '' ? get_cookie('kustEmployee') : $this->input->post('kustEmployee');
             $kustBulan=get_cookie('kustBulan') != '' ? get_cookie('kustBulan') : $this->input->post('kustBulan');
             $kustTahun=get_cookie('kustTahun') != '' ? get_cookie('kustTahun') : $this->input->post('kustTahun');   
+            if($this->input->post('kustBulan') != '' && $this->input->post('kustTahun') != ''){
+                $date=$this->input->post('kustBulan')."-".$this->input->post('kustTahun');
+            }
+            if($kustBulan != '' && $kustTahun != ''){
+                $date=$kustBulan."-".$kustTahun;
+            }
             delete_cookie('kustEmployee');
             delete_cookie('kustBulan');
             delete_cookie('kustTahun');
@@ -79,6 +88,7 @@ class Rekap extends CI_Controller {
                 'date'=>$date,
                 'bulanNow'=>$this->namaBulan(date('m')).'-'.date('Y'),
                 'emp'=>$emp,
+                'empAll'=>$this->m_employee->empGetAllAll(),
                 'kustEmployee'=>$kustEmployee,
                 'kustBulan'=>$kustBulan,
                 'kustTahun'=>$kustTahun
@@ -105,7 +115,7 @@ class Rekap extends CI_Controller {
                 'namaEmp'=>$namaEmp->nama,
                 'dateDetail'=>$dateDetail,
                 'exDate'=>$exDate,
-                'tanggal'=>$exDate[0].'-'.$this->namaBulan(date('m')).'-'.date('Y'),
+                'tanggal'=>$exDate[0].'-'.$this->namaBulan($exDate[1]).'-'.$exDate[2],
                 'tab'=>$tab,
                 'idEmp'=>$idEmp
             );

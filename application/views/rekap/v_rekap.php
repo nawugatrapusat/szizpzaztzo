@@ -68,13 +68,14 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
         $count=0;
         echo "<tr>";
         if($agenda1->d1 != '') $cet="Rp ".number_format($agenda1->d1, 0, ',', '.'); else $cet='';
-        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=1; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=2; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=3; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=4; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=5; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=6; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink1">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=7; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayFlag2 % 7 == 0) echo "</tr><tr>";
         $count=$count+($agenda1->d1 == '' ? 0 : $agenda1->d1);
         for($a=2;$a<$daysAgenda+1;$a++){
             $v='d'.$a;
@@ -122,13 +123,14 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
         $count=0;
         echo "<tr>";
         if($agenda2->d1 != '') $cet="Rp ".number_format($agenda2->d1, 0, ',', '.'); else $cet='';
-        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=1; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=2; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=3; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=4; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=5; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=6; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink2">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=7; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayFlag2 % 7 == 0) echo "</tr><tr>";
         $count=$count+($agenda2->d1 == '' ? 0 : $agenda2->d1);
         for($a=2;$a<$daysAgenda+1;$a++){
             $v='d'.$a;
@@ -178,13 +180,14 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
         $count=0;
         echo "<tr>";
         if($agenda3->d1 != '') $cet="Rp ".number_format($agenda3->d1, 0, ',', '.'); else $cet='';
-        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=1; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=2; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=3; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=4; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=5; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=6; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLink3">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=7; } if($flag == 1) echo "<td></td>";$dayFlag++;
+        if($dayFlag2 % 7 == 0) echo "</tr><tr>";
         $count=$count+($agenda3->d1 == '' ? 0 : $agenda3->d1);
         for($a=2;$a<$daysAgenda+1;$a++){
             $v='d'.$a;
@@ -248,7 +251,7 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
                         <select id="kustEmployee" name="kustEmployee">
                             <option value="">Pilih Karyawan</option>
                         <?php
-                            foreach ($emp as $hasil) {
+                            foreach ($empAll as $hasil) {
                                 $a=$kustEmployee == $hasil->id ? "selected='selected'" : '';
                                 echo '<option value="'.$hasil->id.'" '.$a.'>'. ucwords($hasil->nama).'</option>';
                             }
@@ -283,13 +286,14 @@ if (empty($failedNotif)) $failedNotifShow = 'display: none;'; else $failedNotifS
                     $count=0;
                     echo "<tr>";
                     if($agendaKust->d1 != '') $cet="Rp ".number_format($agendaKust->d1, 0, ',', '.'); else $cet='';
-                    if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
-                    if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=$dayFlag; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Monday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=1; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Tuesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=2; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Wednesday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=3; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Thursday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=4; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Friday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=5; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Saturday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=6; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayAgenda == 'Sunday'){ echo '<td class="agenda" isi="1-'.$date.'"><a href="#" class="dateLinkx">1</a><br/><br/>'.$cet.'</td>';$flag++;$dayFlag2=7; } if($flag == 1) echo "<td></td>";$dayFlag++;
+                    if($dayFlag2 % 7 == 0) echo "</tr><tr>";
                     $count=$count+($agendaKust->d1 == '' ? 0 : $agendaKust->d1);
                     for($a=2;$a<$daysAgenda+1;$a++){
                         $v='d'.$a;
